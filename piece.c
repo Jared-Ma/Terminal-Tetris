@@ -297,6 +297,8 @@ void piece_debug_print(Piece* piece) {
             piece->n,
             piece->r
         );
+    } else {
+        fprintf(debug_log, "NULL\n");
     }
 }
 

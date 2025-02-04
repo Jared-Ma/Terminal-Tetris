@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <ncurses.h>
+#include "game_state.h"
 #include "draw.h"
 #include "piece.h"
 #include "logger.h"
@@ -14,8 +15,9 @@ int main(int argc, char* argv[argc+1]) {
     initscr(); // Initialize curses screen
     keypad(stdscr, TRUE); // Enables arrow key input
     noecho(); // Don't echo input to screen
-    curs_set(0); // Hide cursor
+    // curs_set(0); // Hide cursor
     refresh();
+    set_escdelay(0);
 
     WINDOW* hold_window = draw_hold_window(6, 14, 0, 0);
     WINDOW* stats_window = draw_stats_window(16, 14, 6, 0);
@@ -23,8 +25,13 @@ int main(int argc, char* argv[argc+1]) {
     WINDOW* next_window = draw_next_window(6, 14, 0, 36);
     WINDOW* controls_window = draw_controls_window(16, 14, 6, 36);
 
+    GameState* game_state = game_state_init();
     Piece* t_piece = piece_init(T, 3, 3);
+    game_state->curr_piece = t_piece;
+
     piece_debug_print(t_piece);
+    game_state_debug_print(game_state);
+    
     draw_piece(play_window, t_piece);
 
     bool running = true;
@@ -67,6 +74,7 @@ int main(int argc, char* argv[argc+1]) {
         }
     }
 
+    game_state_destroy(game_state);
     piece_destroy(t_piece);
     fclose(debug_log);
     delwin(hold_window);
