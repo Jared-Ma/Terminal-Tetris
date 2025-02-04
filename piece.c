@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include "piece.h"
+#include "logger.h"
 
 
 Piece piece_get(Shape shape, uint8_t y, uint8_t x) {
@@ -282,6 +283,19 @@ void piece_destroy(Piece* piece) {
         *piece = (Piece){ 0 };
         free(piece);
     }
+}
+
+void piece_debug_print(Piece* piece) {
+    fprintf(
+        debug_log,
+        "%p = {shape = %i, y = %u, x = %u, n = %u, r = %u, M = ...}\n",
+        piece,
+        piece->shape,
+        piece->y,
+        piece->x,
+        piece->n,
+        piece->r
+    );
 }
 
 void piece_move(Piece* piece, uint8_t y, uint8_t x) {
