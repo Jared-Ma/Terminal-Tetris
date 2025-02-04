@@ -286,27 +286,35 @@ void piece_destroy(Piece* piece) {
 }
 
 void piece_debug_print(Piece* piece) {
-    fprintf(
-        debug_log,
-        "%p = {shape = %i, y = %u, x = %u, n = %u, r = %u, M = ...}\n",
-        piece,
-        piece->shape,
-        piece->y,
-        piece->x,
-        piece->n,
-        piece->r
-    );
+    if (piece) {
+        fprintf(
+            debug_log,
+            "%p = {shape = %i, y = %u, x = %u, n = %u, r = %u, M = ...}\n",
+            piece,
+            piece->shape,
+            piece->y,
+            piece->x,
+            piece->n,
+            piece->r
+        );
+    }
 }
 
 void piece_move(Piece* piece, uint8_t y, uint8_t x) {
-    piece->x = x;
-    piece->y = y;
+    if (piece) {
+        piece->x = x;
+        piece->y = y;
+    }
 }
 
 void piece_rotate_right(Piece* piece) {
-    piece->r = (piece->r + 1) % R_MAX;
+    if (piece) {
+        piece->r = (piece->r + 1) % R_MAX;
+    }
 }
 
 void piece_rotate_left(Piece* piece) {
-    piece->r = (piece->r > 0) ? piece->r - 1 : R_MAX - 1;    
+    if (piece) {
+        piece->r = (piece->r > 0) ? piece->r - 1 : R_MAX - 1;    
+    }
 }
