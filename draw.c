@@ -61,13 +61,13 @@ WINDOW* draw_controls_window(int height, int width, int y, int x) {
     return controls_window;
 }
 
-void draw_piece(WINDOW* window, Piece piece) {
-    size_t start_y = piece.y - piece.n/2;
-    size_t start_x = 2*piece.x - piece.n;
-    for (size_t i = 0; i < piece.n; ++i) {
+void draw_piece(WINDOW* window, Piece* piece) {
+    size_t start_y = piece->y - piece->n/2;
+    size_t start_x = 2*piece->x - piece->n;
+    for (size_t i = 0; i < piece->n; ++i) {
         char string[10] = "";
-        for (size_t j = 0; j < piece.n; ++j) {
-            if (piece.M[piece.r][i][j] == 1) {
+        for (size_t j = 0; j < piece->n; ++j) {
+            if (piece->M[piece->r][i][j] == 1) {
                 string[2*j] = '[';
                 string[2*j+1] = ']';
             } else {
@@ -76,6 +76,13 @@ void draw_piece(WINDOW* window, Piece piece) {
             }
         }
         mvwprintw(window, start_y + i, start_x, "%s", string);
+    }
+    wrefresh(window);
+}
+
+void clear_play_window(WINDOW* window) {
+    for (size_t i = 1; i < getmaxy(window)-1; ++i) {
+        mvwprintw(window, i, 1, " . . . . . . . . . .");
     }
     wrefresh(window);
 }

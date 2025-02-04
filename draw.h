@@ -14,6 +14,8 @@ WINDOW *draw_next_window(int height, int width, int y, int x);
 
 WINDOW *draw_controls_window(int height, int width, int y, int x);
 
-void draw_piece(WINDOW *window, Piece piece);
+void draw_piece(WINDOW *window, Piece* piece);
+
+void clear_play_window(WINDOW *window);
 
 #endif
