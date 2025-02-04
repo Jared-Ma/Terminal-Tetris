@@ -1,8 +1,9 @@
+#include <stdlib.h>
 #include <stdint.h>
 #include "piece.h"
 
 
-Piece piece_init(Shape shape, uint8_t y, uint8_t x) {
+Piece piece_get(Shape shape, uint8_t y, uint8_t x) {
     switch (shape) {
         case I: {
             Piece piece = {
@@ -268,4 +269,30 @@ Piece piece_init(Shape shape, uint8_t y, uint8_t x) {
             };
             return piece; 
     }
+}
+
+Piece* piece_init(Shape shape, uint8_t y, uint8_t x) {
+    Piece* piece = malloc(sizeof(Piece));
+    *piece = piece_get(shape, y, x);
+    return piece;
+}
+
+void piece_destroy(Piece* piece) {
+    if (piece) {
+        *piece = (Piece){ 0 };
+        free(piece);
+    }
+}
+
+void piece_move(Piece* piece, uint8_t y, uint8_t x) {
+    piece->x = x;
+    piece->y = y;
+}
+
+void piece_rotate_right(Piece* piece) {
+    piece->r = (piece->r + 1) % R_MAX;
+}
+
+void piece_rotate_left(Piece* piece) {
+    piece->r = (piece->r > 0) ? piece->r - 1 : R_MAX - 1;    
 }

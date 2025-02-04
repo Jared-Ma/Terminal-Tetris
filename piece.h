@@ -3,6 +3,9 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+#define N_MAX 5
+#define R_MAX 4
+
 
 enum Shape {
     I,
@@ -22,11 +25,21 @@ struct Piece {
     uint8_t x;
     uint8_t n;
     uint8_t r;
-    bool M[4][5][5];
+    bool M[R_MAX][N_MAX][N_MAX];
 };
 
 typedef struct Piece Piece;
 
-Piece piece_init(Shape shape, uint8_t y, uint8_t x);
+Piece piece_get(Shape shape, uint8_t y, uint8_t x);
+
+Piece* piece_init(Shape shape, uint8_t y, uint8_t x);
+
+void piece_destroy(Piece* piece);
+
+void piece_move(Piece* piece, uint8_t y, uint8_t x);
+
+void piece_rotate_right(Piece *piece);
+
+void piece_rotate_left(Piece *piece);
 
 #endif
