@@ -238,38 +238,9 @@ Piece piece_get(Shape shape, uint8_t y, uint8_t x) {
             };
             return piece;
         }
-        default:
-            Piece piece = {
-                .shape = shape,
-                .y = y,
-                .x = x,
-                .n = 3,
-                .r = 0,
-                .M = {
-                    {
-                        {1, 1, 0},
-                        {0, 1, 1},
-                        {0, 0, 0}
-                    },
-                    {
-                        {0, 0, 1},
-                        {0, 1, 1},
-                        {0, 1, 0}
-                    },
-                    {
-                        {0, 0, 0},
-                        {1, 1, 0},
-                        {0, 1, 1}
-                    },
-                    {
-                        {0, 1, 0},
-                        {1, 1, 0},
-                        {1, 0, 0}
-                    }
-                }
-            };
-            return piece; 
     }
+
+    return (Piece){ 0 };
 }
 
 Piece* piece_init(Shape shape, uint8_t y, uint8_t x) {
@@ -282,6 +253,7 @@ void piece_destroy(Piece* piece) {
     if (piece) {
         *piece = (Piece){ 0 };
         free(piece);
+        piece = NULL;
     }
 }
 
@@ -289,9 +261,9 @@ void piece_debug_print(Piece* piece) {
     if (piece) {
         fprintf(
             debug_log,
-            "%p = {shape = %i, y = %u, x = %u, n = %u, r = %u, M = ...}\n",
+            "%p = {shape = %c, y = %u, x = %u, n = %u, r = %u, M = ...}\n",
             piece,
-            piece->shape,
+            shape_to_char(piece->shape),
             piece->y,
             piece->x,
             piece->n,
@@ -319,4 +291,25 @@ void piece_rotate_left(Piece* piece) {
     if (piece) {
         piece->r = (piece->r > 0) ? piece->r - 1 : R_MAX - 1;    
     }
+}
+
+char shape_to_char(Shape shape) {
+    switch (shape) {
+        case I:
+            return 'I';
+        case J:
+            return 'J';
+        case L:
+            return 'L';
+        case O:
+            return 'O';
+        case S:
+            return 'S';
+        case T:
+            return 'T';
+        case Z:
+            return 'Z';
+    }
+
+    return 0;
 }

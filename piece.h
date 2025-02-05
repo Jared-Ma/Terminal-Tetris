@@ -3,6 +3,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+#define NUM_SHAPES 7
 #define N_MAX 5
 #define R_MAX 4
 
@@ -43,5 +44,7 @@ void piece_move(Piece* piece, uint8_t y, uint8_t x);
 void piece_rotate_right(Piece *piece);
 
 void piece_rotate_left(Piece *piece);
+
+char shape_to_char(Shape shape);
 
 #endif
