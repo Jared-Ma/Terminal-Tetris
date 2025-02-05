@@ -25,6 +25,7 @@ struct Piece {
     uint8_t y;
     uint8_t x;
     uint8_t n;
+    uint8_t l;
     uint8_t r;
     bool M[R_MAX][N_MAX][N_MAX];
 };

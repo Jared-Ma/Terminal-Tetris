@@ -12,6 +12,7 @@ Piece piece_get(Shape shape, uint8_t y, uint8_t x) {
                 .y = y,
                 .x = x,
                 .n = 5,
+                .l = 4,
                 .r = 0,
                 .M = {
                     {
@@ -52,6 +53,7 @@ Piece piece_get(Shape shape, uint8_t y, uint8_t x) {
                 .y = y,
                 .x = x,
                 .n = 3,
+                .l = 3,
                 .r = 0,
                 .M = {
                     {
@@ -84,6 +86,7 @@ Piece piece_get(Shape shape, uint8_t y, uint8_t x) {
                 .y = y,
                 .x = x,
                 .n = 3,
+                .l = 3,
                 .r = 0,
                 .M = {
                     {
@@ -115,29 +118,26 @@ Piece piece_get(Shape shape, uint8_t y, uint8_t x) {
                 .shape = shape,
                 .y = y,
                 .x = x,
-                .n = 3,
+                .n = 2,
+                .l = 2,
                 .r = 0,
                 .M = {
                     {
-                        {0, 1, 1},
-                        {0, 1, 1},
-                        {0, 0, 0}
+                        {1, 1},
+                        {1, 1}
                     },
                     {
-                        {0, 0, 0},
-                        {0, 1, 1},
-                        {0, 1, 1}
+                        {1, 1},
+                        {1, 1}
                     },
                     {
-                        {0, 0, 0},
-                        {1, 1, 0},
-                        {1, 1, 0}
+                        {1, 1},
+                        {1, 1}
                     },
                     {
-                        {1, 1, 0},
-                        {1, 1, 0},
-                        {0, 0, 0}
-                    }
+                        {1, 1},
+                        {1, 1}
+                    },
                 }
             };
             return piece;
@@ -148,6 +148,7 @@ Piece piece_get(Shape shape, uint8_t y, uint8_t x) {
                 .y = y,
                 .x = x,
                 .n = 3,
+                .l = 3,
                 .r = 0,
                 .M = {
                     {
@@ -180,6 +181,7 @@ Piece piece_get(Shape shape, uint8_t y, uint8_t x) {
                 .y = y,
                 .x = x,
                 .n = 3,
+                .l = 3,
                 .r = 0,
                 .M = {
                     {
@@ -212,6 +214,7 @@ Piece piece_get(Shape shape, uint8_t y, uint8_t x) {
                 .y = y,
                 .x = x,
                 .n = 3,
+                .l = 3,
                 .r = 0,
                 .M = {
                     {
@@ -239,7 +242,6 @@ Piece piece_get(Shape shape, uint8_t y, uint8_t x) {
             return piece;
         }
     }
-
     return (Piece){ 0 };
 }
 
@@ -261,12 +263,13 @@ void piece_debug_print(Piece* piece) {
     if (piece) {
         fprintf(
             debug_log,
-            "%p = {shape = %c, y = %u, x = %u, n = %u, r = %u, M = ...}\n",
+            "%p = {shape = %c, y = %u, x = %u, n = %u, l = %u, r = %u, M = ...}\n",
             piece,
             shape_to_char(piece->shape),
             piece->y,
             piece->x,
             piece->n,
+            piece->l,
             piece->r
         );
     } else {
@@ -310,6 +313,5 @@ char shape_to_char(Shape shape) {
         case Z:
             return 'Z';
     }
-
     return 0;
 }
