@@ -15,7 +15,7 @@ int main(int argc, char* argv[argc+1]) {
     initscr(); // Initialize curses screen
     keypad(stdscr, TRUE); // Enables arrow key input
     noecho(); // Don't echo input to screen
-    // curs_set(0); // Hide cursor
+    curs_set(0); // Hide cursor
     refresh();
     set_escdelay(0);
 
@@ -27,6 +27,7 @@ int main(int argc, char* argv[argc+1]) {
 
     GameState* game_state = game_state_init();
     draw_next_piece(next_window, &game_state->next_piece);
+    draw_board_piece(board_window, &game_state->curr_piece);
 
     bool running = true;
     while (running) {
@@ -67,11 +68,18 @@ int main(int argc, char* argv[argc+1]) {
                 break;
             case ' ':
                 game_state_load_next_piece(game_state);
-                game_state_debug_print(game_state);
                 draw_board_empty(board_window);
                 draw_board_piece(board_window, &game_state->curr_piece);
-                draw_next_window_empty(next_window);
+                // clear_next_window(next_window);
                 draw_next_piece(next_window, &game_state->next_piece);
+                break;
+            case 'c':
+                game_state_hold_piece(game_state);
+                draw_board_empty(board_window);
+                draw_board_piece(board_window, &game_state->curr_piece);
+                // clear_next_window(next_window);
+                draw_next_piece(next_window, &game_state->next_piece);
+                draw_hold_piece(hold_window, &game_state->hold_piece);
                 break;
         }
     }
@@ -84,6 +92,7 @@ int main(int argc, char* argv[argc+1]) {
     delwin(next_window);
     delwin(controls_window);
     endwin();
+    curs_set(1); // unhide cursor
 
     return EXIT_SUCCESS;
 }

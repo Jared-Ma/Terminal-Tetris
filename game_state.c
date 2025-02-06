@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <stdbool.h>
 #include <time.h>
 #include "game_state.h"
 #include "piece.h"
@@ -10,6 +11,7 @@ GameState game_state_get() {
         .curr_piece = { 0 },
         .hold_piece = { 0 },
         .next_piece = { 0 },
+        .holding_piece = false,
         .next_index = 0,
         .next_shapes = { 0 },
         .board = {{ 0 }}
@@ -55,8 +57,10 @@ void game_state_debug_print(GameState* game_state) {
         piece_debug_print(&game_state->next_piece);
         fprintf(
             debug_log,
+            "\tholding_piece = %i\n"
             "\tnext_index = %u\n"
             "\tnext_shapes = ",
+            game_state->holding_piece,
             game_state->next_index
         );
         fprintf(debug_log, "[ ");
@@ -101,4 +105,17 @@ void game_state_load_next_piece(GameState* game_state) {
         game_state_gen_next_shapes(game_state);
     }
     game_state->next_piece = piece_get(game_state->next_shapes[game_state->next_index], 3, 4);
+}
+
+void game_state_hold_piece(GameState* game_state) {
+    if (game_state->holding_piece) {
+        Piece tmp;
+        tmp = game_state->curr_piece;
+        game_state->curr_piece = game_state->hold_piece;
+        game_state->hold_piece = tmp;
+    } else {
+        game_state->hold_piece = game_state->curr_piece;
+        game_state->holding_piece = true;
+        game_state_load_next_piece(game_state);
+    }
 }

@@ -5,6 +5,6 @@
 
 extern FILE* debug_log;
 
-bool debug_log_open(char *filename);
+bool debug_log_open(char* filename);
 
 #endif
