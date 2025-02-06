@@ -23,7 +23,7 @@ GameState* game_state_init() {
     GameState* game_state = malloc(sizeof(GameState));
     *game_state = game_state_get();
     game_state_gen_next_shapes(game_state);
-    game_state->next_piece = piece_get(game_state->next_shapes[game_state->next_index], 3, 3);
+    game_state->next_piece = piece_get(game_state->next_shapes[game_state->next_index], 2, 2);
     game_state_load_next_piece(game_state);
     return game_state;
 }
@@ -58,7 +58,7 @@ void game_state_debug_print(GameState* game_state) {
         fprintf(
             debug_log,
             "\tholding_piece = %i\n"
-            "\tnext_index = %u\n"
+            "\tnext_index = %lu\n"
             "\tnext_shapes = ",
             game_state->holding_piece,
             game_state->next_index
@@ -117,5 +117,33 @@ void game_state_hold_piece(GameState* game_state) {
         game_state->hold_piece = game_state->curr_piece;
         game_state->holding_piece = true;
         game_state_load_next_piece(game_state);
+    }
+}
+
+void game_state_move_piece(GameState* game_state, int y, int x) {
+    int top_left_y = y - game_state->curr_piece.n / 2; 
+    int top_left_x = x - game_state->curr_piece.n / 2;
+
+    bool blocked = false;
+    for (size_t i = 0; i < game_state->curr_piece.n; ++i) {
+        for (size_t j = 0; j < game_state->curr_piece.n; ++j) {
+            if (game_state->curr_piece.M[game_state->curr_piece.r][i][j] == 1) {
+                if (
+                    top_left_y + i < 0 || top_left_y + i > BOARD_H - 1 || 
+                    top_left_x + j < 0 || top_left_x + j > BOARD_W - 1 
+                ) {
+                    blocked = true;
+                    break;
+                }
+            }
+        }
+        if (blocked) {
+            break;
+        }
+    }
+
+    if (!blocked) {
+        piece_move(&game_state->curr_piece, y, x);
+    } else {
     }
 }
