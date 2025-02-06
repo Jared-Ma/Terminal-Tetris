@@ -4,7 +4,7 @@
 #include "logger.h"
 
 
-Piece piece_get(Shape shape, uint8_t y, uint8_t x) {
+Piece piece_get(Shape shape, int y, int x) {
     switch (shape) {
         case I: {
             Piece piece = {
@@ -245,7 +245,7 @@ Piece piece_get(Shape shape, uint8_t y, uint8_t x) {
     return (Piece){ 0 };
 }
 
-Piece* piece_init(Shape shape, uint8_t y, uint8_t x) {
+Piece* piece_init(Shape shape, int y, int x) {
     Piece* piece = malloc(sizeof(Piece));
     *piece = piece_get(shape, y, x);
     return piece;
@@ -263,7 +263,7 @@ void piece_debug_print(Piece* piece) {
     if (piece) {
         fprintf(
             debug_log,
-            "%p = {shape = %c, y = %u, x = %u, n = %u, l = %u, r = %u, M = ...}\n",
+            "%p = {shape = %c, y = %i, x = %i, n = %lu, l = %lu, r = %lu, M = ...}\n",
             piece,
             shape_to_char(piece->shape),
             piece->y,
@@ -277,7 +277,7 @@ void piece_debug_print(Piece* piece) {
     }
 }
 
-void piece_move(Piece* piece, uint8_t y, uint8_t x) {
+void piece_move(Piece* piece, int y, int x) {
     if (piece) {
         piece->x = x;
         piece->y = y;
