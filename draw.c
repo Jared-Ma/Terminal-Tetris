@@ -57,114 +57,64 @@ WINDOW* draw_controls_window(int height, int width, int y, int x) {
     return controls_window;
 }
 
+void clear_window(WINDOW* window) {
+    size_t internal_h = getmaxy(window) - 2;
+    size_t internal_w = getmaxx(window) - 2;
+    for (size_t i = 1; i <= internal_h; ++i) {
+        for (size_t j = 1; j <= internal_w; ++j) {
+            mvwprintw(window, i, j, " ");
+        }
+    }
+    wrefresh(window);
+}
+
 void draw_board_piece(WINDOW* window, Piece* piece) {
-    size_t start_y = piece->y - piece->n/2;
-    size_t start_x = 2*piece->x - piece->n;
+    size_t internal_h = getmaxy(window) - 2;
+    size_t internal_w = getmaxx(window) - 2;
+    int start_y = piece->y - piece->n/2 + 1;
+    int start_x = 2*(piece->x - piece->n/2) + 1;
+
     for (size_t i = 0; i < piece->n; ++i) {
-        char string[BOARD_WINDOW_W] = "";
         for (size_t j = 0; j < piece->n; ++j) {
-            if (piece->M[piece->r][i][j] == 1) {
-                string[2*j] = '[';
-                string[2*j+1] = ']';
-            } else {
-                string[2*j] = ' ';
-                string[2*j+1] = ' ';
-            }
-        }
-        mvwprintw(window, start_y + i, start_x, "%s", string);
-    }
-    wrefresh(window);
-}
-
-void draw_board_empty(WINDOW* window) {
-    for (size_t i = 1; i < getmaxy(window)-1; ++i) {
-        mvwprintw(window, i, 1, "                    ");
-    }
-    wrefresh(window);
-}
-
-void draw_next_piece(WINDOW* window, Piece* piece) {
-    clear_next_window(window);
-
-    size_t horizontal_padding = 2*(piece->n - piece->l);
-    size_t start_y = NEXT_WINDOW_H / 2 - piece->n/2;
-    size_t start_x = NEXT_WINDOW_W / 2 - piece->l - horizontal_padding;
-    size_t internal_h = NEXT_WINDOW_H - 2;
-    size_t internal_w = NEXT_WINDOW_W - 2;
-
-    for (size_t i = 0; i < piece->n; ++i) {
-        if (start_y + i <= internal_h) {
-            char string[NEXT_WINDOW_W] = "";
-            for (size_t j = 0; j < piece->n; ++j) {
-                if (start_x + 2*j <= internal_w) {
-                    if (piece->M[0][i][j] == 1) {
-                        string[2*j] = '[';
-                        string[2*j+1] = ']';
-                    } else {
-                        string[2*j] = ' ';
-                        string[2*j+1] = ' ';
-                    }
+            if (
+                start_y + i >= 1 && start_y + i <= internal_h &&
+                start_x + 2*j >= 1 && start_x + 2*j <= internal_w
+            ) {
+                if (piece->M[piece->r][i][j] == 1) {
+                    mvwprintw(window, start_y + i, start_x + 2*j, "[]");
+                } else {
+                    mvwprintw(window, start_y + i, start_x + 2*j, "  ");
                 }
             }
-            mvwprintw(window, start_y + i, start_x, "%s", string);
         }
     }
 
     wrefresh(window);
 }
 
-void clear_next_window(WINDOW* window) {
-    size_t internal_h = NEXT_WINDOW_H - 2;
-    size_t internal_w = NEXT_WINDOW_W - 2;
-    for (size_t i = 0; i < internal_h; ++i) {
-        char string[NEXT_WINDOW_W] = "";
-        for (size_t j = 0; j < internal_w; ++j) {
-            string[j] = ' ';
-        }
-        mvwprintw(window, i+1, 1, "%s", string);
-    }
-    wrefresh(window);
-}
+void draw_piece_centered(WINDOW* window, Piece* piece) {
+    clear_window(window);
 
-void draw_hold_piece(WINDOW* window, Piece* piece) {
-    clear_hold_window(window);
-
+    size_t internal_h = getmaxy(window) - 2;
+    size_t internal_w = getmaxx(window) - 2;
     size_t horizontal_padding = 2*(piece->n - piece->l);
-    size_t start_y = HOLD_WINDOW_H / 2 - piece->n/2;
-    size_t start_x = HOLD_WINDOW_W / 2 - piece->l - horizontal_padding;
-    size_t internal_h = HOLD_WINDOW_H - 2;
-    size_t internal_w = HOLD_WINDOW_W - 2;
+    size_t start_y = getmaxy(window) / 2 - piece->n/2;
+    size_t start_x = getmaxx(window) / 2 - piece->l - horizontal_padding;
 
     for (size_t i = 0; i < piece->n; ++i) {
-        if (start_y + i <= internal_h) {
-            char string[HOLD_WINDOW_W] = "";
-            for (size_t j = 0; j < piece->n; ++j) {
-                if (start_x + 2*j <= internal_w) {
-                    if (piece->M[0][i][j] == 1) {
-                        string[2*j] = '[';
-                        string[2*j+1] = ']';
-                    } else {
-                        string[2*j] = ' ';
-                        string[2*j+1] = ' ';
-                    }
+        for (size_t j = 0; j < piece->n; ++j) {
+            if (
+                start_y + i >= 1 && start_y + i <= internal_h &&
+                start_x + 2*j >= 1 && start_x + 2*j <= internal_w
+            ) {
+                if (piece->M[0][i][j] == 1) {
+                    mvwprintw(window, start_y + i, start_x + 2*j, "[]");
+                } else {
+                    mvwprintw(window, start_y + i, start_x + 2*j, "  ");
                 }
             }
-            mvwprintw(window, start_y + i, start_x, "%s", string);
         }
     }
 
-    wrefresh(window);
-}
-
-void clear_hold_window(WINDOW* window) {
-    size_t internal_h = HOLD_WINDOW_H - 2;
-    size_t internal_w = HOLD_WINDOW_W - 2;
-    for (size_t i = 0; i < internal_h; ++i) {
-        char string[HOLD_WINDOW_W] = "";
-        for (size_t j = 0; j < internal_w; ++j) {
-            string[j] = ' ';
-        }
-        mvwprintw(window, i+1, 1, "%s", string);
-    }
     wrefresh(window);
 }

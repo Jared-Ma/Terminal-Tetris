@@ -25,16 +25,10 @@ WINDOW *draw_next_window(int height, int width, int y, int x);
 
 WINDOW *draw_controls_window(int height, int width, int y, int x);
 
+void clear_window(WINDOW* window);
+
 void draw_board_piece(WINDOW* window, Piece* piece);
 
-void draw_board_empty(WINDOW* window);
-
-void draw_next_piece(WINDOW* window, Piece* piece);
-
-void clear_next_window(WINDOW* window);
-
-void draw_hold_piece(WINDOW* window, Piece* piece);
-
-void clear_hold_window(WINDOW* window);
+void draw_piece_centered(WINDOW* window, Piece* piece);
 
 #endif
