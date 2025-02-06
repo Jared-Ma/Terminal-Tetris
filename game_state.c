@@ -144,6 +144,18 @@ void game_state_move_piece(GameState* game_state, int y, int x) {
 
     if (!blocked) {
         piece_move(&game_state->curr_piece, y, x);
-    } else {
+    } 
+}
+
+void game_state_place_piece(GameState* game_state) {
+    int top_left_y = game_state->curr_piece.y - game_state->curr_piece.n / 2; 
+    int top_left_x = game_state->curr_piece.x - game_state->curr_piece.n / 2;
+
+    for (size_t i = 0; i < game_state->curr_piece.n; ++i) {
+        for (size_t j = 0; j < game_state->curr_piece.n; ++j) {
+            if (game_state->curr_piece.M[game_state->curr_piece.r][i][j] == 1) {
+                game_state->board[top_left_y + i][top_left_x + j] = 1;
+            }
+        }
     }
 }

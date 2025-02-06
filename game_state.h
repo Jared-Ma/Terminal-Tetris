@@ -35,5 +35,7 @@ void game_state_hold_piece(GameState* game_state);
 
 void game_state_move_piece(GameState* game_state, int y, int x);
 
+void game_state_place_piece(GameState* game_state);
+
 #endif
 

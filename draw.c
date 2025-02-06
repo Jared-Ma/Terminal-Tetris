@@ -60,31 +60,40 @@ WINDOW* draw_controls_window(int height, int width, int y, int x) {
 void clear_window(WINDOW* window) {
     size_t internal_h = getmaxy(window) - 2;
     size_t internal_w = getmaxx(window) - 2;
+    
     for (size_t i = 1; i <= internal_h; ++i) {
         for (size_t j = 1; j <= internal_w; ++j) {
             mvwprintw(window, i, j, " ");
         }
     }
+
     wrefresh(window);
 }
 
-void draw_board_piece(WINDOW* window, Piece* piece) {
-    size_t internal_h = getmaxy(window) - 2;
-    size_t internal_w = getmaxx(window) - 2;
-    int start_y = piece->y - piece->n/2 + 1;
-    int start_x = 2*(piece->x - piece->n/2) + 1;
+void draw_board(WINDOW* window, GameState* game_state) {
+    clear_window(window);
 
-    for (size_t i = 0; i < piece->n; ++i) {
-        for (size_t j = 0; j < piece->n; ++j) {
-            if (
-                start_y + i >= 1 && start_y + i <= internal_h &&
-                start_x + 2*j >= 1 && start_x + 2*j <= internal_w
-            ) {
-                if (piece->M[piece->r][i][j] == 1) {
-                    mvwprintw(window, start_y + i, start_x + 2*j, "[]");
-                } else {
-                    mvwprintw(window, start_y + i, start_x + 2*j, "  ");
-                }
+    for (size_t i = 0; i < BOARD_H; ++i) {
+        for (size_t j = 0; j < BOARD_W; ++j) {
+            if (game_state->board[i][j] == 1) {
+                mvwprintw(window, i+1, 2*j+1, "[]");
+            } else if (game_state->curr_piece.M[game_state->curr_piece.y][j]) {
+                mvwprintw(window, i+1, 2*j+1, "  ");
+            }
+        }
+    }
+
+    wrefresh(window);
+}
+
+void draw_curr_piece(WINDOW* window, GameState* game_state) {
+    int start_y = game_state->curr_piece.y - game_state->curr_piece.n/2 + 1;
+    int start_x = 2*(game_state->curr_piece.x - game_state->curr_piece.n/2) + 1;
+
+    for (size_t i = 0; i < game_state->curr_piece.n; ++i) {
+        for (size_t j = 0; j < game_state->curr_piece.n; ++j) {
+            if (game_state->curr_piece.M[game_state->curr_piece.r][i][j] == 1) {
+                mvwprintw(window, start_y + i, start_x + 2*j, "[]");
             }
         }
     }
@@ -95,23 +104,14 @@ void draw_board_piece(WINDOW* window, Piece* piece) {
 void draw_piece_centered(WINDOW* window, Piece* piece) {
     clear_window(window);
 
-    size_t internal_h = getmaxy(window) - 2;
-    size_t internal_w = getmaxx(window) - 2;
     size_t horizontal_padding = 2*(piece->n - piece->l);
     size_t start_y = getmaxy(window) / 2 - piece->n/2;
     size_t start_x = getmaxx(window) / 2 - piece->l - horizontal_padding;
 
     for (size_t i = 0; i < piece->n; ++i) {
         for (size_t j = 0; j < piece->n; ++j) {
-            if (
-                start_y + i >= 1 && start_y + i <= internal_h &&
-                start_x + 2*j >= 1 && start_x + 2*j <= internal_w
-            ) {
-                if (piece->M[0][i][j] == 1) {
-                    mvwprintw(window, start_y + i, start_x + 2*j, "[]");
-                } else {
-                    mvwprintw(window, start_y + i, start_x + 2*j, "  ");
-                }
+            if (piece->M[0][i][j] == 1) {
+                mvwprintw(window, start_y + i, start_x + 2*j, "[]");
             }
         }
     }
