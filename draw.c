@@ -1,6 +1,9 @@
 #include <ncurses.h>
+#include <string.h>
+#include "game_state.h"
 #include "draw.h"
 #include "piece.h"
+#include "logger.h"
 
 
 WINDOW* draw_hold_window(int height, int width, int y, int x) {
@@ -27,14 +30,14 @@ WINDOW* draw_stats_window(int height, int width, int y, int x) {
     return stats_window;
 }
 
-WINDOW* draw_play_window(int height, int width, int y, int x) {
-    WINDOW* play_window = newwin(height, width, y, x);
-    box(play_window, 0, 0);
+WINDOW* draw_board_window(int height, int width, int y, int x) {
+    WINDOW* board_window = newwin(height, width, y, x);
+    box(board_window, 0, 0);
     for (size_t i = 1; i < height-1; ++i) {
-        mvwprintw(play_window, i, 1, " . . . . . . . . . .");
+        mvwprintw(board_window, i, 1, " . . . . . . . . . .");
     }
-    wrefresh(play_window);
-    return play_window;
+    wrefresh(board_window);
+    return board_window;
 }
 
 WINDOW* draw_next_window(int height, int width, int y, int x) {
@@ -61,11 +64,11 @@ WINDOW* draw_controls_window(int height, int width, int y, int x) {
     return controls_window;
 }
 
-void draw_piece(WINDOW* window, Piece* piece) {
+void draw_board_piece(WINDOW* window, Piece* piece) {
     size_t start_y = piece->y - piece->n/2;
     size_t start_x = 2*piece->x - piece->n;
     for (size_t i = 0; i < piece->n; ++i) {
-        char string[10] = "";
+        char string[BOARD_W] = "";
         for (size_t j = 0; j < piece->n; ++j) {
             if (piece->M[piece->r][i][j] == 1) {
                 string[2*j] = '[';
@@ -80,9 +83,50 @@ void draw_piece(WINDOW* window, Piece* piece) {
     wrefresh(window);
 }
 
-void clear_play_window(WINDOW* window) {
+void draw_board_empty(WINDOW* window) {
     for (size_t i = 1; i < getmaxy(window)-1; ++i) {
         mvwprintw(window, i, 1, " . . . . . . . . . .");
+    }
+    wrefresh(window);
+}
+
+void draw_next_piece(WINDOW* window, Piece* piece) {
+    size_t horizontal_padding = 2*(piece->n - piece->l);
+    size_t start_y = NEXT_WINDOW_H / 2 - piece->n/2;
+    size_t start_x = NEXT_WINDOW_W / 2 - piece->l - horizontal_padding;
+    size_t internal_h = NEXT_WINDOW_H - 2;
+    size_t internal_w = NEXT_WINDOW_W - 2;
+
+    for (size_t i = 0; i < piece->n; ++i) {
+        if (start_y + i <= internal_h) {
+            char string[NEXT_WINDOW_W] = "";
+            for (size_t j = 0; j < piece->n; ++j) {
+                if (start_x + 2*j <= internal_w) {
+                    if (piece->M[0][i][j] == 1) {
+                        string[2*j] = '[';
+                        string[2*j+1] = ']';
+                    } else {
+                        string[2*j] = ' ';
+                        string[2*j+1] = ' ';
+                    }
+                }
+            }
+            mvwprintw(window, start_y + i, start_x, "%s", string);
+        }
+    }
+
+    wrefresh(window);
+}
+
+void draw_next_window_empty(WINDOW* window) {
+    size_t internal_h = NEXT_WINDOW_H - 2;
+    size_t internal_w = NEXT_WINDOW_W - 2;
+    for (size_t i = 0; i < internal_h; ++i) {
+        char string[NEXT_WINDOW_W] = "";
+        for (size_t j = 0; j < internal_w; ++j) {
+            string[j] = ' ';
+        }
+        mvwprintw(window, i+1, 1, "%s", string);
     }
     wrefresh(window);
 }

@@ -100,5 +100,5 @@ void game_state_load_next_piece(GameState* game_state) {
         game_state->next_index = game_state->next_index % NUM_SHAPES;
         game_state_gen_next_shapes(game_state);
     }
-    game_state->next_piece = piece_get(game_state->next_shapes[game_state->next_index], 3, 3);
+    game_state->next_piece = piece_get(game_state->next_shapes[game_state->next_index], 3, 4);
 }
