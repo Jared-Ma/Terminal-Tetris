@@ -130,7 +130,8 @@ void game_state_move_piece(GameState* game_state, int y, int x) {
             if (game_state->curr_piece.M[game_state->curr_piece.r][i][j] == 1) {
                 if (
                     top_left_y + i < 0 || top_left_y + i > BOARD_H - 1 || 
-                    top_left_x + j < 0 || top_left_x + j > BOARD_W - 1 
+                    top_left_x + j < 0 || top_left_x + j > BOARD_W - 1 ||
+                    game_state->board[top_left_y + i][top_left_x + j] == 1
                 ) {
                     blocked = true;
                     break;
@@ -144,6 +145,35 @@ void game_state_move_piece(GameState* game_state, int y, int x) {
 
     if (!blocked) {
         piece_move(&game_state->curr_piece, y, x);
+    } 
+}
+
+void game_state_rotate_piece(GameState* game_state, Rotation rotation) {
+    int top_left_y = game_state->curr_piece.y - game_state->curr_piece.n / 2; 
+    int top_left_x = game_state->curr_piece.x - game_state->curr_piece.n / 2;
+    size_t new_r_index = update_r_index(game_state->curr_piece.r, rotation);
+
+    bool blocked = false;
+    for (size_t i = 0; i < game_state->curr_piece.n; ++i) {
+        for (size_t j = 0; j < game_state->curr_piece.n; ++j) {
+            if (game_state->curr_piece.M[new_r_index][i][j] == 1) {
+                if (
+                    top_left_y + i < 0 || top_left_y + i > BOARD_H - 1 || 
+                    top_left_x + j < 0 || top_left_x + j > BOARD_W - 1 ||
+                    game_state->board[top_left_y + i][top_left_x + j] == 1
+                ) {
+                    blocked = true;
+                    break;
+                }
+            }
+        }
+        if (blocked) {
+            break;
+        }
+    }
+
+    if (!blocked) {
+        piece_rotate(&game_state->curr_piece, rotation);
     } 
 }
 

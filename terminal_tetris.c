@@ -34,12 +34,12 @@ int main(int argc, char* argv[argc+1]) {
         int input = getch();
         switch (input) {
             case 'z':
-                piece_rotate_right(&game_state->curr_piece);
+                game_state_rotate_piece(game_state, RIGHT);
                 draw_board(board_window, game_state);
                 draw_curr_piece(board_window, game_state);
                 break;
             case 'x':
-                piece_rotate_right(&game_state->curr_piece);
+                game_state_rotate_piece(game_state, LEFT);
                 draw_board(board_window, game_state);
                 draw_curr_piece(board_window, game_state);
                 break;

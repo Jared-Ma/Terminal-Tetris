@@ -284,15 +284,16 @@ void piece_move(Piece* piece, int y, int x) {
     }
 }
 
-void piece_rotate_right(Piece* piece) {
-    if (piece) {
-        piece->r = (piece->r + 1) % R_MAX;
+size_t update_r_index(size_t r, Rotation rotation) {
+    if (rotation == RIGHT) {
+        return (r + 1) % R_MAX;
     }
+    return (r > 0) ? r - 1 : R_MAX - 1;
 }
 
-void piece_rotate_left(Piece* piece) {
+void piece_rotate(Piece* piece, Rotation rotation) {
     if (piece) {
-        piece->r = (piece->r > 0) ? piece->r - 1 : R_MAX - 1;    
+        piece->r = update_r_index(piece->r, rotation);
     }
 }
 

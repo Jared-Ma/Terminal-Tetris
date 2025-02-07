@@ -20,6 +20,13 @@ enum Shape {
 
 typedef enum Shape Shape;
 
+enum Rotation {
+    RIGHT,
+    LEFT
+};
+
+typedef enum Rotation Rotation;
+
 struct Piece {
     Shape shape;
     int y;
@@ -42,9 +49,9 @@ void piece_debug_print(Piece* piece);
 
 void piece_move(Piece* piece, int y, int x);
 
-void piece_rotate_right(Piece* piece);
+size_t update_r_index(size_t r, Rotation rotation);
 
-void piece_rotate_left(Piece* piece);
+void piece_rotate(Piece* piece, Rotation rotation);
 
 char shape_to_char(Shape shape);
 
