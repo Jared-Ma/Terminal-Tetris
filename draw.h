@@ -27,7 +27,7 @@ WINDOW *draw_controls_window(int height, int width, int y, int x);
 
 void clear_window(WINDOW* window);
 
-void draw_board(WINDOW *window, GameState *game_state);
+void draw_board_stack(WINDOW *window, GameState *game_state);
 
 void draw_curr_piece(WINDOW* window, GameState *game_state);
 

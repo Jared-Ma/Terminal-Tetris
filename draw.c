@@ -70,7 +70,7 @@ void clear_window(WINDOW* window) {
     wrefresh(window);
 }
 
-void draw_board(WINDOW* window, GameState* game_state) {
+void draw_board_stack(WINDOW* window, GameState* game_state) {
     clear_window(window);
 
     for (size_t i = 0; i < BOARD_H; ++i) {
