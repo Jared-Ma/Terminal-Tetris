@@ -60,7 +60,7 @@ WINDOW* draw_controls_window(int height, int width, int y, int x) {
 void clear_window(WINDOW* window) {
     size_t internal_h = getmaxy(window) - 2;
     size_t internal_w = getmaxx(window) - 2;
-    
+
     for (size_t i = 1; i <= internal_h; ++i) {
         for (size_t j = 1; j <= internal_w; ++j) {
             mvwprintw(window, i, j, " ");
