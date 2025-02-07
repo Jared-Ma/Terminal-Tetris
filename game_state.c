@@ -6,6 +6,28 @@
 #include "logger.h"
 
 
+const int SRS_TABLE[SRS_NUM_ROTATIONS][SRS_NUM_TESTS][SRS_NUM_COORDS] = {
+    {{0, 0}, {-1, 0}, {-1, +1}, {0, -2}, {-1, -2}},
+    {{0, 0}, {+1, 0}, {+1, -1}, {0, +2}, {+1, +2}},
+    {{0, 0}, {+1, 0}, {+1, -1}, {0, +2}, {+1, +2}},
+    {{0, 0}, {-1 ,0}, {-1, +1}, {0, -2}, {-1, -2}},
+    {{0, 0}, {+1, 0}, {+1, +1}, {0, -2}, {+1, -2}},
+    {{0, 0}, {-1, 0}, {-1, -1}, {0, +2}, {-1, +2}},
+    {{0, 0}, {-1, 0}, {-1, -1}, {0, +2}, {-1, +2}},
+    {{0, 0}, {+1, 0}, {+1, +1}, {0, -2}, {+1, -2}}
+};
+
+const int SRS_TABLE_I[SRS_NUM_ROTATIONS][SRS_NUM_TESTS][SRS_NUM_COORDS] = {
+    {{0, 0}, {-2, 0}, {+1, 0}, {-2, -1}, {+1, +2}},
+    {{0, 0}, {+2, 0}, {-1, 0}, {+2, +1}, {-1, -2}},
+    {{0, 0}, {-1, 0}, {+2, 0}, {-1, +2}, {+2, -1}},
+    {{0, 0}, {+1 ,0}, {-2, 0}, {+1, -2}, {-2, +1}},
+    {{0, 0}, {+2, 0}, {-1, 0}, {+2, +1}, {-1, -2}},
+    {{0, 0}, {-2, 0}, {+1, 0}, {-2, -1}, {+1, +2}},
+    {{0, 0}, {+1, 0}, {-2, 0}, {+1, -2}, {-2, +1}},
+    {{0, 0}, {-1, 0}, {+2, 0}, {-1, +2}, {+2, -1}}
+};
+
 GameState game_state_get() {
     GameState game_state = {
         .curr_piece = { 0 },
@@ -15,6 +37,28 @@ GameState game_state_get() {
         .next_index = 0,
         .next_shapes = { 0 },
         .board = {{ 0 }}
+        // .board = {
+        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, 
+        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, 
+        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, 
+        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, 
+        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, 
+        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, 
+        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, 
+        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, 
+        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, 
+        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, 
+        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, 
+        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, 
+        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, 
+        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, 
+        //     {0, 0, 0, 0, 0, 0, 0, 0, 1, 1}, 
+        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 1}, 
+        //     {1, 1, 1, 1, 1, 1, 1, 1, 0, 1}, 
+        //     {1, 1, 1, 1, 1, 1, 1, 0, 0, 1}, 
+        //     {1, 1, 1, 1, 1, 1, 1, 1, 0, 1}, 
+        //     {1, 1, 1, 1, 1, 1, 1, 0, 1, 1} 
+        // }
     };
     return game_state;
 }
@@ -146,6 +190,39 @@ void game_state_move_piece(GameState* game_state, int y, int x) {
     if (!blocked) {
         piece_move(&game_state->curr_piece, y, x);
     } 
+}
+
+void game_state_rotate_piece_srs(GameState* game_state, Rotation rotation) {
+    Piece curr_piece_copy = game_state->curr_piece;
+
+    size_t r_index;
+    if (rotation == RIGHT) {
+        r_index = 2 * game_state->curr_piece.r;
+    } else {
+        r_index = SRS_NUM_ROTATIONS - 1;
+        r_index -= (game_state->curr_piece.r > 0) ? 2*(R_MAX - game_state->curr_piece.r) : 0;
+    }
+
+    for (size_t i = 0; i < SRS_NUM_TESTS; ++i) {
+        if (game_state->curr_piece.shape == I) {
+            piece_move(
+                &game_state->curr_piece, 
+                game_state->curr_piece.y - SRS_TABLE_I[r_index][i][1], 
+                game_state->curr_piece.x + SRS_TABLE_I[r_index][i][0]
+            );
+        } else {
+            piece_move(
+                &game_state->curr_piece, 
+                game_state->curr_piece.y - SRS_TABLE[r_index][i][1], 
+                game_state->curr_piece.x + SRS_TABLE[r_index][i][0]
+            );
+        }
+        game_state_rotate_piece(game_state, rotation);
+        if (game_state->curr_piece.r != curr_piece_copy.r) {
+            return;
+        }
+        game_state->curr_piece = curr_piece_copy;
+    }
 }
 
 void game_state_rotate_piece(GameState* game_state, Rotation rotation) {

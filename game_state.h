@@ -6,6 +6,12 @@
 #define BOARD_H 20 
 #define BOARD_W 10
 
+#define SRS_NUM_ROTATIONS 8
+#define SRS_NUM_TESTS 5
+#define SRS_NUM_COORDS 2
+
+// const int SRS_TABLE[SRS_NUM_ROTATIONS][SRS_NUM_TESTS][SRS_NUM_COORDS];
+// const int SRS_TABLE_I[SRS_NUM_ROTATIONS][SRS_NUM_TESTS][SRS_NUM_COORDS];
 
 struct GameState {
     Piece curr_piece;
@@ -25,6 +31,8 @@ GameState* game_state_init();
 
 void game_state_destroy(GameState* game_state);
 
+void debug_print_table();
+
 void game_state_debug_print(GameState* game_state);
 
 void game_state_gen_next_shapes(GameState* game_state);
@@ -34,6 +42,8 @@ void game_state_load_next_piece(GameState* game_state);
 void game_state_hold_piece(GameState* game_state);
 
 void game_state_move_piece(GameState* game_state, int y, int x);
+
+void game_state_rotate_piece_srs(GameState *game_state, Rotation rotation);
 
 void game_state_rotate_piece(GameState* game_state, Rotation rotation);
 
