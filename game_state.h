@@ -49,5 +49,11 @@ void game_state_rotate_piece(GameState* game_state, Rotation rotation);
 
 void game_state_place_piece(GameState* game_state);
 
+void game_state_apply_gravity(GameState* game_state, size_t row, size_t num_lines);
+
+void game_state_clear_line(GameState* game_state, size_t row);
+
+void game_state_clear_lines(GameState* game_state);
+
 #endif
 

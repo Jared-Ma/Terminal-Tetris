@@ -26,7 +26,6 @@ int main(int argc, char* argv[argc+1]) {
     WINDOW* controls_window = draw_controls_window(CONTROLS_WINDOW_H, CONTROLS_WINDOW_W, 6, 36);
 
     GameState* game_state = game_state_init();
-    // game_state->curr_piece = piece_get(T, 15, 7);
 
     draw_piece_centered(next_window, &game_state->next_piece);
     draw_board_stack(board_window, game_state);
@@ -68,6 +67,7 @@ int main(int argc, char* argv[argc+1]) {
                 break;
             case ' ':
                 game_state_place_piece(game_state);
+                game_state_clear_lines(game_state);
                 game_state_load_next_piece(game_state);
                 draw_board_stack(board_window, game_state);
                 draw_curr_piece(board_window, game_state);

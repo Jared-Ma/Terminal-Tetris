@@ -37,28 +37,6 @@ GameState game_state_get() {
         .next_index = 0,
         .next_shapes = { 0 },
         .board = {{ 0 }}
-        // .board = {
-        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, 
-        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, 
-        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, 
-        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, 
-        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, 
-        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, 
-        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, 
-        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, 
-        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, 
-        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, 
-        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, 
-        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, 
-        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, 
-        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, 
-        //     {0, 0, 0, 0, 0, 0, 0, 0, 1, 1}, 
-        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 1}, 
-        //     {1, 1, 1, 1, 1, 1, 1, 1, 0, 1}, 
-        //     {1, 1, 1, 1, 1, 1, 1, 0, 0, 1}, 
-        //     {1, 1, 1, 1, 1, 1, 1, 1, 0, 1}, 
-        //     {1, 1, 1, 1, 1, 1, 1, 0, 1, 1} 
-        // }
     };
     return game_state;
 }
@@ -264,5 +242,44 @@ void game_state_place_piece(GameState* game_state) {
                 game_state->board[top_left_y + i][top_left_x + j] = 1;
             }
         }
+    }
+}
+
+void game_state_apply_gravity(GameState* game_state, size_t row, size_t num_lines) {
+    for (size_t i = row; i >= num_lines; --i) {
+        for (size_t j = 0; j < BOARD_W; ++j) {
+            game_state->board[i][j] = game_state->board[i - num_lines][j];
+            game_state->board[i - num_lines][j] = 0;
+        }
+    }
+}
+
+void game_state_clear_line(GameState* game_state, size_t row) {
+    for (size_t i = 0; i < BOARD_W; ++i) {
+        game_state->board[row][i] = 0;
+    }
+}
+
+void game_state_clear_lines(GameState* game_state) {
+    size_t num_lines = 0;
+    for (size_t i = 0; i < BOARD_H; ++i) {
+        bool line = true;
+        for (size_t j = 0; j < BOARD_W; ++j) {
+            if (game_state->board[i][j] == 0) {
+                line = false;
+                break;
+            }
+        }
+        if (line) {
+            game_state_clear_line(game_state, i);
+            num_lines++;
+        } else if (num_lines > 0) {
+            game_state_apply_gravity(game_state, i-1, num_lines);
+            num_lines = 0;
+        }
+    }
+
+    if (num_lines > 0) {
+        game_state_apply_gravity(game_state, BOARD_H - 1, num_lines);
     }
 }
