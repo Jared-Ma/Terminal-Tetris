@@ -45,7 +45,7 @@ GameState* game_state_init() {
     GameState* game_state = malloc(sizeof(GameState));
     *game_state = game_state_get();
     game_state_gen_next_shapes(game_state);
-    game_state->next_piece = piece_get(game_state->next_shapes[game_state->next_index], 2, 2);
+    game_state->next_piece = piece_get(game_state->next_shapes[game_state->next_index], 1, 4);
     game_state_load_next_piece(game_state);
     return game_state;
 }
@@ -126,7 +126,7 @@ void game_state_load_next_piece(GameState* game_state) {
         game_state->next_index = game_state->next_index % NUM_SHAPES;
         game_state_gen_next_shapes(game_state);
     }
-    game_state->next_piece = piece_get(game_state->next_shapes[game_state->next_index], 3, 4);
+    game_state->next_piece = piece_get(game_state->next_shapes[game_state->next_index], 1, 4);
 }
 
 void game_state_hold_piece(GameState* game_state) {
@@ -282,4 +282,15 @@ void game_state_clear_lines(GameState* game_state) {
     if (num_lines > 0) {
         game_state_apply_gravity(game_state, BOARD_H - 1, num_lines);
     }
+}
+
+void game_state_drop_piece(GameState* game_state) {
+    for (size_t y = game_state->curr_piece.y + 1; y < BOARD_H; ++y) {
+        Piece prev_piece = game_state->curr_piece;
+        game_state_move_piece(game_state, y, game_state->curr_piece.x);
+        if (game_state->curr_piece.y == prev_piece.y) {
+            break;
+        }
+    }
+    game_state_place_piece(game_state);
 }

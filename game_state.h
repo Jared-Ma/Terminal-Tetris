@@ -55,5 +55,7 @@ void game_state_clear_line(GameState* game_state, size_t row);
 
 void game_state_clear_lines(GameState* game_state);
 
+void game_state_drop_piece(GameState* game_state);
+
 #endif
 

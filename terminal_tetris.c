@@ -66,7 +66,7 @@ int main(int argc, char* argv[argc+1]) {
                 draw_curr_piece(board_window, game_state);
                 break;
             case ' ':
-                game_state_place_piece(game_state);
+                game_state_drop_piece(game_state);
                 game_state_clear_lines(game_state);
                 game_state_load_next_piece(game_state);
                 draw_board_stack(board_window, game_state);
