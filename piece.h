@@ -49,7 +49,7 @@ void piece_debug_print(Piece* piece);
 
 void piece_move(Piece* piece, int y, int x);
 
-size_t update_r_index(size_t r, Rotation rotation);
+size_t compute_r_index(size_t r, Rotation rotation);
 
 void piece_rotate(Piece* piece, Rotation rotation);
 

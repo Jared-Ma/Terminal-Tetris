@@ -284,7 +284,7 @@ void piece_move(Piece* piece, int y, int x) {
     }
 }
 
-size_t update_r_index(size_t r, Rotation rotation) {
+size_t compute_r_index(size_t r, Rotation rotation) {
     if (rotation == RIGHT) {
         return (r + 1) % R_MAX;
     }
@@ -293,7 +293,7 @@ size_t update_r_index(size_t r, Rotation rotation) {
 
 void piece_rotate(Piece* piece, Rotation rotation) {
     if (piece) {
-        piece->r = update_r_index(piece->r, rotation);
+        piece->r = compute_r_index(piece->r, rotation);
     }
 }
 
