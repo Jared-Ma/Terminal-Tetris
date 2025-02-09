@@ -298,7 +298,4 @@ void game_state_update_ghost_piece(GameState* game_state) {
             return;
         }
     }
-
-    piece_debug_print(&game_state->curr_piece);
-    piece_debug_print(&game_state->ghost_piece);
 }
