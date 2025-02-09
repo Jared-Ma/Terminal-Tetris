@@ -10,8 +10,6 @@
 #define SRS_NUM_TESTS 5
 #define SRS_NUM_COORDS 2
 
-// const int SRS_TABLE[SRS_NUM_ROTATIONS][SRS_NUM_TESTS][SRS_NUM_COORDS];
-// const int SRS_TABLE_I[SRS_NUM_ROTATIONS][SRS_NUM_TESTS][SRS_NUM_COORDS];
 
 struct GameState {
     Piece curr_piece;
@@ -63,4 +61,3 @@ void game_state_move_ghost_piece(GameState* game_state, int y, int x);
 void game_state_update_ghost_piece(GameState* game_state);
 
 #endif
-

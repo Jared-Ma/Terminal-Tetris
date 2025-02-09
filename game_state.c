@@ -28,6 +28,17 @@ const int SRS_TABLE_I[SRS_NUM_ROTATIONS][SRS_NUM_TESTS][SRS_NUM_COORDS] = {
     {{0, 0}, {-1, 0}, {+2, 0}, {-1, +2}, {+2, -1}}
 };
 
+const int SRS_TABLE_O[SRS_NUM_ROTATIONS][SRS_NUM_TESTS][SRS_NUM_COORDS] = {
+    {{0, +1}, {0, 0}, {0, 0}, {0, 0}, {0, 0}},
+    {{0, -1}, {0, 0}, {0, 0}, {0, 0}, {0, 0}},
+    {{+1, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}},
+    {{-1, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}},
+    {{0, -1}, {0, 0}, {0, 0}, {0, 0}, {0, 0}},
+    {{0, +1}, {0, 0}, {0, 0}, {0, 0}, {0, 0}},
+    {{-1, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}},
+    {{+1, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}}
+};
+
 GameState game_state_get() {
     GameState game_state = {
         .curr_piece = { 0 },
@@ -46,7 +57,8 @@ GameState* game_state_init() {
     GameState* game_state = malloc(sizeof(GameState));
     *game_state = game_state_get();
     game_state_gen_next_shapes(game_state);
-    game_state->next_piece = piece_get(game_state->next_shapes[game_state->next_index], 1, 4);
+    game_state->next_piece = piece_get(game_state->next_shapes[game_state->next_index], 1, (BOARD_W-1)/2);
+    piece_debug_print(&game_state->next_piece);
     game_state_load_next_piece(game_state);
     return game_state;
 }
@@ -127,7 +139,8 @@ void game_state_load_next_piece(GameState* game_state) {
         game_state->next_index = game_state->next_index % NUM_SHAPES;
         game_state_gen_next_shapes(game_state);
     }
-    game_state->next_piece = piece_get(game_state->next_shapes[game_state->next_index], 1, 4);
+    game_state->next_piece = piece_get(game_state->next_shapes[game_state->next_index], 1, (BOARD_W-1)/2);
+    piece_debug_print(&game_state->next_piece);
     game_state_update_ghost_piece(game_state);
 }
 
@@ -192,6 +205,12 @@ void game_state_rotate_curr_piece_srs(GameState* game_state, Rotation rotation) 
                 &game_state->curr_piece, 
                 game_state->curr_piece.y - SRS_TABLE_I[r_index][i][1], 
                 game_state->curr_piece.x + SRS_TABLE_I[r_index][i][0]
+            );
+        } else if (game_state->curr_piece.shape == O) {
+            piece_move(
+                &game_state->curr_piece, 
+                game_state->curr_piece.y - SRS_TABLE_O[r_index][i][1], 
+                game_state->curr_piece.x + SRS_TABLE_O[r_index][i][0]
             );
         } else {
             piece_move(
