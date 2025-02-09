@@ -33,6 +33,7 @@ GameState game_state_get() {
         .curr_piece = { 0 },
         .hold_piece = { 0 },
         .next_piece = { 0 },
+        .ghost_piece = { 0 },
         .holding_piece = false,
         .next_index = 0,
         .next_shapes = { 0 },
@@ -127,6 +128,7 @@ void game_state_load_next_piece(GameState* game_state) {
         game_state_gen_next_shapes(game_state);
     }
     game_state->next_piece = piece_get(game_state->next_shapes[game_state->next_index], 1, 4);
+    game_state_update_ghost_piece(game_state);
 }
 
 void game_state_hold_piece(GameState* game_state) {
@@ -135,6 +137,7 @@ void game_state_hold_piece(GameState* game_state) {
         tmp = game_state->curr_piece;
         game_state->curr_piece = game_state->hold_piece;
         game_state->hold_piece = tmp;
+        game_state_update_ghost_piece(game_state);
     } else {
         game_state->hold_piece = game_state->curr_piece;
         game_state->holding_piece = true;
@@ -142,35 +145,37 @@ void game_state_hold_piece(GameState* game_state) {
     }
 }
 
-void game_state_move_piece(GameState* game_state, int y, int x) {
-    int top_left_y = y - game_state->curr_piece.n / 2; 
-    int top_left_x = x - game_state->curr_piece.n / 2;
+bool game_state_check_collision(GameState* game_state, Piece piece) {
+    int top_left_y = piece.y - piece.n / 2; 
+    int top_left_x = piece.x - piece.n / 2;
 
-    bool blocked = false;
-    for (size_t i = 0; i < game_state->curr_piece.n; ++i) {
-        for (size_t j = 0; j < game_state->curr_piece.n; ++j) {
-            if (game_state->curr_piece.M[game_state->curr_piece.r][i][j] == 1) {
+    for (size_t i = 0; i < piece.n; ++i) {
+        for (size_t j = 0; j < piece.n; ++j) {
+            if (piece.M[piece.r][i][j] == 1) {
                 if (
                     top_left_y + i < 0 || top_left_y + i > BOARD_H - 1 || 
                     top_left_x + j < 0 || top_left_x + j > BOARD_W - 1 ||
                     game_state->board[top_left_y + i][top_left_x + j] == 1
                 ) {
-                    blocked = true;
-                    break;
+                    return true;
                 }
             }
         }
-        if (blocked) {
-            break;
-        }
     }
+    return false;
+}
 
-    if (!blocked) {
+void game_state_move_curr_piece(GameState* game_state, int y, int x) {
+    Piece test_piece = game_state->curr_piece;
+    test_piece.y = y;
+    test_piece.x = x;
+    if (!game_state_check_collision(game_state, test_piece)) {
         piece_move(&game_state->curr_piece, y, x);
+        game_state_update_ghost_piece(game_state);
     } 
 }
 
-void game_state_rotate_piece_srs(GameState* game_state, Rotation rotation) {
+void game_state_rotate_curr_piece_srs(GameState* game_state, Rotation rotation) {
     Piece curr_piece_copy = game_state->curr_piece;
 
     size_t r_index;
@@ -195,44 +200,24 @@ void game_state_rotate_piece_srs(GameState* game_state, Rotation rotation) {
                 game_state->curr_piece.x + SRS_TABLE[r_index][i][0]
             );
         }
-        game_state_rotate_piece(game_state, rotation);
+        game_state_rotate_curr_piece(game_state, rotation);
         if (game_state->curr_piece.r != curr_piece_copy.r) {
+            game_state_update_ghost_piece(game_state);
             return;
         }
         game_state->curr_piece = curr_piece_copy;
     }
 }
 
-void game_state_rotate_piece(GameState* game_state, Rotation rotation) {
-    int top_left_y = game_state->curr_piece.y - game_state->curr_piece.n / 2; 
-    int top_left_x = game_state->curr_piece.x - game_state->curr_piece.n / 2;
-    size_t new_r_index = update_r_index(game_state->curr_piece.r, rotation);
-
-    bool blocked = false;
-    for (size_t i = 0; i < game_state->curr_piece.n; ++i) {
-        for (size_t j = 0; j < game_state->curr_piece.n; ++j) {
-            if (game_state->curr_piece.M[new_r_index][i][j] == 1) {
-                if (
-                    top_left_y + i < 0 || top_left_y + i > BOARD_H - 1 || 
-                    top_left_x + j < 0 || top_left_x + j > BOARD_W - 1 ||
-                    game_state->board[top_left_y + i][top_left_x + j] == 1
-                ) {
-                    blocked = true;
-                    break;
-                }
-            }
-        }
-        if (blocked) {
-            break;
-        }
-    }
-
-    if (!blocked) {
+void game_state_rotate_curr_piece(GameState* game_state, Rotation rotation) {
+    Piece test_piece = game_state->curr_piece;
+    test_piece.r = compute_r_index(game_state->curr_piece.r, rotation);
+    if (!game_state_check_collision(game_state, test_piece)) {
         piece_rotate(&game_state->curr_piece, rotation);
     } 
 }
 
-void game_state_place_piece(GameState* game_state) {
+void game_state_place_curr_piece(GameState* game_state) {
     int top_left_y = game_state->curr_piece.y - game_state->curr_piece.n / 2; 
     int top_left_x = game_state->curr_piece.x - game_state->curr_piece.n / 2;
 
@@ -284,13 +269,36 @@ void game_state_clear_lines(GameState* game_state) {
     }
 }
 
-void game_state_drop_piece(GameState* game_state) {
+void game_state_drop_curr_piece(GameState* game_state) {
     for (size_t y = game_state->curr_piece.y + 1; y < BOARD_H; ++y) {
         Piece prev_piece = game_state->curr_piece;
-        game_state_move_piece(game_state, y, game_state->curr_piece.x);
+        game_state_move_curr_piece(game_state, y, game_state->curr_piece.x);
         if (game_state->curr_piece.y == prev_piece.y) {
             break;
         }
     }
-    game_state_place_piece(game_state);
+    game_state_place_curr_piece(game_state);
+}
+
+void game_state_move_ghost_piece(GameState* game_state, int y, int x) {
+    Piece test_piece = game_state->ghost_piece;
+    test_piece.y = y;
+    test_piece.x = x;
+    if (!game_state_check_collision(game_state, test_piece)) {
+        piece_move(&game_state->ghost_piece, y, x);
+    } 
+}
+
+void game_state_update_ghost_piece(GameState* game_state) {
+    game_state->ghost_piece = game_state->curr_piece;
+    for (size_t y = game_state->ghost_piece.y + 1; y < BOARD_H; ++y) {
+        Piece prev_piece = game_state->ghost_piece;
+        game_state_move_ghost_piece(game_state, y, game_state->ghost_piece.x);
+        if (game_state->ghost_piece.y == prev_piece.y) {
+            return;
+        }
+    }
+
+    piece_debug_print(&game_state->curr_piece);
+    piece_debug_print(&game_state->ghost_piece);
 }

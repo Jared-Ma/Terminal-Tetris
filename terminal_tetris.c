@@ -7,6 +7,8 @@
 #include "logger.h"
 
 
+#define ESC '\e'
+
 int main(int argc, char* argv[argc+1]) {
     if (!debug_log_open("./logs/debug.txt")) {
         return EXIT_FAILURE;
@@ -30,57 +32,66 @@ int main(int argc, char* argv[argc+1]) {
     draw_piece_centered(next_window, &game_state->next_piece);
     draw_board_stack(board_window, game_state);
     draw_curr_piece(board_window, game_state);
+    draw_ghost_piece(board_window, game_state);
 
     bool running = true;
     while (running) {
         int input = getch();
         switch (input) {
             case 'z':
-                game_state_rotate_piece_srs(game_state, LEFT);
+                game_state_rotate_curr_piece_srs(game_state, LEFT);
                 draw_board_stack(board_window, game_state);
                 draw_curr_piece(board_window, game_state);
+                draw_ghost_piece(board_window, game_state);
                 break;
             case 'x':
-                game_state_rotate_piece_srs(game_state, RIGHT);
+                game_state_rotate_curr_piece_srs(game_state, RIGHT);
                 draw_board_stack(board_window, game_state);
                 draw_curr_piece(board_window, game_state);
-                break;
-            case KEY_LEFT:
-                game_state_move_piece(game_state, game_state->curr_piece.y, game_state->curr_piece.x - 1);
-                draw_board_stack(board_window, game_state);
-                draw_curr_piece(board_window, game_state);
-                break;
-            case KEY_RIGHT:
-                game_state_move_piece(game_state, game_state->curr_piece.y, game_state->curr_piece.x + 1);
-                draw_board_stack(board_window, game_state);
-                draw_curr_piece(board_window, game_state);
-                break;
-            case KEY_DOWN:
-                game_state_move_piece(game_state, game_state->curr_piece.y + 1, game_state->curr_piece.x);
-                draw_board_stack(board_window, game_state);
-                draw_curr_piece(board_window, game_state);
-                break;
-            case KEY_UP:
-                game_state_move_piece(game_state, game_state->curr_piece.y - 1, game_state->curr_piece.x);
-                draw_board_stack(board_window, game_state);
-                draw_curr_piece(board_window, game_state);
-                break;
-            case ' ':
-                game_state_drop_piece(game_state);
-                game_state_clear_lines(game_state);
-                game_state_load_next_piece(game_state);
-                draw_board_stack(board_window, game_state);
-                draw_curr_piece(board_window, game_state);
-                draw_piece_centered(next_window, &game_state->next_piece);
+                draw_ghost_piece(board_window, game_state);
                 break;
             case 'c':
                 game_state_hold_piece(game_state);
                 draw_board_stack(board_window, game_state);
                 draw_curr_piece(board_window, game_state);
+                draw_ghost_piece(board_window, game_state);
                 draw_piece_centered(next_window, &game_state->next_piece);
                 draw_piece_centered(hold_window, &game_state->hold_piece);
                 break;
-            case '\e':
+            case ' ':
+                game_state_drop_curr_piece(game_state);
+                game_state_clear_lines(game_state);
+                game_state_load_next_piece(game_state);
+                draw_board_stack(board_window, game_state);
+                draw_curr_piece(board_window, game_state);
+                draw_ghost_piece(board_window, game_state);
+                draw_piece_centered(next_window, &game_state->next_piece);
+                break;
+            case KEY_LEFT:
+                game_state_move_curr_piece(game_state, game_state->curr_piece.y, game_state->curr_piece.x - 1);
+                draw_board_stack(board_window, game_state);
+                draw_curr_piece(board_window, game_state);
+                draw_ghost_piece(board_window, game_state);
+                break;
+            case KEY_RIGHT:
+                game_state_move_curr_piece(game_state, game_state->curr_piece.y, game_state->curr_piece.x + 1);
+                draw_board_stack(board_window, game_state);
+                draw_curr_piece(board_window, game_state);
+                draw_ghost_piece(board_window, game_state);
+                break;
+            case KEY_DOWN:
+                game_state_move_curr_piece(game_state, game_state->curr_piece.y + 1, game_state->curr_piece.x);
+                draw_board_stack(board_window, game_state);
+                draw_curr_piece(board_window, game_state);
+                draw_ghost_piece(board_window, game_state);
+                break;
+            case KEY_UP:
+                game_state_move_curr_piece(game_state, game_state->curr_piece.y - 1, game_state->curr_piece.x);
+                draw_board_stack(board_window, game_state);
+                draw_curr_piece(board_window, game_state);
+                draw_ghost_piece(board_window, game_state);
+                break;
+            case ESC:
                 running = false;
                 break;
         }

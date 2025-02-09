@@ -17,6 +17,7 @@ struct GameState {
     Piece curr_piece;
     Piece hold_piece;
     Piece next_piece;
+    Piece ghost_piece;
     bool holding_piece;
     size_t next_index;
     Shape next_shapes[NUM_SHAPES];
@@ -41,13 +42,13 @@ void game_state_load_next_piece(GameState* game_state);
 
 void game_state_hold_piece(GameState* game_state);
 
-void game_state_move_piece(GameState* game_state, int y, int x);
+void game_state_move_curr_piece(GameState* game_state, int y, int x);
 
-void game_state_rotate_piece_srs(GameState *game_state, Rotation rotation);
+void game_state_rotate_curr_piece_srs(GameState *game_state, Rotation rotation);
 
-void game_state_rotate_piece(GameState* game_state, Rotation rotation);
+void game_state_rotate_curr_piece(GameState* game_state, Rotation rotation);
 
-void game_state_place_piece(GameState* game_state);
+void game_state_place_curr_piece(GameState* game_state);
 
 void game_state_apply_gravity(GameState* game_state, size_t row, size_t num_lines);
 
@@ -55,7 +56,11 @@ void game_state_clear_line(GameState* game_state, size_t row);
 
 void game_state_clear_lines(GameState* game_state);
 
-void game_state_drop_piece(GameState* game_state);
+void game_state_drop_curr_piece(GameState* game_state);
+
+void game_state_move_ghost_piece(GameState* game_state, int y, int x);
+
+void game_state_update_ghost_piece(GameState* game_state);
 
 #endif
 
