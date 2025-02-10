@@ -61,4 +61,6 @@ void game_state_move_ghost_piece(GameState* game_state, int y, int x);
 
 void game_state_update_ghost_piece(GameState* game_state);
 
+bool game_state_check_top_out(GameState *game_state);
+
 #endif

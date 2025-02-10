@@ -29,6 +29,8 @@ void clear_window(WINDOW* window);
 
 void draw_buffer_zone(WINDOW* window, GameState* game_state);
 
+void draw_board_state(WINDOW* window, GameState* game_state);
+
 void draw_board_stack(WINDOW *window, GameState *game_state);
 
 void draw_curr_piece(WINDOW* window, GameState *game_state);
@@ -37,6 +39,6 @@ void draw_piece_centered(WINDOW* window, Piece* piece);
 
 void draw_ghost_piece(WINDOW* window, GameState* game_state);
 
-void draw_board_state(WINDOW* window, GameState* game_state);
+void draw_game_over(WINDOW *window, GameState *game_state);
 
 #endif

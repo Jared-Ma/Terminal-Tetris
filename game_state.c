@@ -58,7 +58,6 @@ GameState* game_state_init() {
     *game_state = game_state_get();
     game_state_gen_next_shapes(game_state);
     game_state->next_piece = piece_get(game_state->next_shapes[game_state->next_index], 1, (BOARD_W-1)/2);
-    piece_debug_print(&game_state->next_piece);
     game_state_load_next_piece(game_state);
     return game_state;
 }
@@ -140,7 +139,6 @@ void game_state_load_next_piece(GameState* game_state) {
         game_state_gen_next_shapes(game_state);
     }
     game_state->next_piece = piece_get(game_state->next_shapes[game_state->next_index], 1, (BOARD_W-1)/2);
-    piece_debug_print(&game_state->next_piece);
     game_state_update_ghost_piece(game_state);
 }
 
@@ -317,4 +315,22 @@ void game_state_update_ghost_piece(GameState* game_state) {
             return;
         }
     }
+}
+
+bool game_state_check_top_out(GameState* game_state) {
+    int top_left_y = game_state->curr_piece.y - game_state->curr_piece.n / 2; 
+    int top_left_x = game_state->curr_piece.x - game_state->curr_piece.n / 2;
+
+    for (size_t i = 0; i < game_state->curr_piece.n; ++i) {
+        for (size_t j = 0; j < game_state->curr_piece.n; ++j) {
+            if (
+                game_state->curr_piece.M[game_state->curr_piece.r][i][j] == 1 &&
+                game_state->board[top_left_y + i][top_left_x + j] == 1
+            ) {
+                return true;
+            }
+        }
+    }
+
+    return false;
 }

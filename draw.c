@@ -155,3 +155,10 @@ void draw_ghost_piece(WINDOW* window, GameState* game_state) {
         wrefresh(window);
     }
 }
+
+void draw_game_over(WINDOW* window, GameState* game_state) {
+    clear_window(window);
+    mvwprintw(window, BOARD_WINDOW_H/2-5, BOARD_WINDOW_W/2 - 5, "GAME  OVER");
+    mvwprintw(window, BOARD_WINDOW_H/2, BOARD_WINDOW_W/2 - 5, "esc - quit");
+    wrefresh(window);
+}

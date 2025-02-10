@@ -54,6 +54,14 @@ int main(int argc, char* argv[argc+1]) {
                 game_state_drop_curr_piece(game_state);
                 game_state_clear_lines(game_state);
                 game_state_load_next_piece(game_state);
+                if (game_state_check_top_out(game_state)) {
+                    draw_game_over(board_window, game_state);
+                    input = getch();
+                    switch (input) {
+                        case ESC:
+                            running = false;
+                    }
+                }
                 draw_board_state(board_window, game_state);
                 draw_piece_centered(next_window, &game_state->next_piece);
                 break;
