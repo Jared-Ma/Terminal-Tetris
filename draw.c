@@ -156,9 +156,14 @@ void draw_ghost_piece(WINDOW* window, GameState* game_state) {
     }
 }
 
-void draw_game_over(WINDOW* window, GameState* game_state) {
-    clear_window(window);
+void draw_game_over_text(WINDOW* window, GameState* game_state) {
+    mvwprintw(window, BOARD_WINDOW_H/2-4, BOARD_WINDOW_W/2 - 5, "          ");
     mvwprintw(window, BOARD_WINDOW_H/2-5, BOARD_WINDOW_W/2 - 5, "GAME  OVER");
-    mvwprintw(window, BOARD_WINDOW_H/2, BOARD_WINDOW_W/2 - 5, "esc - quit");
+    mvwprintw(window, BOARD_WINDOW_H/2-6, BOARD_WINDOW_W/2 - 5, "          ");
+
+    mvwprintw(window, BOARD_WINDOW_H/2-1, BOARD_WINDOW_W/2 - 5, "         ");
+    mvwprintw(window, BOARD_WINDOW_H/2,   BOARD_WINDOW_W/2 - 5, "esc: quit");
+    mvwprintw(window, BOARD_WINDOW_H/2+1, BOARD_WINDOW_W/2 - 5, "r: restart");
+    mvwprintw(window, BOARD_WINDOW_H/2+2, BOARD_WINDOW_W/2 - 5, "          ");
     wrefresh(window);
 }

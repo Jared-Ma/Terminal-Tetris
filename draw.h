@@ -39,6 +39,6 @@ void draw_piece_centered(WINDOW* window, Piece* piece);
 
 void draw_ghost_piece(WINDOW* window, GameState* game_state);
 
-void draw_game_over(WINDOW *window, GameState *game_state);
+void draw_game_over_text(WINDOW *window, GameState *game_state);
 
 #endif

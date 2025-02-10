@@ -54,16 +54,20 @@ int main(int argc, char* argv[argc+1]) {
                 game_state_drop_curr_piece(game_state);
                 game_state_clear_lines(game_state);
                 game_state_load_next_piece(game_state);
+                draw_board_state(board_window, game_state);
+                draw_piece_centered(next_window, &game_state->next_piece);
                 if (game_state_check_top_out(game_state)) {
-                    draw_game_over(board_window, game_state);
+                    draw_game_over_text(board_window, game_state);
                     input = getch();
                     switch (input) {
+                        case 'r':
+                            game_state_restart(game_state);
+                            draw_board_state(board_window, game_state);
+                            draw_piece_centered(next_window, &game_state->next_piece);
                         case ESC:
                             running = false;
                     }
                 }
-                draw_board_state(board_window, game_state);
-                draw_piece_centered(next_window, &game_state->next_piece);
                 break;
             case KEY_LEFT:
                 game_state_move_curr_piece(game_state, game_state->curr_piece.y, game_state->curr_piece.x - 1);

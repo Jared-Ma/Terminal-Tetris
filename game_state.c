@@ -334,3 +334,10 @@ bool game_state_check_top_out(GameState* game_state) {
 
     return false;
 }
+
+void game_state_restart(GameState* game_state) {
+    *game_state = game_state_get();
+    game_state_gen_next_shapes(game_state);
+    game_state->next_piece = piece_get(game_state->next_shapes[game_state->next_index], 1, (BOARD_W-1)/2);
+    game_state_load_next_piece(game_state);
+}
