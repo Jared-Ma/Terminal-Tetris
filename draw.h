@@ -7,7 +7,7 @@
 #define HOLD_WINDOW_W 14
 #define STATS_WINDOW_H 16
 #define STATS_WINDOW_W 14
-#define BOARD_WINDOW_H 22
+#define BOARD_WINDOW_H 24
 #define BOARD_WINDOW_W 22
 #define NEXT_WINDOW_H 6
 #define NEXT_WINDOW_W 14
@@ -27,6 +27,8 @@ WINDOW *draw_controls_window(int height, int width, int y, int x);
 
 void clear_window(WINDOW* window);
 
+void draw_buffer_zone(WINDOW* window, GameState* game_state);
+
 void draw_board_stack(WINDOW *window, GameState *game_state);
 
 void draw_curr_piece(WINDOW* window, GameState *game_state);
@@ -34,5 +36,7 @@ void draw_curr_piece(WINDOW* window, GameState *game_state);
 void draw_piece_centered(WINDOW* window, Piece* piece);
 
 void draw_ghost_piece(WINDOW* window, GameState* game_state);
+
+void draw_board_state(WINDOW* window, GameState* game_state);
 
 #endif

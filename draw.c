@@ -11,6 +11,7 @@
 #define GHOST_LEFT ':'
 #define GHOST_RIGHT ':'
 #define SPACE ' '
+#define BUFFER_ZONE_LINE '_'
 
 WINDOW* draw_hold_window(int height, int width, int y, int x) {
     WINDOW* hold_window = newwin(height, width, y, x);
@@ -76,19 +77,29 @@ void clear_window(WINDOW* window) {
     wrefresh(window);
 }
 
-void draw_board_stack(WINDOW* window, GameState* game_state) {
-    clear_window(window);
+void draw_buffer_zone(WINDOW* window, GameState* game_state) {
+    size_t internal_w = getmaxx(window) - 2;
+    for (size_t i = 1; i <= internal_w; ++i) {
+        mvwprintw(window, BUFFER_ZONE_H, i, "%c", BUFFER_ZONE_LINE);
+    }
+}
 
+void draw_board_state(WINDOW* window, GameState* game_state) {
+    clear_window(window);
+    draw_buffer_zone(window, game_state);
+    draw_board_stack(window, game_state);
+    draw_ghost_piece(window, game_state);
+    draw_curr_piece(window, game_state);
+}
+
+void draw_board_stack(WINDOW* window, GameState* game_state) {
     for (size_t i = 0; i < BOARD_H; ++i) {
         for (size_t j = 0; j < BOARD_W; ++j) {
             if (game_state->board[i][j] == 1) {
                 mvwprintw(window, i+1, 2*j+1, "%c%c", BLOCK_LEFT, BLOCK_RIGHT);
-            } else if (game_state->curr_piece.M[game_state->curr_piece.y][j]) {
-                mvwprintw(window, i+1, 2*j+1, "%c%c", SPACE, SPACE);
             }
         }
     }
-
     wrefresh(window);
 }
 

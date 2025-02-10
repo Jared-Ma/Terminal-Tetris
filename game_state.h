@@ -3,8 +3,9 @@
 #include <stdbool.h>
 #include "piece.h"
 
-#define BOARD_H 20 
+#define BOARD_H 22
 #define BOARD_W 10
+#define BUFFER_ZONE_H 2
 
 #define SRS_NUM_ROTATIONS 8
 #define SRS_NUM_TESTS 5
