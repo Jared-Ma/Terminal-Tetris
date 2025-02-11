@@ -29,64 +29,77 @@ int main(int argc, char* argv[argc+1]) {
 
     GameState* game_state = game_state_init();
 
-    draw_piece_centered(next_window, &game_state->next_piece);
-    draw_board_state(board_window, game_state);
-
+    bool paused = false;
+    bool game_over = false;
     bool running = true;
     while (running) {
+        draw_board_state(board_window, game_state);
+        draw_hold_piece(hold_window, game_state);
+        draw_next_piece(next_window, game_state);
         int input = getch();
         switch (input) {
             case 'z':
                 game_state_rotate_curr_piece_srs(game_state, LEFT);
-                draw_board_state(board_window, game_state);
                 break;
             case 'x':
                 game_state_rotate_curr_piece_srs(game_state, RIGHT);
-                draw_board_state(board_window, game_state);
+                break;
+            case KEY_LEFT:
+                game_state_move_curr_piece(game_state, game_state->curr_piece.y, game_state->curr_piece.x - 1);
+                break;
+            case KEY_RIGHT:
+                game_state_move_curr_piece(game_state, game_state->curr_piece.y, game_state->curr_piece.x + 1);
+                break;
+            case KEY_DOWN:
+                game_state_move_curr_piece(game_state, game_state->curr_piece.y + 1, game_state->curr_piece.x);
+                break;
+            case KEY_UP:
+                game_state_move_curr_piece(game_state, game_state->curr_piece.y - 1, game_state->curr_piece.x);
                 break;
             case 'c':
                 game_state_hold_piece(game_state);
-                draw_board_state(board_window, game_state);
-                draw_piece_centered(next_window, &game_state->next_piece);
-                draw_piece_centered(hold_window, &game_state->hold_piece);
                 break;
             case ' ':
                 game_state_drop_curr_piece(game_state);
                 game_state_clear_lines(game_state);
                 game_state_load_next_piece(game_state);
-                draw_board_state(board_window, game_state);
-                draw_piece_centered(next_window, &game_state->next_piece);
                 if (game_state_check_top_out(game_state)) {
                     draw_game_over_text(board_window, game_state);
-                    input = getch();
-                    switch (input) {
-                        case 'r':
-                            game_state_restart(game_state);
-                            draw_board_state(board_window, game_state);
-                            draw_piece_centered(next_window, &game_state->next_piece);
-                        case ESC:
-                            running = false;
+                    game_over = true;
+                    while (game_over) {
+                        input = getch();
+                        switch (input) {
+                            case 'r':
+                                game_state_restart(game_state);
+                                game_over = false;
+                                break;
+                            case ESC:
+                                game_over = false;
+                                running = false;
+                                break;
+                        }
                     }
                 }
                 break;
-            case KEY_LEFT:
-                game_state_move_curr_piece(game_state, game_state->curr_piece.y, game_state->curr_piece.x - 1);
-                draw_board_state(board_window, game_state);
-                break;
-            case KEY_RIGHT:
-                game_state_move_curr_piece(game_state, game_state->curr_piece.y, game_state->curr_piece.x + 1);
-                draw_board_state(board_window, game_state);
-                break;
-            case KEY_DOWN:
-                game_state_move_curr_piece(game_state, game_state->curr_piece.y + 1, game_state->curr_piece.x);
-                draw_board_state(board_window, game_state);
-                break;
-            case KEY_UP:
-                game_state_move_curr_piece(game_state, game_state->curr_piece.y - 1, game_state->curr_piece.x);
-                draw_board_state(board_window, game_state);
-                break;
             case ESC:
-                running = false;
+                draw_paused_text(board_window, game_state);
+                paused = true;
+                while (paused) {
+                    input = getch();
+                    switch (input) {
+                        case ' ':
+                            paused = false;
+                            break;
+                        case 'r':
+                            game_state_restart(game_state);
+                            paused = false;
+                            break;
+                        case ESC:
+                            paused = false;
+                            running = false;
+                            break;
+                    }
+                }
                 break;
         }
     }

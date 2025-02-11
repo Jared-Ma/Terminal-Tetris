@@ -64,6 +64,31 @@ WINDOW* draw_controls_window(int height, int width, int y, int x) {
     return controls_window;
 }
 
+void draw_paused_text(WINDOW* window, GameState* game_state) {
+    mvwprintw(window, BOARD_WINDOW_H/2-4, BOARD_WINDOW_W/2 - 4, "        ");
+    mvwprintw(window, BOARD_WINDOW_H/2-5, BOARD_WINDOW_W/2 - 4, " PAUSED ");
+    mvwprintw(window, BOARD_WINDOW_H/2-6, BOARD_WINDOW_W/2 - 4, "        ");
+    
+    mvwprintw(window, BOARD_WINDOW_H/2-1, BOARD_WINDOW_W/2 - 8, "               ");
+    mvwprintw(window, BOARD_WINDOW_H/2  , BOARD_WINDOW_W/2 - 8, " space: resume ");
+    mvwprintw(window, BOARD_WINDOW_H/2+1, BOARD_WINDOW_W/2 - 8, " r: restart    ");
+    mvwprintw(window, BOARD_WINDOW_H/2+2, BOARD_WINDOW_W/2 - 8, " esc: quit     ");
+    mvwprintw(window, BOARD_WINDOW_H/2+3, BOARD_WINDOW_W/2 - 8, "               ");
+    wrefresh(window);
+}
+
+void draw_game_over_text(WINDOW* window, GameState* game_state) {
+    mvwprintw(window, BOARD_WINDOW_H/2-4, BOARD_WINDOW_W/2 - 6, "            ");
+    mvwprintw(window, BOARD_WINDOW_H/2-5, BOARD_WINDOW_W/2 - 6, " GAME  OVER ");
+    mvwprintw(window, BOARD_WINDOW_H/2-6, BOARD_WINDOW_W/2 - 6, "            ");
+
+    mvwprintw(window, BOARD_WINDOW_H/2-1, BOARD_WINDOW_W/2 - 6, "            ");
+    mvwprintw(window, BOARD_WINDOW_H/2,   BOARD_WINDOW_W/2 - 6, " r: restart ");
+    mvwprintw(window, BOARD_WINDOW_H/2+1, BOARD_WINDOW_W/2 - 6, " esc: quit  ");
+    mvwprintw(window, BOARD_WINDOW_H/2+2, BOARD_WINDOW_W/2 - 6, "            ");
+    wrefresh(window);
+}
+
 void clear_window(WINDOW* window) {
     size_t internal_h = getmaxy(window) - 2;
     size_t internal_w = getmaxx(window) - 2;
@@ -118,16 +143,36 @@ void draw_curr_piece(WINDOW* window, GameState* game_state) {
     wrefresh(window);
 }
 
-void draw_piece_centered(WINDOW* window, Piece* piece) {
+void draw_hold_piece(WINDOW* window, GameState* game_state) {
+    if (game_state->holding_piece) {
+        clear_window(window);
+    
+        size_t horizontal_padding = 2*(game_state->hold_piece.n - game_state->hold_piece.l);
+        size_t start_y = getmaxy(window) / 2 - game_state->hold_piece.n/2;
+        size_t start_x = getmaxx(window) / 2 - game_state->hold_piece.l - horizontal_padding;
+    
+        for (size_t i = 0; i < game_state->hold_piece.n; ++i) {
+            for (size_t j = 0; j < game_state->hold_piece.n; ++j) {
+                if (game_state->hold_piece.M[0][i][j] == 1) {
+                    mvwprintw(window, start_y + i, start_x + 2*j, "%c%c", BLOCK_LEFT, BLOCK_RIGHT);
+                }
+            }
+        }
+    
+        wrefresh(window);
+    } 
+}
+
+void draw_next_piece(WINDOW* window, GameState* game_state) {
     clear_window(window);
 
-    size_t horizontal_padding = 2*(piece->n - piece->l);
-    size_t start_y = getmaxy(window) / 2 - piece->n/2;
-    size_t start_x = getmaxx(window) / 2 - piece->l - horizontal_padding;
+    size_t horizontal_padding = 2*(game_state->next_piece.n - game_state->next_piece.l);
+    size_t start_y = getmaxy(window) / 2 - game_state->next_piece.n/2;
+    size_t start_x = getmaxx(window) / 2 - game_state->next_piece.l - horizontal_padding;
 
-    for (size_t i = 0; i < piece->n; ++i) {
-        for (size_t j = 0; j < piece->n; ++j) {
-            if (piece->M[0][i][j] == 1) {
+    for (size_t i = 0; i < game_state->next_piece.n; ++i) {
+        for (size_t j = 0; j < game_state->next_piece.n; ++j) {
+            if (game_state->next_piece.M[0][i][j] == 1) {
                 mvwprintw(window, start_y + i, start_x + 2*j, "%c%c", BLOCK_LEFT, BLOCK_RIGHT);
             }
         }
@@ -154,16 +199,4 @@ void draw_ghost_piece(WINDOW* window, GameState* game_state) {
         
         wrefresh(window);
     }
-}
-
-void draw_game_over_text(WINDOW* window, GameState* game_state) {
-    mvwprintw(window, BOARD_WINDOW_H/2-4, BOARD_WINDOW_W/2 - 5, "          ");
-    mvwprintw(window, BOARD_WINDOW_H/2-5, BOARD_WINDOW_W/2 - 5, "GAME  OVER");
-    mvwprintw(window, BOARD_WINDOW_H/2-6, BOARD_WINDOW_W/2 - 5, "          ");
-
-    mvwprintw(window, BOARD_WINDOW_H/2-1, BOARD_WINDOW_W/2 - 5, "         ");
-    mvwprintw(window, BOARD_WINDOW_H/2,   BOARD_WINDOW_W/2 - 5, "esc: quit");
-    mvwprintw(window, BOARD_WINDOW_H/2+1, BOARD_WINDOW_W/2 - 5, "r: restart");
-    mvwprintw(window, BOARD_WINDOW_H/2+2, BOARD_WINDOW_W/2 - 5, "          ");
-    wrefresh(window);
 }

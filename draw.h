@@ -25,20 +25,24 @@ WINDOW *draw_next_window(int height, int width, int y, int x);
 
 WINDOW *draw_controls_window(int height, int width, int y, int x);
 
+void draw_paused_text(WINDOW* window, GameState* game_state);
+
+void draw_game_over_text(WINDOW* window, GameState* game_state);
+
 void clear_window(WINDOW* window);
 
 void draw_buffer_zone(WINDOW* window, GameState* game_state);
 
 void draw_board_state(WINDOW* window, GameState* game_state);
 
-void draw_board_stack(WINDOW *window, GameState *game_state);
+void draw_board_stack(WINDOW *window, GameState* game_state);
 
-void draw_curr_piece(WINDOW* window, GameState *game_state);
+void draw_curr_piece(WINDOW* window, GameState* game_state);
 
-void draw_piece_centered(WINDOW* window, Piece* piece);
+void draw_hold_piece(WINDOW* window, GameState* game_state);
+
+void draw_next_piece(WINDOW* window, GameState* game_state);
 
 void draw_ghost_piece(WINDOW* window, GameState* game_state);
-
-void draw_game_over_text(WINDOW *window, GameState *game_state);
 
 #endif
