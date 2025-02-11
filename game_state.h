@@ -18,6 +18,7 @@ struct GameState {
     Piece next_piece;
     Piece ghost_piece;
     bool holding_piece;
+    bool hold_allowed;
     size_t next_index;
     Shape next_shapes[NUM_SHAPES];
     bool board[BOARD_H][BOARD_W];
@@ -31,7 +32,7 @@ GameState* game_state_init();
 
 void game_state_destroy(GameState* game_state);
 
-void debug_print_table();
+void game_state_restart(GameState* game_state);
 
 void game_state_debug_print(GameState* game_state);
 
@@ -62,7 +63,5 @@ void game_state_move_ghost_piece(GameState* game_state, int y, int x);
 void game_state_update_ghost_piece(GameState* game_state);
 
 bool game_state_check_top_out(GameState* game_state);
-
-void game_state_restart(GameState* game_state);
 
 #endif

@@ -39,6 +39,9 @@ const int SRS_TABLE_O[SRS_NUM_ROTATIONS][SRS_NUM_TESTS][SRS_NUM_COORDS] = {
     {{+1, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}}
 };
 
+const int SPAWN_Y = 1;
+const int SPAWN_X = (BOARD_W - 1) / 2;
+
 GameState game_state_get() {
     GameState game_state = {
         .curr_piece = { 0 },
@@ -46,6 +49,7 @@ GameState game_state_get() {
         .next_piece = { 0 },
         .ghost_piece = { 0 },
         .holding_piece = false,
+        .hold_allowed = true,
         .next_index = 0,
         .next_shapes = { 0 },
         .board = {{ 0 }}
@@ -57,7 +61,7 @@ GameState* game_state_init() {
     GameState* game_state = malloc(sizeof(GameState));
     *game_state = game_state_get();
     game_state_gen_next_shapes(game_state);
-    game_state->next_piece = piece_get(game_state->next_shapes[game_state->next_index], 1, (BOARD_W-1)/2);
+    game_state->next_piece = piece_get(game_state->next_shapes[game_state->next_index], SPAWN_Y, SPAWN_X);
     game_state_load_next_piece(game_state);
     return game_state;
 }
@@ -68,6 +72,13 @@ void game_state_destroy(GameState* game_state) {
         free(game_state);
         game_state = NULL;
     }
+}
+
+void game_state_restart(GameState* game_state) {
+    *game_state = game_state_get();
+    game_state_gen_next_shapes(game_state);
+    game_state->next_piece = piece_get(game_state->next_shapes[game_state->next_index], SPAWN_Y, SPAWN_X);
+    game_state_load_next_piece(game_state);
 }
 
 void game_state_debug_print(GameState* game_state) {
@@ -138,21 +149,27 @@ void game_state_load_next_piece(GameState* game_state) {
         game_state->next_index = game_state->next_index % NUM_SHAPES;
         game_state_gen_next_shapes(game_state);
     }
-    game_state->next_piece = piece_get(game_state->next_shapes[game_state->next_index], 1, (BOARD_W-1)/2);
+    game_state->next_piece = piece_get(game_state->next_shapes[game_state->next_index], SPAWN_Y, SPAWN_X);
     game_state_update_ghost_piece(game_state);
 }
 
 void game_state_hold_piece(GameState* game_state) {
-    if (game_state->holding_piece) {
-        Piece tmp;
-        tmp = game_state->curr_piece;
-        game_state->curr_piece = game_state->hold_piece;
-        game_state->hold_piece = tmp;
-        game_state_update_ghost_piece(game_state);
-    } else {
-        game_state->hold_piece = game_state->curr_piece;
-        game_state->holding_piece = true;
-        game_state_load_next_piece(game_state);
+    if (game_state->hold_allowed) {
+        if (game_state->holding_piece) {
+            Piece tmp;
+            tmp = game_state->curr_piece;
+            game_state->curr_piece = game_state->hold_piece;
+            game_state->hold_piece = tmp;
+            game_state_update_ghost_piece(game_state);
+        } else {
+            game_state->hold_piece = game_state->curr_piece;
+            game_state->holding_piece = true;
+            game_state_load_next_piece(game_state);
+        }
+        game_state->hold_piece.r = 0;
+        game_state->hold_piece.y = SPAWN_Y;
+        game_state->hold_piece.x = SPAWN_X;
+        game_state->hold_allowed = false;
     }
 }
 
@@ -245,6 +262,8 @@ void game_state_place_curr_piece(GameState* game_state) {
             }
         }
     }
+    
+    game_state->hold_allowed = true;
 }
 
 void game_state_apply_gravity(GameState* game_state, size_t row, size_t num_lines) {
@@ -333,11 +352,4 @@ bool game_state_check_top_out(GameState* game_state) {
     }
 
     return false;
-}
-
-void game_state_restart(GameState* game_state) {
-    *game_state = game_state_get();
-    game_state_gen_next_shapes(game_state);
-    game_state->next_piece = piece_get(game_state->next_shapes[game_state->next_index], 1, (BOARD_W-1)/2);
-    game_state_load_next_piece(game_state);
 }

@@ -144,9 +144,9 @@ void draw_curr_piece(WINDOW* window, GameState* game_state) {
 }
 
 void draw_hold_piece(WINDOW* window, GameState* game_state) {
+    clear_window(window);
+
     if (game_state->holding_piece) {
-        clear_window(window);
-    
         size_t horizontal_padding = 2*(game_state->hold_piece.n - game_state->hold_piece.l);
         size_t start_y = getmaxy(window) / 2 - game_state->hold_piece.n/2;
         size_t start_x = getmaxx(window) / 2 - game_state->hold_piece.l - horizontal_padding;
@@ -154,13 +154,17 @@ void draw_hold_piece(WINDOW* window, GameState* game_state) {
         for (size_t i = 0; i < game_state->hold_piece.n; ++i) {
             for (size_t j = 0; j < game_state->hold_piece.n; ++j) {
                 if (game_state->hold_piece.M[0][i][j] == 1) {
-                    mvwprintw(window, start_y + i, start_x + 2*j, "%c%c", BLOCK_LEFT, BLOCK_RIGHT);
+                    if (game_state->hold_allowed) {
+                        mvwprintw(window, start_y + i, start_x + 2*j, "%c%c", BLOCK_LEFT, BLOCK_RIGHT);
+                    } else {
+                        mvwprintw(window, start_y + i, start_x + 2*j, "%c%c", GHOST_LEFT, GHOST_RIGHT);
+                    }
                 }
             }
         }
-    
-        wrefresh(window);
     } 
+    
+    wrefresh(window);
 }
 
 void draw_next_piece(WINDOW* window, GameState* game_state) {
