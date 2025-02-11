@@ -21,7 +21,7 @@ struct GameState {
     bool hold_allowed;
     size_t next_index;
     Shape next_shapes[NUM_SHAPES];
-    bool board[BOARD_H][BOARD_W];
+    Shape board[BOARD_H][BOARD_W];
 };
 
 typedef struct GameState GameState;
@@ -44,7 +44,7 @@ void game_state_hold_piece(GameState* game_state);
 
 void game_state_move_curr_piece(GameState* game_state, int y, int x);
 
-void game_state_rotate_curr_piece_srs(GameState *game_state, Rotation rotation);
+void game_state_rotate_curr_piece_srs(GameState* game_state, Rotation rotation);
 
 void game_state_rotate_curr_piece(GameState* game_state, Rotation rotation);
 

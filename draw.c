@@ -5,13 +5,13 @@
 #include "piece.h"
 #include "logger.h"
 
-
 #define BLOCK_LEFT '['
 #define BLOCK_RIGHT ']'
 #define GHOST_LEFT ':'
 #define GHOST_RIGHT ':'
 #define SPACE ' '
 #define BUFFER_ZONE_LINE '_'
+
 
 WINDOW* draw_hold_window(int height, int width, int y, int x) {
     WINDOW* hold_window = newwin(height, width, y, x);
@@ -98,7 +98,6 @@ void clear_window(WINDOW* window) {
             mvwprintw(window, i, j, "%c", SPACE);
         }
     }
-
     wrefresh(window);
 }
 
@@ -120,8 +119,10 @@ void draw_board_state(WINDOW* window, GameState* game_state) {
 void draw_board_stack(WINDOW* window, GameState* game_state) {
     for (size_t i = 0; i < BOARD_H; ++i) {
         for (size_t j = 0; j < BOARD_W; ++j) {
-            if (game_state->board[i][j] == 1) {
+            if (game_state->board[i][j] > 0) {
+                wattron(window, COLOR_PAIR(game_state->board[i][j]));
                 mvwprintw(window, i+1, 2*j+1, "%c%c", BLOCK_LEFT, BLOCK_RIGHT);
+                wattroff(window, COLOR_PAIR(game_state->board[i][j]));
             }
         }
     }
@@ -131,6 +132,7 @@ void draw_board_stack(WINDOW* window, GameState* game_state) {
 void draw_curr_piece(WINDOW* window, GameState* game_state) {
     int start_y = game_state->curr_piece.y - game_state->curr_piece.n/2 + 1;
     int start_x = 2*(game_state->curr_piece.x - game_state->curr_piece.n/2) + 1;
+    wattron(window, COLOR_PAIR(game_state->curr_piece.shape));
 
     for (size_t i = 0; i < game_state->curr_piece.n; ++i) {
         for (size_t j = 0; j < game_state->curr_piece.n; ++j) {
@@ -139,17 +141,19 @@ void draw_curr_piece(WINDOW* window, GameState* game_state) {
             }
         }
     }
-
+    
+    wattroff(window, COLOR_PAIR(game_state->curr_piece.shape));
     wrefresh(window);
 }
 
 void draw_hold_piece(WINDOW* window, GameState* game_state) {
     clear_window(window);
-
+    
     if (game_state->holding_piece) {
         size_t horizontal_padding = 2*(game_state->hold_piece.n - game_state->hold_piece.l);
         size_t start_y = getmaxy(window) / 2 - game_state->hold_piece.n/2;
         size_t start_x = getmaxx(window) / 2 - game_state->hold_piece.l - horizontal_padding;
+        wattron(window, COLOR_PAIR(game_state->hold_piece.shape));
     
         for (size_t i = 0; i < game_state->hold_piece.n; ++i) {
             for (size_t j = 0; j < game_state->hold_piece.n; ++j) {
@@ -162,6 +166,8 @@ void draw_hold_piece(WINDOW* window, GameState* game_state) {
                 }
             }
         }
+
+        wattroff(window, COLOR_PAIR(game_state->hold_piece.shape));
     } 
     
     wrefresh(window);
@@ -173,7 +179,8 @@ void draw_next_piece(WINDOW* window, GameState* game_state) {
     size_t horizontal_padding = 2*(game_state->next_piece.n - game_state->next_piece.l);
     size_t start_y = getmaxy(window) / 2 - game_state->next_piece.n/2;
     size_t start_x = getmaxx(window) / 2 - game_state->next_piece.l - horizontal_padding;
-
+    wattron(window, COLOR_PAIR(game_state->next_piece.shape));
+    
     for (size_t i = 0; i < game_state->next_piece.n; ++i) {
         for (size_t j = 0; j < game_state->next_piece.n; ++j) {
             if (game_state->next_piece.M[0][i][j] == 1) {
@@ -181,7 +188,8 @@ void draw_next_piece(WINDOW* window, GameState* game_state) {
             }
         }
     }
-
+    
+    wattroff(window, COLOR_PAIR(game_state->next_piece.shape));
     wrefresh(window);
 }
 
@@ -192,6 +200,7 @@ void draw_ghost_piece(WINDOW* window, GameState* game_state) {
     ) {
         int start_y = game_state->ghost_piece.y - game_state->ghost_piece.n/2 + 1;
         int start_x = 2*(game_state->ghost_piece.x - game_state->ghost_piece.n/2) + 1;
+        wattron(window, COLOR_PAIR(game_state->ghost_piece.shape));
 
         for (size_t i = 0; i < game_state->ghost_piece.n; ++i) {
             for (size_t j = 0; j < game_state->ghost_piece.n; ++j) {
@@ -201,6 +210,7 @@ void draw_ghost_piece(WINDOW* window, GameState* game_state) {
             }
         }
         
+        wattroff(window, COLOR_PAIR(game_state->ghost_piece.shape));
         wrefresh(window);
     }
 }

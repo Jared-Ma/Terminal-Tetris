@@ -9,7 +9,7 @@
 
 
 enum Shape {
-    I,
+    I = 1,
     J,
     L,
     O,

@@ -183,7 +183,7 @@ bool game_state_check_collision(GameState* game_state, Piece piece) {
                 if (
                     top_left_y + i < 0 || top_left_y + i > BOARD_H - 1 || 
                     top_left_x + j < 0 || top_left_x + j > BOARD_W - 1 ||
-                    game_state->board[top_left_y + i][top_left_x + j] == 1
+                    game_state->board[top_left_y + i][top_left_x + j] > 0
                 ) {
                     return true;
                 }
@@ -258,7 +258,7 @@ void game_state_place_curr_piece(GameState* game_state) {
     for (size_t i = 0; i < game_state->curr_piece.n; ++i) {
         for (size_t j = 0; j < game_state->curr_piece.n; ++j) {
             if (game_state->curr_piece.M[game_state->curr_piece.r][i][j] == 1) {
-                game_state->board[top_left_y + i][top_left_x + j] = 1;
+                game_state->board[top_left_y + i][top_left_x + j] = game_state->curr_piece.shape;
             }
         }
     }
@@ -344,7 +344,7 @@ bool game_state_check_top_out(GameState* game_state) {
         for (size_t j = 0; j < game_state->curr_piece.n; ++j) {
             if (
                 game_state->curr_piece.M[game_state->curr_piece.r][i][j] == 1 &&
-                game_state->board[top_left_y + i][top_left_x + j] == 1
+                game_state->board[top_left_y + i][top_left_x + j] > 0
             ) {
                 return true;
             }

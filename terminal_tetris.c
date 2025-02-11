@@ -30,6 +30,16 @@ int main(int argc, char* argv[argc+1]) {
     refresh();
     set_escdelay(0);
 
+    start_color();
+    use_default_colors();
+    init_pair(I, COLOR_CYAN, -1);
+    init_pair(J, COLOR_BLUE, -1);
+    init_pair(L, COLOR_YELLOW, -1);
+    init_pair(O, COLOR_WHITE, -1);
+    init_pair(S, COLOR_GREEN, -1);
+    init_pair(T, COLOR_MAGENTA, -1);
+    init_pair(Z, COLOR_RED, -1);
+
     WINDOW* hold_window = draw_hold_window(HOLD_WINDOW_H, HOLD_WINDOW_W, BUFFER_ZONE_H, 0);
     WINDOW* stats_window = draw_stats_window(STATS_WINDOW_H, STATS_WINDOW_W, 6 + BUFFER_ZONE_H, 0);
     WINDOW* board_window = draw_board_window(BOARD_WINDOW_H, BOARD_WINDOW_W, 0, 14);
@@ -39,8 +49,12 @@ int main(int argc, char* argv[argc+1]) {
     GameState* game_state = game_state_init();
     InputState input_state = PLAYING;
     bool running = true;
+    size_t counter = 0;
 
     while (running) {
+        counter++;
+        fprintf(debug_log, "%lu\n", counter);
+
         draw_board_state(board_window, game_state);
         draw_hold_piece(hold_window, game_state);
         draw_next_piece(next_window, game_state);
