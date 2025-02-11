@@ -9,6 +9,15 @@
 
 #define ESC '\e'
 
+enum InputState {
+    PLAYING,
+    PAUSED,
+    GAME_OVER,
+};
+
+typedef enum InputState InputState;
+
+
 int main(int argc, char* argv[argc+1]) {
     if (!debug_log_open("./logs/debug.txt")) {
         return EXIT_FAILURE;
@@ -28,16 +37,23 @@ int main(int argc, char* argv[argc+1]) {
     WINDOW* controls_window = draw_controls_window(CONTROLS_WINDOW_H, CONTROLS_WINDOW_W, 6 + BUFFER_ZONE_H, 36);
 
     GameState* game_state = game_state_init();
-
-    bool paused = false;
-    bool game_over = false;
+    InputState input_state = PLAYING;
     bool running = true;
+
     while (running) {
         draw_board_state(board_window, game_state);
         draw_hold_piece(hold_window, game_state);
         draw_next_piece(next_window, game_state);
+
+        if (input_state == PAUSED) {
+            draw_paused_text(board_window, game_state);
+        } else if (input_state == GAME_OVER) {
+            draw_game_over_text(board_window, game_state);
+        }
+
         int input = getch();
-        switch (input) {
+        if (input_state == PLAYING) {
+            switch (input) {
             case 'z':
                 game_state_rotate_curr_piece_srs(game_state, LEFT);
                 break;
@@ -64,43 +80,36 @@ int main(int argc, char* argv[argc+1]) {
                 game_state_clear_lines(game_state);
                 game_state_load_next_piece(game_state);
                 if (game_state_check_top_out(game_state)) {
-                    draw_game_over_text(board_window, game_state);
-                    game_over = true;
-                    while (game_over) {
-                        input = getch();
-                        switch (input) {
-                            case 'r':
-                                game_state_restart(game_state);
-                                game_over = false;
-                                break;
-                            case ESC:
-                                game_over = false;
-                                running = false;
-                                break;
-                        }
-                    }
+                    input_state = GAME_OVER;
                 }
                 break;
             case ESC:
-                draw_paused_text(board_window, game_state);
-                paused = true;
-                while (paused) {
-                    input = getch();
-                    switch (input) {
-                        case ' ':
-                            paused = false;
-                            break;
-                        case 'r':
-                            game_state_restart(game_state);
-                            paused = false;
-                            break;
-                        case ESC:
-                            paused = false;
-                            running = false;
-                            break;
-                    }
-                }
+                input_state = PAUSED;
                 break;
+            }
+        } else if (input_state == PAUSED) {
+            switch (input) {
+            case ' ':
+                input_state = PLAYING;
+                break;
+            case 'r':
+                game_state_restart(game_state);
+                input_state = PLAYING;
+                break;
+            case ESC:
+                running = false;
+                break;
+            }
+        } else if (input_state == GAME_OVER) {
+            switch (input) {
+            case 'r':
+                game_state_restart(game_state);
+                input_state = PLAYING;
+                break;
+            case ESC:
+                running = false;
+                break;
+            }
         }
     }
 
