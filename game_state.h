@@ -20,7 +20,7 @@ struct GameState {
     bool holding_piece;
     bool hold_allowed;
     size_t next_index;
-    Shape next_shapes[NUM_SHAPES];
+    Shape next_queue[NUM_SHAPES];
     Shape board[BOARD_H][BOARD_W];
 };
 
@@ -36,7 +36,7 @@ void game_state_restart(GameState* game_state);
 
 void game_state_debug_print(GameState* game_state);
 
-void game_state_gen_next_shapes(GameState* game_state);
+void game_state_refresh_next_queue(GameState* game_state);
 
 void game_state_load_next_piece(GameState* game_state);
 
