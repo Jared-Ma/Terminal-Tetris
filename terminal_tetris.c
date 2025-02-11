@@ -6,8 +6,8 @@
 #include "piece.h"
 #include "logger.h"
 
-
 #define ESC '\e'
+
 
 enum InputState {
     PLAYING,
@@ -17,34 +17,33 @@ enum InputState {
 
 typedef enum InputState InputState;
 
-
 int main(int argc, char* argv[argc+1]) {
     if (!debug_log_open("./logs/debug.txt")) {
         return EXIT_FAILURE;
     }
 
-    initscr(); // Initialize curses screen
-    keypad(stdscr, TRUE); // Enables arrow key input
-    noecho(); // Don't echo input to screen
-    curs_set(0); // Hide cursor
-    refresh();
-    set_escdelay(0);
-
+    initscr();          // Initialize curses screen
+    noecho();           // Don't echo input to screen
+    curs_set(0);        // Hide cursor
+    set_escdelay(0);    // Remove delay after reading escape key
+    
     start_color();
     use_default_colors();
-    init_pair(I, COLOR_CYAN, -1);
-    init_pair(J, COLOR_BLUE, -1);
-    init_pair(L, COLOR_YELLOW, -1);
-    init_pair(O, COLOR_WHITE, -1);
-    init_pair(S, COLOR_GREEN, -1);
+    init_pair(I, COLOR_CYAN,    -1);
+    init_pair(J, COLOR_BLUE,    -1);
+    init_pair(L, COLOR_YELLOW,  -1);
+    init_pair(O, COLOR_WHITE,   -1);
+    init_pair(S, COLOR_GREEN,   -1);
     init_pair(T, COLOR_MAGENTA, -1);
-    init_pair(Z, COLOR_RED, -1);
-
+    init_pair(Z, COLOR_RED,     -1);
+    
     WINDOW* hold_window = draw_hold_window(HOLD_WINDOW_H, HOLD_WINDOW_W, BUFFER_ZONE_H, 0);
     WINDOW* stats_window = draw_stats_window(STATS_WINDOW_H, STATS_WINDOW_W, 6 + BUFFER_ZONE_H, 0);
     WINDOW* board_window = draw_board_window(BOARD_WINDOW_H, BOARD_WINDOW_W, 0, 14);
     WINDOW* next_window = draw_next_window(NEXT_WINDOW_H, NEXT_WINDOW_W, BUFFER_ZONE_H, 36);
     WINDOW* controls_window = draw_controls_window(CONTROLS_WINDOW_H, CONTROLS_WINDOW_W, 6 + BUFFER_ZONE_H, 36);
+
+    keypad(board_window, TRUE);    // Enables arrow key input
 
     GameState* game_state = game_state_init();
     InputState input_state = PLAYING;
@@ -54,18 +53,20 @@ int main(int argc, char* argv[argc+1]) {
     while (running) {
         counter++;
         fprintf(debug_log, "%lu\n", counter);
-
-        draw_board_state(board_window, game_state);
+        
         draw_hold_piece(hold_window, game_state);
         draw_next_piece(next_window, game_state);
+        wrefresh(hold_window);
+        wrefresh(next_window);
 
+        draw_board_state(board_window, game_state);
         if (input_state == PAUSED) {
             draw_paused_text(board_window, game_state);
         } else if (input_state == GAME_OVER) {
             draw_game_over_text(board_window, game_state);
         }
 
-        int input = getch();
+        int input = wgetch(board_window);
         if (input_state == PLAYING) {
             switch (input) {
             case 'z':
@@ -135,7 +136,7 @@ int main(int argc, char* argv[argc+1]) {
     delwin(next_window);
     delwin(controls_window);
     endwin();
-    curs_set(1); // unhide cursor
+    curs_set(1);
 
     return EXIT_SUCCESS;
 }

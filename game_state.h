@@ -36,7 +36,7 @@ void game_state_restart(GameState* game_state);
 
 void game_state_debug_print(GameState* game_state);
 
-void game_state_refresh_next_queue(GameState* game_state);
+void game_state_gen_next_queue(GameState* game_state);
 
 void game_state_load_next_piece(GameState* game_state);
 

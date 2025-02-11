@@ -60,7 +60,7 @@ GameState game_state_get() {
 GameState* game_state_init() {
     GameState* game_state = malloc(sizeof(GameState));
     *game_state = game_state_get();
-    game_state_refresh_next_queue(game_state);
+    game_state_gen_next_queue(game_state);
     game_state->next_piece = piece_get(game_state->next_queue[game_state->next_index], SPAWN_Y, SPAWN_X);
     game_state_load_next_piece(game_state);
     return game_state;
@@ -76,7 +76,7 @@ void game_state_destroy(GameState* game_state) {
 
 void game_state_restart(GameState* game_state) {
     *game_state = game_state_get();
-    game_state_refresh_next_queue(game_state);
+    game_state_gen_next_queue(game_state);
     game_state->next_piece = piece_get(game_state->next_queue[game_state->next_index], SPAWN_Y, SPAWN_X);
     game_state_load_next_piece(game_state);
 }
@@ -128,7 +128,7 @@ void game_state_debug_print(GameState* game_state) {
     }
 }
 
-void game_state_refresh_next_queue(GameState* game_state) {
+void game_state_gen_next_queue(GameState* game_state) {
     srand(time(0));
     Shape random_shapes[NUM_SHAPES] = {I, J, L, O, S, T, Z};
     for (size_t i = NUM_SHAPES-1; i > 0; --i) {
@@ -147,7 +147,7 @@ void game_state_load_next_piece(GameState* game_state) {
     game_state->next_index++;
     if (game_state->next_index == NUM_SHAPES) {
         game_state->next_index = game_state->next_index % NUM_SHAPES;
-        game_state_refresh_next_queue(game_state);
+        game_state_gen_next_queue(game_state);
     }
     game_state->next_piece = piece_get(game_state->next_queue[game_state->next_index], SPAWN_Y, SPAWN_X);
     game_state_update_ghost_piece(game_state);

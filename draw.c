@@ -74,7 +74,6 @@ void draw_paused_text(WINDOW* window, GameState* game_state) {
     mvwprintw(window, BOARD_WINDOW_H/2+1, BOARD_WINDOW_W/2 - 8, " r: restart    ");
     mvwprintw(window, BOARD_WINDOW_H/2+2, BOARD_WINDOW_W/2 - 8, " esc: quit     ");
     mvwprintw(window, BOARD_WINDOW_H/2+3, BOARD_WINDOW_W/2 - 8, "               ");
-    wrefresh(window);
 }
 
 void draw_game_over_text(WINDOW* window, GameState* game_state) {
@@ -86,7 +85,6 @@ void draw_game_over_text(WINDOW* window, GameState* game_state) {
     mvwprintw(window, BOARD_WINDOW_H/2,   BOARD_WINDOW_W/2 - 6, " r: restart ");
     mvwprintw(window, BOARD_WINDOW_H/2+1, BOARD_WINDOW_W/2 - 6, " esc: quit  ");
     mvwprintw(window, BOARD_WINDOW_H/2+2, BOARD_WINDOW_W/2 - 6, "            ");
-    wrefresh(window);
 }
 
 void clear_window(WINDOW* window) {
@@ -98,7 +96,6 @@ void clear_window(WINDOW* window) {
             mvwprintw(window, i, j, "%c", SPACE);
         }
     }
-    wrefresh(window);
 }
 
 void draw_buffer_zone(WINDOW* window, GameState* game_state) {
@@ -126,7 +123,6 @@ void draw_board_stack(WINDOW* window, GameState* game_state) {
             }
         }
     }
-    wrefresh(window);
 }
 
 void draw_curr_piece(WINDOW* window, GameState* game_state) {
@@ -143,7 +139,6 @@ void draw_curr_piece(WINDOW* window, GameState* game_state) {
     }
     
     wattroff(window, COLOR_PAIR(game_state->curr_piece.shape));
-    wrefresh(window);
 }
 
 void draw_hold_piece(WINDOW* window, GameState* game_state) {
@@ -168,9 +163,7 @@ void draw_hold_piece(WINDOW* window, GameState* game_state) {
         }
 
         wattroff(window, COLOR_PAIR(game_state->hold_piece.shape));
-    } 
-    
-    wrefresh(window);
+    }
 }
 
 void draw_next_piece(WINDOW* window, GameState* game_state) {
@@ -190,7 +183,6 @@ void draw_next_piece(WINDOW* window, GameState* game_state) {
     }
     
     wattroff(window, COLOR_PAIR(game_state->next_piece.shape));
-    wrefresh(window);
 }
 
 void draw_ghost_piece(WINDOW* window, GameState* game_state) {
@@ -211,6 +203,5 @@ void draw_ghost_piece(WINDOW* window, GameState* game_state) {
         }
         
         wattroff(window, COLOR_PAIR(game_state->ghost_piece.shape));
-        wrefresh(window);
     }
 }
