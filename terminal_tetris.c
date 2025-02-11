@@ -7,6 +7,7 @@
 #include "logger.h"
 
 #define ESC '\e'
+#define COLOR_ORANGE 8
 
 
 enum InputState {
@@ -29,10 +30,12 @@ int main(int argc, char* argv[argc+1]) {
     
     start_color();
     use_default_colors();
+    init_color(COLOR_ORANGE, 900, 600, 0);
+
     init_pair(I, COLOR_CYAN,    -1);
     init_pair(J, COLOR_BLUE,    -1);
-    init_pair(L, COLOR_YELLOW,  -1);
-    init_pair(O, COLOR_WHITE,   -1);
+    init_pair(L, COLOR_ORANGE,  -1);
+    init_pair(O, COLOR_YELLOW,  -1);
     init_pair(S, COLOR_GREEN,   -1);
     init_pair(T, COLOR_MAGENTA, -1);
     init_pair(Z, COLOR_RED,     -1);
