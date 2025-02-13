@@ -42,7 +42,7 @@ const int SRS_TABLE_O[SRS_NUM_ROTATIONS][SRS_NUM_TESTS][SRS_NUM_COORDS] = {
 const int SPAWN_Y = 1;
 const int SPAWN_X = (BOARD_W - 1) / 2;
 
-GameState game_state_get() {
+GameState game_state_get(void) {
     GameState game_state = {
         .curr_piece = { 0 },
         .hold_piece = { 0 },
@@ -57,7 +57,7 @@ GameState game_state_get() {
     return game_state;
 }
 
-GameState* game_state_init() {
+GameState* game_state_init(void) {
     GameState* game_state = malloc(sizeof(GameState));
     *game_state = game_state_get();
     game_state_gen_next_queue(game_state);

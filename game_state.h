@@ -26,9 +26,9 @@ struct GameState {
 
 typedef struct GameState GameState;
 
-GameState game_state_get();
+GameState game_state_get(void);
 
-GameState* game_state_init();
+GameState* game_state_init(void);
 
 void game_state_destroy(GameState* game_state);
 
