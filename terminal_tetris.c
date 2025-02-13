@@ -1,10 +1,16 @@
+#include <ncurses.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <ncurses.h>
+#include <time.h>
+#include <unistd.h>
 #include "game_state.h"
 #include "draw.h"
 #include "piece.h"
+#include "stats.h"
 #include "logger.h"
+
+#define TARGET_FPS 60
+#define TARGET_FRAME_TIME_MS (1e3 / TARGET_FPS)
 
 #define ESC '\e'
 #define COLOR_ORANGE 8
@@ -31,7 +37,7 @@ int main(int argc, char* argv[argc+1]) {
     start_color();
     use_default_colors();
     init_color(COLOR_ORANGE, 900, 600, 0);
-
+    
     init_pair(I, COLOR_CYAN,    -1);
     init_pair(J, COLOR_BLUE,    -1);
     init_pair(L, COLOR_ORANGE,  -1);
@@ -45,30 +51,36 @@ int main(int argc, char* argv[argc+1]) {
     WINDOW* board_window = draw_board_window(BOARD_WINDOW_H, BOARD_WINDOW_W, 0, 14);
     WINDOW* next_window = draw_next_window(NEXT_WINDOW_H, NEXT_WINDOW_W, BUFFER_ZONE_H, 36);
     WINDOW* controls_window = draw_controls_window(CONTROLS_WINDOW_H, CONTROLS_WINDOW_W, 6 + BUFFER_ZONE_H, 36);
-
-    keypad(board_window, TRUE);    // Enables arrow key input
+    
+    keypad(board_window, true);     // Enables arrow key input
+    nodelay(board_window, true);    // wgetch() doesn't block
 
     GameState* game_state = game_state_init();
+    Stats* stats = stats_init();
+
     InputState input_state = PLAYING;
+    clock_t frame_start, frame_end;
+    time_t time_start, time_end;
     bool running = true;
-    size_t counter = 0;
 
     while (running) {
-        counter++;
-        fprintf(debug_log, "%lu\n", counter);
-        
+        frame_start = clock();
+        time(&time_start);
+
+        draw_stats(stats_window, stats);
         draw_hold_piece(hold_window, game_state);
         draw_next_piece(next_window, game_state);
+        wrefresh(stats_window);
         wrefresh(hold_window);
         wrefresh(next_window);
-
+        
         draw_board_state(board_window, game_state);
         if (input_state == PAUSED) {
             draw_paused_text(board_window, game_state);
         } else if (input_state == GAME_OVER) {
             draw_game_over_text(board_window, game_state);
         }
-
+        
         int input = wgetch(board_window);
         if (input_state == PLAYING) {
             switch (input) {
@@ -112,6 +124,7 @@ int main(int argc, char* argv[argc+1]) {
                 break;
             case 'r':
                 game_state_restart(game_state);
+                stats_restart(stats);
                 input_state = PLAYING;
                 break;
             case ESC:
@@ -122,6 +135,7 @@ int main(int argc, char* argv[argc+1]) {
             switch (input) {
             case 'r':
                 game_state_restart(game_state);
+                stats_restart(stats);
                 input_state = PLAYING;
                 break;
             case ESC:
@@ -129,9 +143,25 @@ int main(int argc, char* argv[argc+1]) {
                 break;
             }
         }
-    }
 
+        frame_end = clock();
+        double frame_time_ms = (double)(frame_end - frame_start) * 1e3 / CLOCKS_PER_SEC;
+        if (frame_time_ms < TARGET_FRAME_TIME_MS) {
+            double sleep_time_ms = TARGET_FRAME_TIME_MS - frame_time_ms;
+            usleep(sleep_time_ms * 1e3);
+        }
+
+        if (input_state == PLAYING) {
+            time(&time_end);
+            double time_s = difftime(time_end, time_start);
+            stats_update_time(stats, time_s);
+        }
+
+        stats_increment_frame_count(stats);
+    }
+    
     game_state_destroy(game_state);
+    stats_destroy(stats);
     fclose(debug_log);
     delwin(hold_window);
     delwin(stats_window);

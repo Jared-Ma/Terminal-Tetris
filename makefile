@@ -1,7 +1,7 @@
 CC=gcc
 CFLAGS=-Wall -c
 EXE=terminal_tetris
-OBJS=terminal_tetris.o game_state.o draw.o piece.o logger.o
+OBJS=terminal_tetris.o game_state.o draw.o piece.o stats.o logger.o
 LIBS= -lncurses
 
 all: $(EXE)
@@ -20,6 +20,9 @@ draw.o: draw.c
 
 piece.o: piece.c
 	$(CC) $(CFLAGS) piece.c
+
+stats.o: stats.c
+	$(CC) $(CFLAGS) stats.c
 
 logger.o: logger.c
 	$(CC) $(CFLAGS) logger.c

@@ -2,6 +2,7 @@
 #define DRAW_H
 #include <ncurses.h>
 #include "piece.h"
+#include "stats.h"
 
 #define HOLD_WINDOW_H 6
 #define HOLD_WINDOW_W 14
@@ -44,5 +45,9 @@ void draw_hold_piece(WINDOW* window, GameState* game_state);
 void draw_next_piece(WINDOW* window, GameState* game_state);
 
 void draw_ghost_piece(WINDOW* window, GameState* game_state);
+
+void draw_stats(WINDOW* window, Stats* stats);
+
+void draw_stats_time(WINDOW* window, Stats* stats);
 
 #endif

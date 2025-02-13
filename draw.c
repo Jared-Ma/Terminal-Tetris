@@ -3,6 +3,7 @@
 #include "game_state.h"
 #include "draw.h"
 #include "piece.h"
+#include "stats.h"
 #include "logger.h"
 
 #define BLOCK_LEFT '['
@@ -204,4 +205,15 @@ void draw_ghost_piece(WINDOW* window, GameState* game_state) {
         
         wattroff(window, COLOR_PAIR(game_state->ghost_piece.shape));
     }
+}
+
+void draw_stats(WINDOW* window, Stats* stats) {
+    draw_stats_time(window, stats);
+}
+
+void draw_stats_time(WINDOW* window, Stats* stats) {
+    size_t h = stats->time / 3600;
+    size_t m = (stats->time - 3600*h) / 60;
+    size_t s = stats->time - 3600*h - 60*m;
+    mvwprintw(window, 2, 1, "time:  %02lu:%.2lu", m, s);
 }
