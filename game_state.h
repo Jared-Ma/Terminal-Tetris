@@ -1,6 +1,7 @@
 #ifndef GAME_STATE_H
 #define GAME_STATE_H
 #include <stdbool.h>
+#include "stats.h"
 #include "piece.h"
 
 #define BOARD_H 22
@@ -52,9 +53,9 @@ void game_state_place_curr_piece(GameState* game_state);
 
 void game_state_apply_gravity(GameState* game_state, size_t row, size_t num_lines);
 
-void game_state_clear_line(GameState* game_state, size_t row);
+void game_state_clear_line(GameState* game_state, Stats* stats, size_t row);
 
-void game_state_clear_lines(GameState* game_state);
+void game_state_clear_lines(GameState* game_state, Stats* stats);
 
 void game_state_drop_curr_piece(GameState* game_state);
 

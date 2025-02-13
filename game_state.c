@@ -3,6 +3,7 @@
 #include <time.h>
 #include "game_state.h"
 #include "piece.h"
+#include "stats.h"
 #include "logger.h"
 
 
@@ -275,14 +276,17 @@ void game_state_apply_gravity(GameState* game_state, size_t row, size_t num_line
     }
 }
 
-void game_state_clear_line(GameState* game_state, size_t row) {
+void game_state_clear_line(GameState* game_state, Stats* stats, size_t row) {
     for (size_t i = 0; i < BOARD_W; ++i) {
         game_state->board[row][i] = 0;
     }
+    stats_increment_lines(stats);
 }
 
-void game_state_clear_lines(GameState* game_state) {
+void game_state_clear_lines(GameState* game_state, Stats* stats) {
+    size_t prev_lines = stats->lines;
     size_t num_lines = 0;
+
     for (size_t i = 0; i < BOARD_H; ++i) {
         bool line = true;
         for (size_t j = 0; j < BOARD_W; ++j) {
@@ -292,7 +296,7 @@ void game_state_clear_lines(GameState* game_state) {
             }
         }
         if (line) {
-            game_state_clear_line(game_state, i);
+            game_state_clear_line(game_state, stats, i);
             num_lines++;
         } else if (num_lines > 0) {
             game_state_apply_gravity(game_state, i-1, num_lines);
@@ -302,6 +306,15 @@ void game_state_clear_lines(GameState* game_state) {
 
     if (num_lines > 0) {
         game_state_apply_gravity(game_state, BOARD_H - 1, num_lines);
+    }
+
+    // calculate score of lines
+    // combo + back to back tetris + soft drop + hard drop
+
+    if (stats->lines > prev_lines) {
+        stats_increment_combo(stats);
+    } else {
+        stats_reset_combo(stats);
     }
 }
 

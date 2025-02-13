@@ -208,12 +208,36 @@ void draw_ghost_piece(WINDOW* window, GameState* game_state) {
 }
 
 void draw_stats(WINDOW* window, Stats* stats) {
+    clear_window(window);
+    mvwprintw(window, 2, 1, "time:");
+    mvwprintw(window, 4, 1, "score:");
+    mvwprintw(window, 6, 1, "lines:");
+    mvwprintw(window, 8, 1, "level:");
+    mvwprintw(window, 10, 1, "combo:");
+    mvwprintw(window, 12, 1, "fps:");
     draw_stats_time(window, stats);
+    draw_stats_lines(window, stats);
+    draw_stats_level(window, stats);
+    draw_stats_combo(window, stats);
 }
 
 void draw_stats_time(WINDOW* window, Stats* stats) {
     size_t h = stats->time / 3600;
     size_t m = (stats->time - 3600*h) / 60;
     size_t s = stats->time - 3600*h - 60*m;
-    mvwprintw(window, 2, 1, "time:  %02lu:%.2lu", m, s);
+    mvwprintw(window, 2, 1, "time: %02lu:%.2lu", m, s);
+}
+
+void draw_stats_lines(WINDOW* window, Stats* stats) {
+    mvwprintw(window, 6, 1, "lines: %lu", stats->lines);
+}
+
+void draw_stats_level(WINDOW* window, Stats* stats) {
+    mvwprintw(window, 8, 1, "level: %lu", stats->level);
+}
+
+void draw_stats_combo(WINDOW* window, Stats* stats) {
+    if (stats->combo > 0) {
+        mvwprintw(window, 10, 1, "combo: %li", stats->combo);
+    }
 }

@@ -8,7 +8,7 @@ struct Stats {
     size_t score;
     size_t lines;
     size_t level;
-    size_t combo;
+    int64_t combo;
     size_t frame_count;
     double fps;
 };
@@ -26,6 +26,14 @@ void stats_debug_print(Stats* stats);
 void stats_restart(Stats* stats);
 
 void stats_update_time(Stats* stats, double seconds);
+
+void stats_increment_lines(Stats* stats);
+
+void stats_increment_level(Stats* stats);
+
+void stats_reset_combo(Stats* stats);
+
+void stats_increment_combo(Stats* stats);
 
 void stats_increment_frame_count(Stats* stats);
 
