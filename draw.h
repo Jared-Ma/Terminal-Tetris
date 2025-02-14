@@ -51,16 +51,16 @@ void draw_next_piece(WINDOW* window, GameState* game_state);
 
 void draw_ghost_piece(WINDOW* window, GameState* game_state);
 
-void draw_stats(WINDOW* window, Stats* stats);
+void draw_stats(WINDOW* window, GameState* game_state, Stats* stats);
 
 void draw_stats_time(WINDOW* window, Stats* stats);
 
-void draw_stats_score(WINDOW* window, Stats* stats);
+void draw_stats_score(WINDOW* window, GameState* game_state);
 
-void draw_stats_lines(WINDOW* window, Stats* stats);
+void draw_stats_lines(WINDOW* window, GameState* game_state);
 
-void draw_stats_level(WINDOW* window, Stats* stats);
+void draw_stats_level(WINDOW* window, GameState* game_state);
 
-void draw_stats_combo(WINDOW* window, Stats* stats);
+void draw_stats_combo(WINDOW* window, GameState* game_state);
 
 #endif

@@ -215,7 +215,7 @@ void draw_ghost_piece(WINDOW* window, GameState* game_state) {
     }
 }
 
-void draw_stats(WINDOW* window, Stats* stats) {
+void draw_stats(WINDOW* window, GameState* game_state, Stats* stats) {
     clear_window(window);
     mvwprintw(window, 2, 1, "time:");
     mvwprintw(window, 4, 1, "score:");
@@ -224,10 +224,10 @@ void draw_stats(WINDOW* window, Stats* stats) {
     mvwprintw(window, 10, 1, "combo:");
     mvwprintw(window, 12, 1, "fps:");
     draw_stats_time(window, stats);
-    draw_stats_score(window, stats);
-    draw_stats_lines(window, stats);
-    draw_stats_level(window, stats);
-    draw_stats_combo(window, stats);
+    draw_stats_score(window, game_state);
+    draw_stats_lines(window, game_state);
+    draw_stats_level(window, game_state);
+    draw_stats_combo(window, game_state);
 }
 
 void draw_stats_time(WINDOW* window, Stats* stats) {
@@ -237,20 +237,20 @@ void draw_stats_time(WINDOW* window, Stats* stats) {
     mvwprintw(window, 2, 1, "time: %02lu:%.2lu", m, s);
 }
 
-void draw_stats_score(WINDOW* window, Stats* stats) {
-    mvwprintw(window, 4, 1, "score:%06lu", stats->score);
+void draw_stats_score(WINDOW* window, GameState* game_state) {
+    mvwprintw(window, 4, 1, "score:%06lu", game_state->score);
 }
 
-void draw_stats_lines(WINDOW* window, Stats* stats) {
-    mvwprintw(window, 6, 1, "lines: %lu", stats->lines);
+void draw_stats_lines(WINDOW* window, GameState* game_state) {
+    mvwprintw(window, 6, 1, "lines: %lu", game_state->lines);
 }
 
-void draw_stats_level(WINDOW* window, Stats* stats) {
-    mvwprintw(window, 8, 1, "level: %lu", stats->level);
+void draw_stats_level(WINDOW* window, GameState* game_state) {
+    mvwprintw(window, 8, 1, "level: %u", game_state->level);
 }
 
-void draw_stats_combo(WINDOW* window, Stats* stats) {
-    if (stats->combo > 0) {
-        mvwprintw(window, 10, 1, "combo: %i", stats->combo);
+void draw_stats_combo(WINDOW* window, GameState* game_state) {
+    if (game_state->combo > 0) {
+        mvwprintw(window, 10, 1, "combo: %i", game_state->combo);
     }
 }

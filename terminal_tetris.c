@@ -68,7 +68,7 @@ int main(int argc, char* argv[argc+1]) {
         frame_start = clock();
         time(&time_start);
 
-        draw_stats(stats_window, stats);
+        draw_stats(stats_window, game_state, stats);
         draw_hold_piece(hold_window, game_state);
         draw_next_piece(next_window, game_state);
         wrefresh(stats_window);
@@ -107,8 +107,8 @@ int main(int argc, char* argv[argc+1]) {
                 game_state_hold_piece(game_state);
                 break;
             case ' ':
-                game_state_drop_curr_piece(game_state, stats);
-                game_state_clear_lines(game_state, stats);
+                game_state_drop_curr_piece(game_state);
+                game_state_clear_lines(game_state);
                 game_state_load_next_piece(game_state);
                 if (game_state_check_top_out(game_state)) {
                     input_state = GAME_OVER;

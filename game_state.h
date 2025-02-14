@@ -2,19 +2,29 @@
 #define GAME_STATE_H
 #include <stdbool.h>
 #include <stdint.h>
-#include "stats.h"
 #include "piece.h"
 
 #define BOARD_H 22
 #define BOARD_W 10
 #define BUFFER_ZONE_H 2
 
+#define SPAWN_Y 1
+#define SPAWN_X (BOARD_W - 1) / 2
+
 #define SRS_NUM_ROTATIONS 8
 #define SRS_NUM_TESTS 5
 #define SRS_NUM_COORDS 2
 
+#define NUM_LEVELS 20
+#define LEVEL_LINE_REQ 10
 #define LOCK_DELAY 30
 #define MAX_MOVE_RESET 15
+
+#define SINGLE_MULT 100
+#define DOUBLE_MULT 300
+#define TRIPLE_MULT 500
+#define TETRIS_MULT 800
+#define COMBO_MULT 50
 
 
 struct GameState {
@@ -28,6 +38,11 @@ struct GameState {
     Shape next_queue[NUM_SHAPES];
     Shape board[BOARD_H][BOARD_W];
 
+    size_t score;
+    uint8_t level;
+    size_t lines;
+    int combo;
+    bool prev_clear_difficult;
     uint8_t lock_delay_timer;
     uint8_t move_reset_count;
 };
@@ -60,11 +75,11 @@ void game_state_lock_curr_piece(GameState* game_state);
 
 void game_state_apply_gravity(GameState* game_state, size_t row, size_t num_lines);
 
-void game_state_clear_line(GameState* game_state, Stats* stats, size_t row);
+void game_state_clear_line(GameState* game_state, size_t row);
 
-void game_state_clear_lines(GameState* game_state, Stats* stats);
+void game_state_clear_lines(GameState* game_state);
 
-void game_state_drop_curr_piece(GameState* game_state, Stats* stats);
+void game_state_drop_curr_piece(GameState* game_state);
 
 void game_state_move_ghost_piece(GameState* game_state, int y, int x);
 
@@ -81,5 +96,19 @@ void game_state_reset_move_reset_count(GameState* game_state);
 void game_state_increment_move_reset_count(GameState* game_state);
 
 bool game_state_check_curr_piece_grounded(GameState* game_state);
+
+size_t game_state_calc_line_clear_points(GameState* game_state, size_t lines_cleared);
+
+void game_state_update_score(GameState* game_state, size_t points);
+
+void game_state_increment_level(GameState* game_state);
+
+void game_state_update_lines(GameState* game_state, size_t num_lines);
+
+void game_state_reset_combo(GameState* game_state);
+
+void game_state_increment_combo(GameState* game_state);
+
+void game_state_set_prev_clear_difficult(GameState* game_state, bool value);
 
 #endif
