@@ -57,7 +57,7 @@ void game_state_clear_line(GameState* game_state, Stats* stats, size_t row);
 
 void game_state_clear_lines(GameState* game_state, Stats* stats);
 
-void game_state_drop_curr_piece(GameState* game_state);
+void game_state_drop_curr_piece(GameState* game_state, Stats* stats);
 
 void game_state_move_ghost_piece(GameState* game_state, int y, int x);
 

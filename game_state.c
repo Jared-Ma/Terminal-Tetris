@@ -308,17 +308,19 @@ void game_state_clear_lines(GameState* game_state, Stats* stats) {
         game_state_apply_gravity(game_state, BOARD_H - 1, num_lines);
     }
 
-    // calculate score of lines
-    // combo + back to back tetris + soft drop + hard drop
-
-    if (stats->lines > prev_lines) {
+    size_t lines_cleared = stats->lines - prev_lines;
+    if (lines_cleared > 0) {
         stats_increment_combo(stats);
     } else {
         stats_reset_combo(stats);
     }
+    size_t points = stats_calc_points(stats, lines_cleared);
+    stats_update_score(stats, points);
 }
 
-void game_state_drop_curr_piece(GameState* game_state) {
+void game_state_drop_curr_piece(GameState* game_state, Stats* stats) {
+    int prev_y = game_state->curr_piece.y;
+
     for (size_t y = game_state->curr_piece.y + 1; y < BOARD_H; ++y) {
         Piece prev_piece = game_state->curr_piece;
         game_state_move_curr_piece(game_state, y, game_state->curr_piece.x);
@@ -326,6 +328,10 @@ void game_state_drop_curr_piece(GameState* game_state) {
             break;
         }
     }
+
+    size_t hard_drop_points = 2 * (game_state->curr_piece.y - prev_y);
+    stats_update_score(stats, hard_drop_points);
+
     game_state_place_curr_piece(game_state);
 }
 

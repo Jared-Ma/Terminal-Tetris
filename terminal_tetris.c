@@ -106,7 +106,7 @@ int main(int argc, char* argv[argc+1]) {
                 game_state_hold_piece(game_state);
                 break;
             case ' ':
-                game_state_drop_curr_piece(game_state);
+                game_state_drop_curr_piece(game_state, stats);
                 game_state_clear_lines(game_state, stats);
                 game_state_load_next_piece(game_state);
                 if (game_state_check_top_out(game_state)) {

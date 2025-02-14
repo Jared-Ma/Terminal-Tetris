@@ -50,6 +50,8 @@ void draw_stats(WINDOW* window, Stats* stats);
 
 void draw_stats_time(WINDOW* window, Stats* stats);
 
+void draw_stats_score(WINDOW* window, Stats* stats);
+
 void draw_stats_lines(WINDOW* window, Stats* stats);
 
 void draw_stats_level(WINDOW* window, Stats* stats);
