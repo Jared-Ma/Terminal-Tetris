@@ -15,6 +15,9 @@
 #define CONTROLS_WINDOW_H 16
 #define CONTROLS_WINDOW_W 14
 
+#define DEBUG_WINDOW_H 24
+#define DEBUG_WINDOW_W 36
+
 
 WINDOW *draw_hold_window(int height, int width, int y, int x);
 
@@ -25,6 +28,8 @@ WINDOW *draw_board_window(int height, int width, int y, int x);
 WINDOW *draw_next_window(int height, int width, int y, int x);
 
 WINDOW *draw_controls_window(int height, int width, int y, int x);
+
+WINDOW *draw_debug_window(int height, int width, int y, int x);
 
 void draw_paused_text(WINDOW* window, GameState* game_state);
 

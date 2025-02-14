@@ -65,6 +65,14 @@ WINDOW* draw_controls_window(int height, int width, int y, int x) {
     return controls_window;
 }
 
+WINDOW* draw_debug_window(int height, int width, int y, int x) {
+    WINDOW* debug_window = newwin(height, width, y, x);
+    box(debug_window, 0, 0);
+    mvwprintw(debug_window, 0, 1, "DEBUG");
+    wrefresh(debug_window);
+    return debug_window;
+}
+
 void draw_paused_text(WINDOW* window, GameState* game_state) {
     mvwprintw(window, BOARD_WINDOW_H/2-4, BOARD_WINDOW_W/2 - 4, "        ");
     mvwprintw(window, BOARD_WINDOW_H/2-5, BOARD_WINDOW_W/2 - 4, " PAUSED ");

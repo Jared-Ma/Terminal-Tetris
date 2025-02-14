@@ -1,6 +1,7 @@
 #ifndef GAME_STATE_H
 #define GAME_STATE_H
 #include <stdbool.h>
+#include <stdint.h>
 #include "stats.h"
 #include "piece.h"
 
@@ -12,6 +13,9 @@
 #define SRS_NUM_TESTS 5
 #define SRS_NUM_COORDS 2
 
+#define LOCK_DELAY 30
+#define MAX_MOVE_RESET 15
+
 
 struct GameState {
     Piece curr_piece;
@@ -20,9 +24,12 @@ struct GameState {
     Piece ghost_piece;
     bool holding_piece;
     bool hold_allowed;
-    size_t next_index;
+    uint8_t next_index;
     Shape next_queue[NUM_SHAPES];
     Shape board[BOARD_H][BOARD_W];
+
+    uint8_t lock_delay_timer;
+    uint8_t move_reset_count;
 };
 
 typedef struct GameState GameState;
@@ -49,7 +56,7 @@ void game_state_rotate_curr_piece_srs(GameState* game_state, Rotation rotation);
 
 void game_state_rotate_curr_piece(GameState* game_state, Rotation rotation);
 
-void game_state_place_curr_piece(GameState* game_state);
+void game_state_lock_curr_piece(GameState* game_state);
 
 void game_state_apply_gravity(GameState* game_state, size_t row, size_t num_lines);
 
@@ -64,5 +71,15 @@ void game_state_move_ghost_piece(GameState* game_state, int y, int x);
 void game_state_update_ghost_piece(GameState* game_state);
 
 bool game_state_check_top_out(GameState* game_state);
+
+void game_state_reset_lock_delay_timer(GameState* game_state);
+
+void game_state_decrement_lock_delay_timer(GameState* game_state);
+
+void game_state_reset_move_reset_count(GameState* game_state);
+
+void game_state_increment_move_reset_count(GameState* game_state);
+
+bool game_state_check_curr_piece_grounded(GameState* game_state);
 
 #endif

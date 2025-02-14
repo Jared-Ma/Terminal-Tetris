@@ -53,7 +53,9 @@ GameState game_state_get(void) {
         .hold_allowed = true,
         .next_index = 0,
         .next_queue = { 0 },
-        .board = {{ 0 }}
+        .board = {{ 0 }},
+        .lock_delay_timer = LOCK_DELAY,
+        .move_reset_count = 0
     };
     return game_state;
 }
@@ -104,7 +106,7 @@ void game_state_debug_print(GameState* game_state) {
         fprintf(
             debug_log,
             "\tholding_piece = %i\n"
-            "\tnext_index = %lu\n"
+            "\tnext_index = %u\n"
             "\tnext_shapes = ",
             game_state->holding_piece,
             game_state->next_index
@@ -125,6 +127,13 @@ void game_state_debug_print(GameState* game_state) {
             }
             fprintf(debug_log, "]\n");
         }
+        fprintf(
+            debug_log,
+            "\tlock_delay_timer = %u\n"
+            "\tmove_reset_count = %u\n",
+            game_state->lock_delay_timer,
+            game_state->move_reset_count
+        );
         fprintf(debug_log, "}\n");
     }
 }
@@ -152,6 +161,7 @@ void game_state_load_next_piece(GameState* game_state) {
     }
     game_state->next_piece = piece_get(game_state->next_queue[game_state->next_index], SPAWN_Y, SPAWN_X);
     game_state_update_ghost_piece(game_state);
+    game_state_reset_move_reset_count(game_state);
 }
 
 void game_state_hold_piece(GameState* game_state) {
@@ -201,6 +211,10 @@ void game_state_move_curr_piece(GameState* game_state, int y, int x) {
     if (!game_state_check_collision(game_state, test_piece)) {
         piece_move(&game_state->curr_piece, y, x);
         game_state_update_ghost_piece(game_state);
+        if (game_state->lock_delay_timer < LOCK_DELAY && game_state->move_reset_count < MAX_MOVE_RESET) {
+            game_state_reset_lock_delay_timer(game_state);
+            game_state_increment_move_reset_count(game_state);
+        }
     } 
 }
 
@@ -238,6 +252,10 @@ void game_state_rotate_curr_piece_srs(GameState* game_state, Rotation rotation) 
         game_state_rotate_curr_piece(game_state, rotation);
         if (game_state->curr_piece.r != curr_piece_copy.r) {
             game_state_update_ghost_piece(game_state);
+            if (game_state->lock_delay_timer < LOCK_DELAY && game_state->move_reset_count < MAX_MOVE_RESET) {
+                game_state_reset_lock_delay_timer(game_state);
+                game_state_increment_move_reset_count(game_state);
+            }
             return;
         }
         game_state->curr_piece = curr_piece_copy;
@@ -252,7 +270,7 @@ void game_state_rotate_curr_piece(GameState* game_state, Rotation rotation) {
     } 
 }
 
-void game_state_place_curr_piece(GameState* game_state) {
+void game_state_lock_curr_piece(GameState* game_state) {
     int top_left_y = game_state->curr_piece.y - game_state->curr_piece.n / 2; 
     int top_left_x = game_state->curr_piece.x - game_state->curr_piece.n / 2;
 
@@ -332,7 +350,7 @@ void game_state_drop_curr_piece(GameState* game_state, Stats* stats) {
     size_t hard_drop_points = 2 * (game_state->curr_piece.y - prev_y);
     stats_update_score(stats, hard_drop_points);
 
-    game_state_place_curr_piece(game_state);
+    game_state_lock_curr_piece(game_state);
 }
 
 void game_state_move_ghost_piece(GameState* game_state, int y, int x) {
@@ -366,6 +384,50 @@ bool game_state_check_top_out(GameState* game_state) {
                 game_state->board[top_left_y + i][top_left_x + j] > 0
             ) {
                 return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+void game_state_reset_lock_delay_timer(GameState* game_state) {
+    if (game_state) {
+        game_state->lock_delay_timer = LOCK_DELAY;
+    }
+}
+
+void game_state_decrement_lock_delay_timer(GameState* game_state) {
+    if (game_state) {
+        game_state->lock_delay_timer -= (game_state->lock_delay_timer > 0) ? 1 : 0;
+    }
+}
+
+void game_state_reset_move_reset_count(GameState* game_state) {
+    if (game_state) {
+        game_state->move_reset_count = 0;
+    }
+}
+
+void game_state_increment_move_reset_count(GameState* game_state) {
+    if (game_state) {
+        game_state->move_reset_count += (game_state->move_reset_count < MAX_MOVE_RESET) ? 1 : 0;
+    }
+}
+
+bool game_state_check_curr_piece_grounded(GameState* game_state) {
+    int top_left_y = game_state->curr_piece.y - game_state->curr_piece.n / 2; 
+    int top_left_x = game_state->curr_piece.x - game_state->curr_piece.n / 2;
+
+    for (size_t i = 0; i < game_state->curr_piece.n; ++i) {
+        for (size_t j = 0; j < game_state->curr_piece.n; ++j) {
+            if (game_state->curr_piece.M[game_state->curr_piece.r][i][j] == 1) {
+                if (
+                    top_left_y + i + 1 > BOARD_H - 1 ||
+                    game_state->board[top_left_y + i + 1][top_left_x + j] > 0
+                ) {
+                    return true;
+                }
             }
         }
     }

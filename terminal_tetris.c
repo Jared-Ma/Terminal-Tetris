@@ -51,6 +51,7 @@ int main(int argc, char* argv[argc+1]) {
     WINDOW* board_window = draw_board_window(BOARD_WINDOW_H, BOARD_WINDOW_W, 0, 14);
     WINDOW* next_window = draw_next_window(NEXT_WINDOW_H, NEXT_WINDOW_W, BUFFER_ZONE_H, 36);
     WINDOW* controls_window = draw_controls_window(CONTROLS_WINDOW_H, CONTROLS_WINDOW_W, 6 + BUFFER_ZONE_H, 36);
+    WINDOW* debug_window = draw_debug_window(DEBUG_WINDOW_H, DEBUG_WINDOW_W, 0, 50);
     
     keypad(board_window, true);     // Enables arrow key input
     nodelay(board_window, true);    // wgetch() doesn't block
@@ -141,6 +142,25 @@ int main(int argc, char* argv[argc+1]) {
             case ESC:
                 running = false;
                 break;
+            }
+        }
+        
+        if (input_state == PLAYING) {
+            clear_window(debug_window);
+            if (game_state_check_curr_piece_grounded(game_state)) {
+                mvwprintw(debug_window, 1, 1, "touching: T");
+                game_state_decrement_lock_delay_timer(game_state);
+            } else {
+                mvwprintw(debug_window, 1, 1, "touching: F");
+                game_state_reset_lock_delay_timer(game_state);
+            }
+            mvwprintw(debug_window, 2, 1, "lock_delay_timer: %u", game_state->lock_delay_timer);
+            mvwprintw(debug_window, 3, 1, "move_reset_count: %u", game_state->move_reset_count);
+            wrefresh(debug_window);
+    
+            if (game_state->lock_delay_timer == 0) {
+                game_state_lock_curr_piece(game_state);
+                game_state_load_next_piece(game_state);
             }
         }
 
