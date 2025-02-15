@@ -167,6 +167,9 @@ int main(int argc, char* argv[argc+1]) {
                 game_state_lock_curr_piece(game_state);
                 game_state_clear_lines(game_state);
                 game_state_load_next_piece(game_state);
+                if (game_state_check_top_out(game_state)) {
+                    input_state = GAME_OVER;
+                }
             }
             game_state_increment_fall_frame_count(game_state);
         }
