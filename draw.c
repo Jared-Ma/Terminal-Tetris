@@ -120,6 +120,7 @@ void draw_board_state(WINDOW* window, GameState* game_state) {
     draw_board_stack(window, game_state);
     draw_ghost_piece(window, game_state);
     draw_curr_piece(window, game_state);
+    draw_score(window, game_state);
 }
 
 void draw_board_stack(WINDOW* window, GameState* game_state) {
@@ -213,6 +214,10 @@ void draw_ghost_piece(WINDOW* window, GameState* game_state) {
         
         wattroff(window, COLOR_PAIR(game_state->ghost_piece.shape));
     }
+}
+
+void draw_score(WINDOW* window, GameState* game_state) {
+    mvwprintw(window, getmaxy(window)-1, getmaxx(window)/2-4, "%08lu", game_state->score);
 }
 
 void draw_stats(WINDOW* window, GameState* game_state, Stats* stats) {
