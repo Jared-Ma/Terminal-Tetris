@@ -21,6 +21,7 @@
 #define LEVEL_LINE_REQ 10
 #define LOCK_DELAY 30
 #define MAX_MOVE_RESET 15
+#define SLOW_DROP_MULT 20
 
 #define SINGLE_MULT 100
 #define DOUBLE_MULT 300
@@ -48,8 +49,7 @@ struct GameState {
     
     uint8_t lock_delay_timer;
     uint8_t move_reset_count;
-    size_t fall_count;
-    size_t fall_frame_count;
+    float fall_value;
 };
 
 typedef struct GameState GameState;
@@ -104,11 +104,11 @@ bool game_state_check_curr_piece_grounded(GameState* game_state);
 
 size_t game_state_calc_line_clear_points(GameState* game_state, size_t lines_cleared);
 
-void game_state_update_score(GameState* game_state, size_t points);
+void game_state_increase_score(GameState* game_state, size_t points);
 
 void game_state_increment_level(GameState* game_state);
 
-void game_state_update_lines(GameState* game_state, size_t num_lines);
+void game_state_increase_lines(GameState* game_state, size_t num_lines);
 
 void game_state_reset_combo(GameState* game_state);
 
@@ -116,13 +116,9 @@ void game_state_increment_combo(GameState* game_state);
 
 void game_state_set_prev_clear_difficult(GameState* game_state, bool value);
 
-void game_state_reset_fall_count(GameState* game_state);
+void game_state_reset_fall_value(GameState* game_state);
 
-void game_state_increment_fall_count(GameState* game_state);
-
-void game_state_reset_fall_frame_count(GameState* game_state);
-
-void game_state_increment_fall_frame_count(GameState* game_state);
+void game_state_increase_fall_value(GameState* game_state, size_t fall_speed_mult);
 
 void game_state_apply_fall_speed(GameState* game_state);
 

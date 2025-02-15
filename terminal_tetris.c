@@ -148,9 +148,10 @@ int main(int argc, char* argv[argc+1]) {
         if (input_state == PLAYING) {
             clear_window(debug_window);
             game_state_apply_fall_speed(game_state);
-            mvwprintw(debug_window, 4, 1, "fall_count: %lu", game_state->fall_count);
-            mvwprintw(debug_window, 5, 1, "fall_frame_count: %lu", game_state->fall_frame_count);
+            mvwprintw(debug_window, 4, 1, "fall_value: %f", game_state->fall_value);
             mvwprintw(debug_window, 22, 1, "frame_count: %lu", stats->frame_count);
+            mvwprintw(debug_window, 6, 1, "piece.y: %i", game_state->curr_piece.y);
+            mvwprintw(debug_window, 7, 1, "piece.x: %i", game_state->curr_piece.x);
 
             if (game_state_check_curr_piece_grounded(game_state)) {
                 mvwprintw(debug_window, 1, 1, "touching: T");
@@ -171,7 +172,12 @@ int main(int argc, char* argv[argc+1]) {
                     input_state = GAME_OVER;
                 }
             }
-            game_state_increment_fall_frame_count(game_state);
+            
+            if (input == KEY_DOWN) {
+                game_state_increase_fall_value(game_state, SLOW_DROP_MULT);
+            } else {
+                game_state_increase_fall_value(game_state, 1);
+            }
         }
 
         frame_end = clock();
@@ -184,7 +190,7 @@ int main(int argc, char* argv[argc+1]) {
         if (input_state == PLAYING) {
             time(&time_end);
             double time_s = difftime(time_end, time_start);
-            stats_update_time(stats, time_s);
+            stats_increase_time(stats, time_s);
         }
 
         stats_increment_frame_count(stats);
