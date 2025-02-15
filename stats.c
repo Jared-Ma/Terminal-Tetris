@@ -50,7 +50,7 @@ void stats_restart(Stats* stats) {
     }
 }
 
-void stats_update_time(Stats* stats, double seconds) {
+void stats_increase_time(Stats* stats, double seconds) {
     if (stats) {
         stats->time += seconds;
     }

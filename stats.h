@@ -22,7 +22,7 @@ void stats_debug_print(Stats* stats);
 
 void stats_restart(Stats* stats);
 
-void stats_update_time(Stats* stats, double seconds);
+void stats_increase_time(Stats* stats, double seconds);
 
 void stats_increment_frame_count(Stats* stats);
 
