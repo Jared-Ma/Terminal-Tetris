@@ -239,7 +239,7 @@ void draw_stats_time(WINDOW* window, Stats* stats) {
     size_t h = stats->time / 3600;
     size_t m = (stats->time - 3600*h) / 60;
     size_t s = stats->time - 3600*h - 60*m;
-    mvwprintw(window, 2, 1, "time: %02lu:%.2lu", m, s);
+    mvwprintw(window, 2, 1, "time: %02lu:%02lu", m, s);
 }
 
 void draw_stats_score(WINDOW* window, GameState* game_state) {
