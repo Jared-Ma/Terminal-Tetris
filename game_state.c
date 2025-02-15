@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <time.h>
+#include <math.h>
 #include "game_state.h"
 #include "piece.h"
 #include "logger.h"
@@ -39,27 +40,10 @@ const int SRS_TABLE_O[SRS_NUM_ROTATIONS][SRS_NUM_TESTS][SRS_NUM_COORDS] = {
     {{+1, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}}
 };
 
-const float SPEED_CURVE_TABLE[NUM_LEVELS] = {
-    0.01667, 
-    0.021017, 
-    0.026977, 
-    0.035256, 
-    0.04693,
-    0.06361, 
-    0.0879, 
-    0.1236, 
-    0.1775, 
-    0.2598, 
-    0.388, 
-    0.59, 
-    0.92, 
-    1.46, 
-    2.36, 
-    3.91, 
-    6.61, 
-    11.43, 
-    20.23, 
-    36.6
+const float FALL_SPEED_TABLE[NUM_LEVELS] = {
+    1.000, 0.793, 0.618, 0.473, 0.355,
+    0.262, 0.190, 0.135, 0.094, 0.064,
+    0.043, 0.028, 0.018, 0.011, 0.007
 };
 
 GameState game_state_get(void) {
@@ -79,7 +63,9 @@ GameState game_state_get(void) {
         .combo = -1,
         .prev_clear_difficult = false,
         .lock_delay_timer = LOCK_DELAY,
-        .move_reset_count = 0
+        .move_reset_count = 0,
+        .fall_count = 0,
+        .fall_frame_count = 0
     };
     return game_state;
 }
@@ -157,14 +143,20 @@ void game_state_debug_print(GameState* game_state) {
             "\tlevel = %u\n"
             "\tlines = %lu\n"
             "\tcombo = %i\n"
+            "\tprev_clear_difficult = %i\n"
             "\tlock_delay_timer = %u\n"
-            "\tmove_reset_count = %u\n",
+            "\tmove_reset_count = %u\n"
+            "\tfall_count = %lu\n"
+            "\tfall_frame_count = %lu\n",
             game_state->score,
             game_state->level,
             game_state->lines,
             game_state->combo,
+            game_state->prev_clear_difficult,
             game_state->lock_delay_timer,
-            game_state->move_reset_count
+            game_state->move_reset_count,
+            game_state->fall_count,
+            game_state->fall_frame_count
         );
         fprintf(debug_log, "}\n");
     }
@@ -194,6 +186,8 @@ void game_state_load_next_piece(GameState* game_state) {
     game_state->next_piece = piece_get(game_state->next_queue[game_state->next_index], SPAWN_Y, SPAWN_X);
     game_state_update_ghost_piece(game_state);
     game_state_reset_move_reset_count(game_state);
+    game_state_reset_fall_count(game_state);
+    game_state_reset_fall_frame_count(game_state);
 }
 
 void game_state_hold_piece(GameState* game_state) {
@@ -317,7 +311,7 @@ void game_state_lock_curr_piece(GameState* game_state) {
     game_state->hold_allowed = true;
 }
 
-void game_state_apply_gravity(GameState* game_state, size_t row, size_t num_lines) {
+void game_state_apply_stack_gravity(GameState* game_state, size_t row, size_t num_lines) {
     for (size_t i = row; i >= num_lines; --i) {
         for (size_t j = 0; j < BOARD_W; ++j) {
             game_state->board[i][j] = game_state->board[i - num_lines][j];
@@ -349,13 +343,13 @@ void game_state_clear_lines(GameState* game_state) {
             lines_cleared++;
             num_lines++;
         } else if (num_lines > 0) {
-            game_state_apply_gravity(game_state, i-1, num_lines);
+            game_state_apply_stack_gravity(game_state, i-1, num_lines);
             num_lines = 0;
         }
     }
 
     if (num_lines > 0) {
-        game_state_apply_gravity(game_state, BOARD_H - 1, num_lines);
+        game_state_apply_stack_gravity(game_state, BOARD_H - 1, num_lines);
     }
 
     game_state_update_lines(game_state, lines_cleared);
@@ -385,7 +379,6 @@ void game_state_drop_curr_piece(GameState* game_state) {
     }
 
     game_state_update_score(game_state, 2*(game_state->curr_piece.y - prev_y));
-    game_state_lock_curr_piece(game_state);
 }
 
 void game_state_move_ghost_piece(GameState* game_state, int y, int x) {
@@ -532,5 +525,38 @@ void game_state_reset_move_reset_count(GameState* game_state) {
 void game_state_increment_move_reset_count(GameState* game_state) {
     if (game_state) {
         game_state->move_reset_count += (game_state->move_reset_count < MAX_MOVE_RESET) ? 1 : 0;
+    }
+}
+
+void game_state_reset_fall_count(GameState* game_state) {
+    if (game_state) {
+        game_state->fall_count = 0;
+    }
+}
+
+void game_state_increment_fall_count(GameState* game_state) {
+    if (game_state) {
+        game_state->fall_count++;
+    }
+}
+
+void game_state_reset_fall_frame_count(GameState* game_state) {
+    if (game_state) {
+        game_state->fall_frame_count = 0;
+    }
+}
+
+void game_state_increment_fall_frame_count(GameState* game_state) {
+    if (game_state) {
+        game_state->fall_frame_count++;
+    }
+}
+
+void game_state_apply_fall_speed(GameState* game_state) {
+    float fall_speed_frames_per_line = FALL_SPEED_TABLE[game_state->level - 1] * TARGET_FPS;
+    size_t fall_frame_count_threshold = round((game_state->fall_count + 1) * fall_speed_frames_per_line);
+    if (game_state->fall_frame_count >= fall_frame_count_threshold) {
+        game_state_increment_fall_count(game_state);
+        game_state_move_curr_piece(game_state, game_state->curr_piece.y + 1, game_state->curr_piece.x);
     }
 }

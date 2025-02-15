@@ -9,7 +9,6 @@
 #include "stats.h"
 #include "logger.h"
 
-#define TARGET_FPS 60
 #define TARGET_FRAME_TIME_MS (1e3 / TARGET_FPS)
 
 #define ESC '\e'
@@ -108,6 +107,7 @@ int main(int argc, char* argv[argc+1]) {
                 break;
             case ' ':
                 game_state_drop_curr_piece(game_state);
+                game_state_lock_curr_piece(game_state);
                 game_state_clear_lines(game_state);
                 game_state_load_next_piece(game_state);
                 if (game_state_check_top_out(game_state)) {
@@ -147,6 +147,11 @@ int main(int argc, char* argv[argc+1]) {
         
         if (input_state == PLAYING) {
             clear_window(debug_window);
+            game_state_apply_fall_speed(game_state);
+            mvwprintw(debug_window, 4, 1, "fall_count: %lu", game_state->fall_count);
+            mvwprintw(debug_window, 5, 1, "fall_frame_count: %lu", game_state->fall_frame_count);
+            mvwprintw(debug_window, 22, 1, "frame_count: %lu", stats->frame_count);
+
             if (game_state_check_curr_piece_grounded(game_state)) {
                 mvwprintw(debug_window, 1, 1, "touching: T");
                 game_state_decrement_lock_delay_timer(game_state);
@@ -160,8 +165,10 @@ int main(int argc, char* argv[argc+1]) {
     
             if (game_state->lock_delay_timer == 0) {
                 game_state_lock_curr_piece(game_state);
+                game_state_clear_lines(game_state);
                 game_state_load_next_piece(game_state);
             }
+            game_state_increment_fall_frame_count(game_state);
         }
 
         frame_end = clock();

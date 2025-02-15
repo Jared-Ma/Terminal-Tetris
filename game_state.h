@@ -1,13 +1,15 @@
 #ifndef GAME_STATE_H
 #define GAME_STATE_H
+#include <stdlib.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include "piece.h"
 
+#define TARGET_FPS 60
+
 #define BOARD_H 22
 #define BOARD_W 10
 #define BUFFER_ZONE_H 2
-
 #define SPAWN_Y 1
 #define SPAWN_X (BOARD_W - 1) / 2
 
@@ -15,7 +17,7 @@
 #define SRS_NUM_TESTS 5
 #define SRS_NUM_COORDS 2
 
-#define NUM_LEVELS 20
+#define NUM_LEVELS 15
 #define LEVEL_LINE_REQ 10
 #define LOCK_DELAY 30
 #define MAX_MOVE_RESET 15
@@ -43,8 +45,11 @@ struct GameState {
     size_t lines;
     int combo;
     bool prev_clear_difficult;
+    
     uint8_t lock_delay_timer;
     uint8_t move_reset_count;
+    size_t fall_count;
+    size_t fall_frame_count;
 };
 
 typedef struct GameState GameState;
@@ -73,7 +78,7 @@ void game_state_rotate_curr_piece(GameState* game_state, Rotation rotation);
 
 void game_state_lock_curr_piece(GameState* game_state);
 
-void game_state_apply_gravity(GameState* game_state, size_t row, size_t num_lines);
+void game_state_apply_stack_gravity(GameState* game_state, size_t row, size_t num_lines);
 
 void game_state_clear_line(GameState* game_state, size_t row);
 
@@ -110,5 +115,15 @@ void game_state_reset_combo(GameState* game_state);
 void game_state_increment_combo(GameState* game_state);
 
 void game_state_set_prev_clear_difficult(GameState* game_state, bool value);
+
+void game_state_reset_fall_count(GameState* game_state);
+
+void game_state_increment_fall_count(GameState* game_state);
+
+void game_state_reset_fall_frame_count(GameState* game_state);
+
+void game_state_increment_fall_frame_count(GameState* game_state);
+
+void game_state_apply_fall_speed(GameState* game_state);
 
 #endif

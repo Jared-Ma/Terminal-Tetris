@@ -2,7 +2,7 @@ CC=gcc
 CFLAGS=-Wall -c
 EXE=terminal_tetris
 OBJS=terminal_tetris.o game_state.o draw.o piece.o stats.o logger.o
-LIBS= -lncurses
+LIBS= -lncurses -lm
 
 all: $(EXE)
 
