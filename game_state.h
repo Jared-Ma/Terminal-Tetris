@@ -21,7 +21,7 @@
 #define LEVEL_LINE_REQ 10
 #define LOCK_DELAY 30
 #define MAX_MOVE_RESET 15
-#define SLOW_DROP_MULT 20
+#define SOFT_DROP_MULT 20
 
 #define SINGLE_MULT 100
 #define DOUBLE_MULT 300
@@ -49,7 +49,8 @@ struct GameState {
     
     uint8_t lock_delay_timer;
     uint8_t move_reset_count;
-    float fall_value;
+    float gravity_value;
+    bool soft_drop;
 };
 
 typedef struct GameState GameState;
@@ -84,7 +85,7 @@ void game_state_clear_line(GameState* game_state, size_t row);
 
 void game_state_clear_lines(GameState* game_state);
 
-void game_state_drop_curr_piece(GameState* game_state);
+void game_state_hard_drop_curr_piece(GameState* game_state);
 
 void game_state_move_ghost_piece(GameState* game_state, int y, int x);
 
@@ -116,10 +117,16 @@ void game_state_increment_combo(GameState* game_state);
 
 void game_state_set_prev_clear_difficult(GameState* game_state, bool value);
 
-void game_state_reset_fall_value(GameState* game_state);
+void game_state_reset_gravity_value(GameState* game_state);
 
-void game_state_increase_fall_value(GameState* game_state, size_t fall_speed_mult);
+void game_state_increase_gravity_value(GameState* game_state, float value);
 
-void game_state_apply_fall_speed(GameState* game_state);
+void game_state_set_soft_drop(GameState* game_state, bool value);
+
+void game_state_apply_gravity(GameState* game_state);
+
+void game_state_soft_drop_curr_piece(GameState* game_state);
+
+void game_state_apply_soft_drop_gravity(GameState* game_state);
 
 #endif

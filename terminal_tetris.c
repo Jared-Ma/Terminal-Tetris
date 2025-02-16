@@ -97,7 +97,7 @@ int main(int argc, char* argv[argc+1]) {
                 game_state_move_curr_piece(game_state, game_state->curr_piece.y, game_state->curr_piece.x + 1);
                 break;
             case KEY_DOWN:
-                game_state_move_curr_piece(game_state, game_state->curr_piece.y + 1, game_state->curr_piece.x);
+                game_state_soft_drop_curr_piece(game_state);
                 break;
             case KEY_UP:
                 game_state_move_curr_piece(game_state, game_state->curr_piece.y - 1, game_state->curr_piece.x);
@@ -106,7 +106,7 @@ int main(int argc, char* argv[argc+1]) {
                 game_state_hold_piece(game_state);
                 break;
             case ' ':
-                game_state_drop_curr_piece(game_state);
+                game_state_hard_drop_curr_piece(game_state);
                 game_state_lock_curr_piece(game_state);
                 game_state_clear_lines(game_state);
                 game_state_load_next_piece(game_state);
@@ -146,23 +146,17 @@ int main(int argc, char* argv[argc+1]) {
         }
         
         if (input_state == PLAYING) {
-            clear_window(debug_window);
-            game_state_apply_fall_speed(game_state);
-            mvwprintw(debug_window, 4, 1, "fall_value: %f", game_state->fall_value);
-            mvwprintw(debug_window, 22, 1, "frame_count: %lu", stats->frame_count);
-            mvwprintw(debug_window, 6, 1, "piece.y: %i", game_state->curr_piece.y);
-            mvwprintw(debug_window, 7, 1, "piece.x: %i", game_state->curr_piece.x);
-
+            if (game_state->soft_drop == true) {
+                game_state_apply_soft_drop_gravity(game_state);
+            } else {
+                game_state_apply_gravity(game_state);
+            }
+            
             if (game_state_check_curr_piece_grounded(game_state)) {
-                mvwprintw(debug_window, 1, 1, "touching: T");
                 game_state_decrement_lock_delay_timer(game_state);
             } else {
-                mvwprintw(debug_window, 1, 1, "touching: F");
                 game_state_reset_lock_delay_timer(game_state);
             }
-            mvwprintw(debug_window, 2, 1, "lock_delay_timer: %u", game_state->lock_delay_timer);
-            mvwprintw(debug_window, 3, 1, "move_reset_count: %u", game_state->move_reset_count);
-            wrefresh(debug_window);
     
             if (game_state->lock_delay_timer == 0) {
                 game_state_lock_curr_piece(game_state);
@@ -172,13 +166,17 @@ int main(int argc, char* argv[argc+1]) {
                     input_state = GAME_OVER;
                 }
             }
-            
-            if (input == KEY_DOWN) {
-                game_state_increase_fall_value(game_state, SLOW_DROP_MULT);
-            } else {
-                game_state_increase_fall_value(game_state, 1);
-            }
         }
+
+        clear_window(debug_window);
+        mvwprintw(debug_window, 22, 1, "frame_count: %lu", stats->frame_count);
+        mvwprintw(debug_window, 1, 1, "touching: %i", game_state_check_curr_piece_grounded(game_state));
+        mvwprintw(debug_window, 2, 1, "lock_delay_timer: %u", game_state->lock_delay_timer);
+        mvwprintw(debug_window, 3, 1, "move_reset_count: %u", game_state->move_reset_count);
+        mvwprintw(debug_window, 4, 1, "gravity_value: %f", game_state->gravity_value);
+        mvwprintw(debug_window, 5, 1, "piece.y: %i", game_state->curr_piece.y);
+        mvwprintw(debug_window, 6, 1, "piece.x: %i", game_state->curr_piece.x);
+        wrefresh(debug_window);
 
         frame_end = clock();
         double frame_time_ms = (double)(frame_end - frame_start) * 1e3 / CLOCKS_PER_SEC;

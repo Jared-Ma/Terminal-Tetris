@@ -40,7 +40,7 @@ const int SRS_TABLE_O[SRS_NUM_ROTATIONS][SRS_NUM_TESTS][SRS_NUM_COORDS] = {
     {{+1, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}}
 };
 
-const float FALL_SPEED_TABLE[NUM_LEVELS] = {
+const float GRAVITY_TABLE[NUM_LEVELS] = {
     0.016667, 
     0.021017, 
     0.026977, 
@@ -76,7 +76,8 @@ GameState game_state_get(void) {
         .prev_clear_difficult = false,
         .lock_delay_timer = LOCK_DELAY,
         .move_reset_count = 0,
-        .fall_value = 0.0
+        .gravity_value = 0.0,
+        .soft_drop = false
     };
     return game_state;
 }
@@ -157,7 +158,8 @@ void game_state_debug_print(GameState* game_state) {
             "\tprev_clear_difficult = %i\n"
             "\tlock_delay_timer = %u\n"
             "\tmove_reset_count = %u\n"
-            "\tfall_value = %f\n",
+            "\tgravity_value = %f\n"
+            "\tsoft_drop = %i\n",
             game_state->score,
             game_state->level,
             game_state->lines,
@@ -165,7 +167,8 @@ void game_state_debug_print(GameState* game_state) {
             game_state->prev_clear_difficult,
             game_state->lock_delay_timer,
             game_state->move_reset_count,
-            game_state->fall_value
+            game_state->gravity_value,
+            game_state->soft_drop
         );
         fprintf(debug_log, "}\n");
     }
@@ -193,9 +196,11 @@ void game_state_load_next_piece(GameState* game_state) {
         game_state_gen_next_queue(game_state);
     }
     game_state->next_piece = piece_get(game_state->next_queue[game_state->next_index], SPAWN_Y, SPAWN_X);
+    
+    // Reset curr piece properties
     game_state_update_ghost_piece(game_state);
     game_state_reset_move_reset_count(game_state);
-    game_state_reset_fall_value(game_state);
+    game_state_reset_gravity_value(game_state);
 }
 
 void game_state_hold_piece(GameState* game_state) {
@@ -375,7 +380,7 @@ void game_state_clear_lines(GameState* game_state) {
     }
 }
 
-void game_state_drop_curr_piece(GameState* game_state) {
+void game_state_hard_drop_curr_piece(GameState* game_state) {
     int prev_y = game_state->curr_piece.y;
 
     for (size_t y = game_state->curr_piece.y + 1; y < BOARD_H; ++y) {
@@ -536,21 +541,43 @@ void game_state_increment_move_reset_count(GameState* game_state) {
     }
 }
 
-void game_state_reset_fall_value(GameState* game_state) {
+void game_state_reset_gravity_value(GameState* game_state) {
     if (game_state) {
-        game_state->fall_value = 0;
+        game_state->gravity_value = 0;
     }
 }
 
-void game_state_increase_fall_value(GameState* game_state, size_t fall_speed_mult) {
+void game_state_increase_gravity_value(GameState* game_state, float value) {
     if (game_state) {
-        game_state->fall_value += fall_speed_mult * FALL_SPEED_TABLE[game_state->level - 1];
+        game_state->gravity_value += value;
     }
 }
 
-void game_state_apply_fall_speed(GameState* game_state) {
-    while (game_state->fall_value >= 1.0) {
-        game_state->fall_value -= 1.0;
+void game_state_set_soft_drop(GameState* game_state, bool value) {
+    if (game_state) {
+        game_state->soft_drop = value;
+    }
+}
+
+void game_state_apply_gravity(GameState* game_state) {
+    game_state_increase_gravity_value(game_state, GRAVITY_TABLE[game_state->level - 1]);
+    while (game_state->gravity_value >= 1.0) {
+        game_state->gravity_value -= 1.0;
         game_state_move_curr_piece(game_state, game_state->curr_piece.y + 1, game_state->curr_piece.x);
     }
+}
+
+void game_state_soft_drop_curr_piece(GameState* game_state) {
+    int prev_y = game_state->curr_piece.y;
+    game_state_move_curr_piece(game_state, game_state->curr_piece.y + 1, game_state->curr_piece.x);
+    game_state_increase_score(game_state, game_state->curr_piece.y - prev_y);
+    game_state_set_soft_drop(game_state, true);
+}
+
+void game_state_apply_soft_drop_gravity(GameState* game_state) {
+    int prev_y = game_state->curr_piece.y;
+    game_state_increase_gravity_value(game_state, SOFT_DROP_MULT * GRAVITY_TABLE[game_state->level - 1]);
+    game_state_apply_gravity(game_state);
+    game_state_increase_score(game_state, game_state->curr_piece.y - prev_y);
+    game_state_set_soft_drop(game_state, false);
 }
