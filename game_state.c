@@ -40,7 +40,7 @@ const int SRS_TABLE_O[SRS_NUM_ROTATIONS][SRS_NUM_TESTS][SRS_NUM_COORDS] = {
     {{+1, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}}
 };
 
-const float GRAVITY_TABLE[NUM_LEVELS] = {
+const float GRAVITY_TABLE[MAX_GRAVITY_LEVEL] = {
     0.016667, 
     0.021017, 
     0.026977, 
@@ -575,7 +575,8 @@ void game_state_increase_score(GameState* game_state, size_t points) {
 
 void game_state_increment_level(GameState* game_state) {
     if (game_state) {
-        game_state->level += (game_state->level < NUM_LEVELS) ? 1 : 0;
+        // game_state->level += (game_state->level < NUM_LEVELS) ? 1 : 0;
+        game_state->level++;
     }
 }
 
@@ -661,7 +662,11 @@ void game_state_set_soft_drop(GameState* game_state, bool value) {
 }
 
 void game_state_apply_gravity(GameState* game_state) {
-    game_state_increase_gravity_value(game_state, GRAVITY_TABLE[game_state->level - 1]);
+    if (game_state->level > MAX_GRAVITY_LEVEL) {
+        game_state_increase_gravity_value(game_state, GRAVITY_TABLE[MAX_GRAVITY_LEVEL - 1]);
+    } else {
+        game_state_increase_gravity_value(game_state, GRAVITY_TABLE[game_state->level - 1]);
+    }
     while (game_state->gravity_value >= 1.0) {
         game_state->gravity_value -= 1.0;
         game_state_move_curr_piece(game_state, game_state->curr_piece.y + 1, game_state->curr_piece.x);
@@ -671,15 +676,19 @@ void game_state_apply_gravity(GameState* game_state) {
 void game_state_soft_drop_curr_piece(GameState* game_state) {
     int prev_y = game_state->curr_piece.y;
     game_state_move_curr_piece(game_state, game_state->curr_piece.y + 1, game_state->curr_piece.x);
-    game_state_increase_score(game_state, SOFT_DROP_MULT*(game_state->curr_piece.y - prev_y));
+    game_state_increase_score(game_state, SOFT_DROP_MULT * (game_state->curr_piece.y - prev_y));
     game_state_set_soft_drop(game_state, true);
 }
 
 void game_state_apply_soft_drop_gravity(GameState* game_state) {
     int prev_y = game_state->curr_piece.y;
-    game_state_increase_gravity_value(game_state, SOFT_DROP_GRAVITY_MULT * GRAVITY_TABLE[game_state->level - 1]);
+    if (game_state->level > MAX_GRAVITY_LEVEL) {
+        game_state_increase_gravity_value(game_state, SOFT_DROP_GRAVITY_MULT * GRAVITY_TABLE[MAX_GRAVITY_LEVEL - 1]);
+    } else {
+        game_state_increase_gravity_value(game_state, SOFT_DROP_GRAVITY_MULT * GRAVITY_TABLE[game_state->level - 1]);
+    }
     game_state_apply_gravity(game_state);
-    game_state_increase_score(game_state, SOFT_DROP_MULT*(game_state->curr_piece.y - prev_y));
+    game_state_increase_score(game_state, SOFT_DROP_MULT * (game_state->curr_piece.y - prev_y));
     game_state_set_soft_drop(game_state, false);
 }
 

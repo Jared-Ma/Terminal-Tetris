@@ -17,7 +17,7 @@
 #define SRS_NUM_TESTS 5
 #define SRS_NUM_COORDS 2
 
-#define NUM_LEVELS 15
+#define MAX_GRAVITY_LEVEL 15
 #define LEVEL_LINE_REQ 10
 #define LOCK_DELAY 30
 #define MAX_MOVE_RESET 15
