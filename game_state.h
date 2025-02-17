@@ -27,6 +27,13 @@
 #define DOUBLE_MULT 300
 #define TRIPLE_MULT 500
 #define TETRIS_MULT 800
+#define T_SPIN_MULT 400
+#define T_SPIN_SINGLE_MULT 800
+#define T_SPIN_DOUBLE_MULT 1200
+#define T_SPIN_TRIPLE_MULT 1600
+#define T_SPIN_MINI_MULT 100
+#define T_SPIN_MINI_SINGLE_MULT 200
+#define T_SPIN_MINI_DOUBLE_MULT 400
 #define COMBO_MULT 50
 
 
@@ -46,6 +53,7 @@ struct GameState {
     size_t lines;
     int combo;
     bool prev_clear_difficult;
+    uint8_t t_rotation_test_num;
     
     uint8_t lock_delay_timer;
     uint8_t move_reset_count;
@@ -79,7 +87,7 @@ void game_state_rotate_curr_piece(GameState* game_state, Rotation rotation);
 
 void game_state_lock_curr_piece(GameState* game_state);
 
-void game_state_apply_stack_gravity(GameState* game_state, size_t row, size_t num_lines);
+void game_state_apply_stack_gravity(GameState* game_state, size_t row);
 
 void game_state_clear_line(GameState* game_state, size_t row);
 
@@ -128,5 +136,11 @@ void game_state_apply_gravity(GameState* game_state);
 void game_state_soft_drop_curr_piece(GameState* game_state);
 
 void game_state_apply_soft_drop_gravity(GameState* game_state);
+
+bool game_state_check_t_spin(GameState* game_state);
+
+bool game_state_check_t_spin_mini(GameState* game_state);
+
+void game_state_set_t_rotation_test_num(GameState* game_state, uint8_t value);
 
 #endif

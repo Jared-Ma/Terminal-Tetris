@@ -146,28 +146,28 @@ int main(int argc, char* argv[argc+1]) {
         }
         
         if (input_state == PLAYING) {
+            if (game_state_check_curr_piece_grounded(game_state)) {
+                game_state_decrement_lock_delay_timer(game_state);
+                if (game_state->lock_delay_timer == 0) {
+                    game_state_lock_curr_piece(game_state);
+                    game_state_clear_lines(game_state);
+                    game_state_load_next_piece(game_state);
+                    if (game_state_check_top_out(game_state)) {
+                        input_state = GAME_OVER;
+                    }
+                }
+            } else {
+                game_state_reset_lock_delay_timer(game_state);
+            }
+
             if (game_state->soft_drop == true) {
                 game_state_apply_soft_drop_gravity(game_state);
             } else {
                 game_state_apply_gravity(game_state);
             }
-            
-            if (game_state_check_curr_piece_grounded(game_state)) {
-                game_state_decrement_lock_delay_timer(game_state);
-            } else {
-                game_state_reset_lock_delay_timer(game_state);
-            }
-    
-            if (game_state->lock_delay_timer == 0) {
-                game_state_lock_curr_piece(game_state);
-                game_state_clear_lines(game_state);
-                game_state_load_next_piece(game_state);
-                if (game_state_check_top_out(game_state)) {
-                    input_state = GAME_OVER;
-                }
-            }
         }
 
+        fprintf(debug_log, "frame_count: %lu", stats->frame_count);
         clear_window(debug_window);
         mvwprintw(debug_window, 22, 1, "frame_count: %lu", stats->frame_count);
         mvwprintw(debug_window, 1, 1, "touching: %i", game_state_check_curr_piece_grounded(game_state));
@@ -176,6 +176,9 @@ int main(int argc, char* argv[argc+1]) {
         mvwprintw(debug_window, 4, 1, "gravity_value: %f", game_state->gravity_value);
         mvwprintw(debug_window, 5, 1, "piece.y: %i", game_state->curr_piece.y);
         mvwprintw(debug_window, 6, 1, "piece.x: %i", game_state->curr_piece.x);
+        mvwprintw(debug_window, 7, 1, "t-spin: %i", game_state_check_t_spin(game_state));
+        mvwprintw(debug_window, 8, 1, "mini t-spin: %i", game_state_check_t_spin_mini(game_state));
+        mvwprintw(debug_window, 9, 1, "t_rotation_test_num: %i", game_state->t_rotation_test_num);
         wrefresh(debug_window);
 
         frame_end = clock();
