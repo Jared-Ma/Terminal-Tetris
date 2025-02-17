@@ -179,6 +179,9 @@ int main(int argc, char* argv[argc+1]) {
         mvwprintw(debug_window, 7, 1, "t-spin: %i", game_state_check_t_spin(game_state));
         mvwprintw(debug_window, 8, 1, "mini t-spin: %i", game_state_check_t_spin_mini(game_state));
         mvwprintw(debug_window, 9, 1, "t_rotation_test_num: %i", game_state->t_rotation_test_num);
+        mvwprintw(debug_window, 10, 1, "prev_clear_difficult: %i", game_state->prev_clear_difficult);
+        mvwprintw(debug_window, 11, 1, "curr_clear_difficult: %i", game_state->curr_clear_difficult);
+        mvwprintw(debug_window, 12, 1, "prev_clear_perfect_tetris: %i", game_state->prev_clear_perfect_tetris);
         wrefresh(debug_window);
 
         frame_end = clock();

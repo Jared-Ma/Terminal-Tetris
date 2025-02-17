@@ -74,6 +74,8 @@ GameState game_state_get(void) {
         .lines = 0,
         .combo = -1,
         .prev_clear_difficult = false,
+        .curr_clear_difficult = false,
+        .prev_clear_perfect_tetris = false,
         .t_rotation_test_num = 0,
         .lock_delay_timer = LOCK_DELAY,
         .move_reset_count = 0,
@@ -157,6 +159,8 @@ void game_state_debug_print(GameState* game_state) {
             "\tlines = %lu\n"
             "\tcombo = %i\n"
             "\tprev_clear_difficult = %i\n"
+            "\tcurr_clear_difficult = %i\n"
+            "\tprev_clear_perfect_tetris = %i\n"
             "\tt_rotation_test_num = %i\n"
             "\tlock_delay_timer = %u\n"
             "\tmove_reset_count = %u\n"
@@ -167,6 +171,8 @@ void game_state_debug_print(GameState* game_state) {
             game_state->lines,
             game_state->combo,
             game_state->prev_clear_difficult,
+            game_state->curr_clear_difficult,
+            game_state->prev_clear_perfect_tetris,
             game_state->t_rotation_test_num,
             game_state->lock_delay_timer,
             game_state->move_reset_count,
@@ -365,20 +371,25 @@ void game_state_clear_lines(GameState* game_state) {
         }
     }
 
-    size_t points = game_state_calc_line_clear_points(game_state, num_lines);
-    game_state_increase_score(game_state, points);
-    
-    game_state_increase_lines(game_state, num_lines);
-    if (game_state->lines >= game_state->level * LEVEL_LINE_REQ) {
-        game_state_increment_level(game_state);
-    }
+    size_t points = 0;
+    points += game_state_calc_t_spin_points(game_state, num_lines);
+    points += game_state_calc_line_clear_points(game_state, num_lines);
 
+    // clear lines from board and apply stack gravity
     for (size_t i = 0; i < num_lines; ++i) {
         for (size_t j = 0; j < BOARD_W; ++j) {
             game_state->board[rows[i]][j] = 0;
         }
         game_state_apply_stack_gravity(game_state, rows[i]);
     }
+
+    points += game_state_calc_perfect_clear_points(game_state, num_lines);
+    points += game_state_calc_combo_points(game_state, num_lines);
+    points *= game_state_calc_difficult_clear_mult(game_state, num_lines);
+
+    game_state_increase_score(game_state, points);
+    game_state_increase_lines(game_state, num_lines);
+    game_state_set_prev_clear_difficult(game_state, game_state->curr_clear_difficult);
 }
 
 void game_state_hard_drop_curr_piece(GameState* game_state) {
@@ -392,7 +403,7 @@ void game_state_hard_drop_curr_piece(GameState* game_state) {
         }
     }
 
-    game_state_increase_score(game_state, 2*(game_state->curr_piece.y - prev_y));
+    game_state_increase_score(game_state, HARD_DROP_MULT*(game_state->curr_piece.y - prev_y));
 }
 
 void game_state_move_ghost_piece(GameState* game_state, int y, int x) {
@@ -453,68 +464,107 @@ bool game_state_check_curr_piece_grounded(GameState* game_state) {
     return false;
 }
 
-size_t game_state_calc_line_clear_points(GameState* game_state, size_t num_lines) {
+size_t game_state_calc_t_spin_points(GameState* game_state, size_t num_lines) {
     size_t points = 0;
-    bool curr_clear_difficult = false;
 
     if (game_state_check_t_spin(game_state)) {
         if (num_lines == 0) {
             points += T_SPIN_ZERO_MULT * game_state->level;
-            curr_clear_difficult = game_state->prev_clear_difficult;
+            game_state_set_curr_clear_difficult(game_state, game_state->prev_clear_difficult);
         } else if (num_lines == 1) {
             points += T_SPIN_SINGLE_MULT * game_state->level;
-            curr_clear_difficult = true;
+            game_state_set_curr_clear_difficult(game_state, true);
         } else if (num_lines == 2) {
             points += T_SPIN_DOUBLE_MULT * game_state->level;
-            curr_clear_difficult = true;
+            game_state_set_curr_clear_difficult(game_state, true);
         } else if (num_lines == 3) {
             points += T_SPIN_TRIPLE_MULT * game_state->level;
-            curr_clear_difficult = true;
+            game_state_set_curr_clear_difficult(game_state, true);
         }
     } else if (game_state_check_t_spin_mini(game_state)) {
         if (num_lines == 0) {
             points += T_SPIN_MINI_ZERO_MULT * game_state->level;
-            curr_clear_difficult = game_state->prev_clear_difficult;
+            game_state_set_curr_clear_difficult(game_state, true);
         } else if (num_lines == 1) {
             points += T_SPIN_MINI_SINGLE_MULT * game_state->level;
-            curr_clear_difficult = true;
+            game_state_set_curr_clear_difficult(game_state, true);
         } else if (num_lines == 2) {
             points += T_SPIN_MINI_DOUBLE_MULT * game_state->level;
-            curr_clear_difficult = true;
-        }
-    } else {
-        if (num_lines == 1) {
-            points += SINGLE_MULT * game_state->level;
-            curr_clear_difficult = false;
-        } else if (num_lines == 2) {
-            points += DOUBLE_MULT * game_state->level;
-            curr_clear_difficult = false;
-        } else if (num_lines == 3) {
-            points += TRIPLE_MULT * game_state->level;
-            curr_clear_difficult = false;
-        } else if (num_lines == 4) {
-            points += TETRIS_MULT * game_state->level;
-            curr_clear_difficult = true;
+            game_state_set_curr_clear_difficult(game_state, true);
         }
     }
+
+    return points;
+}
+
+size_t game_state_calc_line_clear_points(GameState* game_state, size_t num_lines) {
+    size_t points = 0;
+
+    if (!game_state_check_t_spin(game_state) && !game_state_check_t_spin_mini(game_state)) {
+        if (num_lines == 1) {
+            points += SINGLE_MULT * game_state->level;
+            game_state_set_curr_clear_difficult(game_state, false);
+        } else if (num_lines == 2) {
+            points += DOUBLE_MULT * game_state->level;
+            game_state_set_curr_clear_difficult(game_state, false);
+        } else if (num_lines == 3) {
+            points += TRIPLE_MULT * game_state->level;
+            game_state_set_curr_clear_difficult(game_state, false);
+        } else if (num_lines == 4) {
+            points += TETRIS_MULT * game_state->level;
+            game_state_set_curr_clear_difficult(game_state, true);
+        }
+    }
+
+    return points;
+}
+
+size_t game_state_calc_perfect_clear_points(GameState* game_state, size_t num_lines) {
+    size_t points = 0;
+
+    if (game_state_check_empty_board(game_state)) {
+        if (num_lines == 1) {
+            points += SINGLE_PERFECT_CLEAR_MULT * game_state->level;
+        } else if (num_lines == 2) {
+            points += DOUBLE_PERFECT_CLEAR_MULT * game_state->level;
+        } else if (num_lines == 3) {
+            points += TRIPLE_PERFECT_CLEAR_MULT * game_state->level;
+        } else if (num_lines == 4) {
+            if (game_state->prev_clear_perfect_tetris) {
+                points += B2B_TETRIS_PERFECT_CLEAR_MULT * game_state->level;
+            } else {
+                points += TETRIS_PERFECT_CLEAR_MULT * game_state->level;
+            }
+        }
+    } 
+
+    if (game_state_check_empty_board(game_state) && num_lines == 4) {
+        game_state_set_prev_clear_perfect_tetris(game_state, true);
+    } else if (num_lines > 0) {
+        game_state_set_prev_clear_perfect_tetris(game_state, false);
+    }
+
+    return points;
+}
+
+size_t game_state_calc_combo_points(GameState* game_state, size_t num_lines) {
+    size_t points = 0;
 
     if (num_lines > 0) {
         game_state_increment_combo(game_state);
+        points += COMBO_MULT * game_state->combo * game_state->level;
     } else {
         game_state_reset_combo(game_state);
     }
-    
-    if (game_state->combo > 0) {
-        points += COMBO_MULT * game_state->combo * game_state->level;
-    }
-
-    if (curr_clear_difficult && game_state->prev_clear_difficult && num_lines > 0) {
-        points *= 1.5;
-    }
-
-    game_state_set_prev_clear_difficult(game_state, curr_clear_difficult);
 
     return points;
+}
+
+float game_state_calc_difficult_clear_mult(GameState* game_state, size_t num_lines) {
+    if (num_lines > 0 && game_state->prev_clear_difficult && game_state->curr_clear_difficult) {
+        return B2B_DIFFICULT_CLEAR_MULT;
+    }
+    return 1.0;
 }
 
 void game_state_increase_score(GameState* game_state, size_t points) {
@@ -532,6 +582,9 @@ void game_state_increment_level(GameState* game_state) {
 void game_state_increase_lines(GameState* game_state, size_t num_lines) {
     if (game_state) {
         game_state->lines += num_lines;
+        if (game_state->lines >= game_state->level * LEVEL_LINE_REQ) {
+            game_state_increment_level(game_state);
+        }
     }
 }
 
@@ -550,6 +603,18 @@ void game_state_increment_combo(GameState* game_state) {
 void game_state_set_prev_clear_difficult(GameState* game_state, bool value) {
     if (game_state) {
         game_state->prev_clear_difficult = value;
+    }
+}
+
+void game_state_set_curr_clear_difficult(GameState* game_state, bool value) {
+    if (game_state) {
+        game_state->curr_clear_difficult = value;
+    }
+}
+
+void game_state_set_prev_clear_perfect_tetris(GameState* game_state, bool value) {
+    if (game_state) {
+        game_state->prev_clear_perfect_tetris = value;
     }
 }
 
@@ -606,15 +671,15 @@ void game_state_apply_gravity(GameState* game_state) {
 void game_state_soft_drop_curr_piece(GameState* game_state) {
     int prev_y = game_state->curr_piece.y;
     game_state_move_curr_piece(game_state, game_state->curr_piece.y + 1, game_state->curr_piece.x);
-    game_state_increase_score(game_state, game_state->curr_piece.y - prev_y);
+    game_state_increase_score(game_state, SOFT_DROP_MULT*(game_state->curr_piece.y - prev_y));
     game_state_set_soft_drop(game_state, true);
 }
 
 void game_state_apply_soft_drop_gravity(GameState* game_state) {
     int prev_y = game_state->curr_piece.y;
-    game_state_increase_gravity_value(game_state, SOFT_DROP_MULT * GRAVITY_TABLE[game_state->level - 1]);
+    game_state_increase_gravity_value(game_state, SOFT_DROP_GRAVITY_MULT * GRAVITY_TABLE[game_state->level - 1]);
     game_state_apply_gravity(game_state);
-    game_state_increase_score(game_state, game_state->curr_piece.y - prev_y);
+    game_state_increase_score(game_state, SOFT_DROP_MULT*(game_state->curr_piece.y - prev_y));
     game_state_set_soft_drop(game_state, false);
 }
 
@@ -756,4 +821,15 @@ bool game_state_check_t_spin_mini(GameState* game_state) {
     }
 
     return false;
+}
+
+bool game_state_check_empty_board(GameState* game_state) {
+    for (size_t i = 0; i < BOARD_H; ++i) {
+        for (size_t j = 0; j < BOARD_W; ++j) {
+            if (game_state->board[i][j] > 0) {
+                return false;
+            } 
+        }
+    }
+    return true;
 }

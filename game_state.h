@@ -21,20 +21,28 @@
 #define LEVEL_LINE_REQ 10
 #define LOCK_DELAY 30
 #define MAX_MOVE_RESET 15
-#define SOFT_DROP_MULT 20
+#define SOFT_DROP_GRAVITY_MULT 20
 
 #define SINGLE_MULT 100
 #define DOUBLE_MULT 300
 #define TRIPLE_MULT 500
 #define TETRIS_MULT 800
-#define T_SPIN_MULT 400
+#define T_SPIN_ZERO_MULT 400
 #define T_SPIN_SINGLE_MULT 800
 #define T_SPIN_DOUBLE_MULT 1200
 #define T_SPIN_TRIPLE_MULT 1600
-#define T_SPIN_MINI_MULT 100
+#define T_SPIN_MINI_ZERO_MULT 100
 #define T_SPIN_MINI_SINGLE_MULT 200
 #define T_SPIN_MINI_DOUBLE_MULT 400
+#define SINGLE_PERFECT_CLEAR_MULT 800
+#define DOUBLE_PERFECT_CLEAR_MULT 1200
+#define TRIPLE_PERFECT_CLEAR_MULT 1800
+#define TETRIS_PERFECT_CLEAR_MULT 2000
+#define B2B_TETRIS_PERFECT_CLEAR_MULT 3200
+#define B2B_DIFFICULT_CLEAR_MULT 1.5
 #define COMBO_MULT 50
+#define SOFT_DROP_MULT 1
+#define HARD_DROP_MULT 2
 
 
 struct GameState {
@@ -53,6 +61,8 @@ struct GameState {
     size_t lines;
     int combo;
     bool prev_clear_difficult;
+    bool curr_clear_difficult;
+    bool prev_clear_perfect_tetris;
     uint8_t t_rotation_test_num;
     
     uint8_t lock_delay_timer;
@@ -111,7 +121,15 @@ void game_state_increment_move_reset_count(GameState* game_state);
 
 bool game_state_check_curr_piece_grounded(GameState* game_state);
 
-size_t game_state_calc_line_clear_points(GameState* game_state, size_t lines_cleared);
+size_t game_state_calc_t_spin_points(GameState* game_state, size_t num_lines);
+
+size_t game_state_calc_line_clear_points(GameState* game_state, size_t num_lines);
+
+size_t game_state_calc_perfect_clear_points(GameState* game_state, size_t num_lines);
+
+size_t game_state_calc_combo_points(GameState* game_state, size_t num_lines);
+
+float game_state_calc_difficult_clear_mult(GameState* game_state, size_t num_lines);
 
 void game_state_increase_score(GameState* game_state, size_t points);
 
@@ -125,6 +143,10 @@ void game_state_increment_combo(GameState* game_state);
 
 void game_state_set_prev_clear_difficult(GameState* game_state, bool value);
 
+void game_state_set_curr_clear_difficult(GameState* game_state, bool value);
+
+void game_state_set_prev_clear_perfect_tetris(GameState* game_state, bool value);
+
 void game_state_reset_gravity_value(GameState* game_state);
 
 void game_state_increase_gravity_value(GameState* game_state, float value);
@@ -137,10 +159,12 @@ void game_state_soft_drop_curr_piece(GameState* game_state);
 
 void game_state_apply_soft_drop_gravity(GameState* game_state);
 
+void game_state_set_t_rotation_test_num(GameState* game_state, uint8_t value);
+
 bool game_state_check_t_spin(GameState* game_state);
 
 bool game_state_check_t_spin_mini(GameState* game_state);
 
-void game_state_set_t_rotation_test_num(GameState* game_state, uint8_t value);
+bool game_state_check_empty_board(GameState* game_state);
 
 #endif
