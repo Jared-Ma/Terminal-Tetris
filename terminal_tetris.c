@@ -167,9 +167,7 @@ int main(int argc, char* argv[argc+1]) {
             }
         }
 
-        fprintf(debug_log, "frame_count: %lu", stats->frame_count);
         clear_window(debug_window);
-        mvwprintw(debug_window, 22, 1, "frame_count: %lu", stats->frame_count);
         mvwprintw(debug_window, 1, 1, "touching: %i", game_state_check_curr_piece_grounded(game_state));
         mvwprintw(debug_window, 2, 1, "lock_delay_timer: %u", game_state->lock_delay_timer);
         mvwprintw(debug_window, 3, 1, "move_reset_count: %u", game_state->move_reset_count);
@@ -182,6 +180,7 @@ int main(int argc, char* argv[argc+1]) {
         mvwprintw(debug_window, 10, 1, "prev_clear_difficult: %i", game_state->prev_clear_difficult);
         mvwprintw(debug_window, 11, 1, "curr_clear_difficult: %i", game_state->curr_clear_difficult);
         mvwprintw(debug_window, 12, 1, "prev_clear_perfect_tetris: %i", game_state->prev_clear_perfect_tetris);
+        mvwprintw(debug_window, 22, 1, "frame_count: %lu", stats->frame_count);   
         wrefresh(debug_window);
 
         frame_end = clock();

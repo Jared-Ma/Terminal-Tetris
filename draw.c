@@ -6,12 +6,6 @@
 #include "stats.h"
 #include "logger.h"
 
-#define BLOCK_LEFT '['
-#define BLOCK_RIGHT ']'
-#define GHOST_LEFT ':'
-#define GHOST_RIGHT ':'
-#define SPACE ' '
-#define BUFFER_ZONE_LINE '_'
 
 
 WINDOW* draw_hold_window(int height, int width, int y, int x) {
@@ -224,12 +218,9 @@ void draw_stats(WINDOW* window, GameState* game_state, Stats* stats) {
     clear_window(window);
     mvwprintw(window, 2, 1, "time:");
     mvwprintw(window, 4, 1, "score:");
-    mvwprintw(window, 6, 1, "lines:");
-    mvwprintw(window, 8, 1, "level:");
-    mvwprintw(window, 10, 1, "combo:");
-    mvwprintw(window, 12, 1, "fps:");
+    mvwprintw(window, 6, 1, "level:");
+    mvwprintw(window, 8, 1, "combo:");
     draw_stats_time(window, stats);
-    draw_stats_score(window, game_state);
     draw_stats_lines(window, game_state);
     draw_stats_level(window, game_state);
     draw_stats_combo(window, game_state);
@@ -242,20 +233,16 @@ void draw_stats_time(WINDOW* window, Stats* stats) {
     mvwprintw(window, 2, 1, "time: %02lu:%02lu", m, s);
 }
 
-void draw_stats_score(WINDOW* window, GameState* game_state) {
-    mvwprintw(window, 4, 1, "score:%06lu", game_state->score);
-}
-
 void draw_stats_lines(WINDOW* window, GameState* game_state) {
-    mvwprintw(window, 6, 1, "lines: %lu", game_state->lines);
+    mvwprintw(window, 4, 1, "lines: %lu", game_state->lines);
 }
 
 void draw_stats_level(WINDOW* window, GameState* game_state) {
-    mvwprintw(window, 8, 1, "level: %u", game_state->level);
+    mvwprintw(window, 6, 1, "level: %u", game_state->level);
 }
 
 void draw_stats_combo(WINDOW* window, GameState* game_state) {
     if (game_state->combo > 0) {
-        mvwprintw(window, 10, 1, "combo: %i", game_state->combo);
+        mvwprintw(window, 8, 1, "combo: %i", game_state->combo);
     }
 }

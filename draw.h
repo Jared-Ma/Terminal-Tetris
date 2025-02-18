@@ -18,6 +18,13 @@
 #define DEBUG_WINDOW_H 24
 #define DEBUG_WINDOW_W 36
 
+#define BLOCK_LEFT '['
+#define BLOCK_RIGHT ']'
+#define GHOST_LEFT ':'
+#define GHOST_RIGHT ':'
+#define SPACE ' '
+#define BUFFER_ZONE_LINE '_'
+
 
 WINDOW *draw_hold_window(int height, int width, int y, int x);
 
@@ -56,8 +63,6 @@ void draw_score(WINDOW* window, GameState* game_state);
 void draw_stats(WINDOW* window, GameState* game_state, Stats* stats);
 
 void draw_stats_time(WINDOW* window, Stats* stats);
-
-void draw_stats_score(WINDOW* window, GameState* game_state);
 
 void draw_stats_lines(WINDOW* window, GameState* game_state);
 
