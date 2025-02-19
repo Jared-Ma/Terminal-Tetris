@@ -2,8 +2,9 @@
 #include <stdlib.h>
 #include "utils/unit_test.h"
 #include "test_piece.h"
+#include "test_stats.h"
 
-#define NUM_TESTS 8
+#define NUM_TESTS 13
 
 
 int main(void) {
@@ -16,6 +17,12 @@ int main(void) {
         UNIT_TEST(test_piece_rotate_right),
         UNIT_TEST(test_piece_rotate_left),
         UNIT_TEST(test_shape_to_char),
+
+        UNIT_TEST(test_stats_get),
+        UNIT_TEST(test_stats_init),
+        UNIT_TEST(test_stats_reset),
+        UNIT_TEST(test_stats_increase_time),
+        UNIT_TEST(test_stats_increase_frame_count),
     };
 
     size_t failed_unit_tests[NUM_TESTS] = { 0 };

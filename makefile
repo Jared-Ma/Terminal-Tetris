@@ -18,7 +18,7 @@ OBJ      = $(addprefix $(OBJ_DIR), $(addsuffix .o, $(notdir $(basename $(SRC))))
 
 TEST_EXE      = test_runner
 TEST_MAIN_SRC = $(addprefix $(TEST_DIR), test_runner.c)
-TEST_CASE_SRC = $(addprefix $(TEST_DIR), test_piece.c)
+TEST_CASE_SRC = $(addprefix $(TEST_DIR), test_piece.c, test_stats.c)
 TEST_UTIL_SRC = $(addprefix $(TEST_UTILS_DIR), unit_test.c)
 TEST_MAIN_OBJ = $(addprefix $(OBJ_DIR), $(addsuffix .o, $(notdir $(basename $(TEST_MAIN_SRC)))))
 TEST_CASE_OBJ = $(addprefix $(OBJ_DIR), $(addsuffix .o, $(notdir $(basename $(TEST_CASE_SRC)))))
