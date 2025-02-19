@@ -256,15 +256,15 @@ Piece* piece_init(Shape shape, int y, int x) {
 }
 
 void piece_destroy(Piece* piece) {
-    if (piece) {
-        *piece = (Piece){ 0 };
-        free(piece);
-        piece = NULL;
+    if (!piece) {
+        return;
     }
+    *piece = (Piece){ 0 };
+    free(piece);
 }
 
 void piece_debug_print(Piece* piece) {
-    if (piece) {
+    if (!piece) {
         fprintf(
             debug_log,
             "%p = {shape = %c, y = %i, x = %i, n = %lu, l = %lu, r = %lu, M = ...}\n",
@@ -282,23 +282,26 @@ void piece_debug_print(Piece* piece) {
 }
 
 void piece_move(Piece* piece, int y, int x) {
-    if (piece) {
-        piece->x = x;
-        piece->y = y;
+    if (!piece) {
+        return;
     }
+    piece->x = x;
+    piece->y = y;
 }
 
 size_t compute_r_index(size_t r, Rotation rotation) {
     if (rotation == RIGHT) {
         return (r + 1) % R_MAX;
+    } else {
+        return (r > 0) ? r - 1 : R_MAX - 1;
     }
-    return (r > 0) ? r - 1 : R_MAX - 1;
 }
 
 void piece_rotate(Piece* piece, Rotation rotation) {
-    if (piece) {
-        piece->r = compute_r_index(piece->r, rotation);
+    if (!piece) {
+        return;
     }
+    piece->r = compute_r_index(piece->r, rotation);
 }
 
 char shape_to_char(Shape shape) {
