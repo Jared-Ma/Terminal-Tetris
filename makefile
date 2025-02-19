@@ -1,5 +1,5 @@
 CC     = gcc
-CFLAGS = -Wall -c
+CFLAGS = -Wall -c -I $(SRC_DIR)
 LIBS   = -lncurses -lm
 
 EXE_DIR  = 
