@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "unit_test.h"
+#include "utils/unit_test.h"
 #include "test_piece.h"
 
-#define NUM_TESTS 7
+#define NUM_TESTS 8
 
 
 int main(void) {
@@ -15,7 +15,7 @@ int main(void) {
         UNIT_TEST(test_compute_r_index_left_rotation),
         UNIT_TEST(test_piece_rotate_right),
         UNIT_TEST(test_piece_rotate_left),
-        UNIT_TEST(test_shape_to_char)
+        UNIT_TEST(test_shape_to_char),
     };
 
     size_t failed_unit_tests[NUM_TESTS] = { 0 };

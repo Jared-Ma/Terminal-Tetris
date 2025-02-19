@@ -1,7 +1,6 @@
 #ifndef TRACE_ASSERT_H
 #define TRACE_ASSERT_H
 #include <stdbool.h>
-#include <assert.h>
 
 #define ASSERT(condition)                                  \
     if (!(condition)) {                                    \

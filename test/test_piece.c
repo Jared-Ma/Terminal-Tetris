@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdbool.h>
-#include "assert_trace.h"
+#include "utils/assert_trace.h"
 #include "piece.h"
 
 
