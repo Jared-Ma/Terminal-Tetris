@@ -1,7 +1,7 @@
 #ifndef PIECE_H
 #define PIECE_H
+#include <stdlib.h>
 #include <stdbool.h>
-#include <stdint.h>
 
 #define NUM_SHAPES 7
 #define N_MAX 5
