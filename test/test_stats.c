@@ -2,7 +2,6 @@
 #include <stdbool.h>
 #include "utils/assert_trace.h"
 #include "stats.h"
-#include "test_stats.h"
 
 
 bool test_stats_get(void) {
