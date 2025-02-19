@@ -27,23 +27,8 @@ all: $(EXE)
 $(EXE): $(MAIN_OBJ) $(OBJ)
 	$(CC) $(MAIN_OBJ) $(OBJ) $(LIBS) -o $(EXE_DIR)$(EXE)
 
-$(MAIN_OBJ): $(MAIN_SRC)
-	$(CC) $(CFLAGS) $(MAIN_SRC) -o $@
-
-$(OBJ_DIR)game_state.o: $(SRC_DIR)game_state.c
-	$(CC) $(CFLAGS) $(SRC_DIR)game_state.c -o $@
-
-$(OBJ_DIR)draw.o: $(SRC_DIR)draw.c
-	$(CC) $(CFLAGS) $(SRC_DIR)draw.c -o $@
-
-$(OBJ_DIR)piece.o: $(SRC_DIR)piece.c
-	$(CC) $(CFLAGS) $(SRC_DIR)piece.c -o $@
-
-$(OBJ_DIR)stats.o: $(SRC_DIR)stats.c
-	$(CC) $(CFLAGS) $(SRC_DIR)stats.c -o $@
-
-$(OBJ_DIR)logger.o: $(SRC_DIR)logger.c
-	$(CC) $(CFLAGS) $(SRC_DIR)logger.c -o $@
+$(OBJ_DIR)%.o: $(SRC_DIR)%.c
+	$(CC) $(CFLAGS) $< -o $@
 
 
 test: $(TEST_EXE)
@@ -51,14 +36,8 @@ test: $(TEST_EXE)
 $(TEST_EXE): $(TEST_MAIN_OBJ) $(TEST_UTIL_OBJ) $(TEST_CASE_OBJ) $(OBJ)
 	$(CC) $(TEST_MAIN_OBJ) $(TEST_UTIL_OBJ) $(TEST_CASE_OBJ) $(OBJ) $(LIBS) -o $(EXE_DIR)$(TEST_EXE)	
 
-$(TEST_MAIN_OBJ): $(TEST_MAIN_SRC)
-	$(CC) $(CFLAGS) $(TEST_MAIN_SRC) -o $@
-
-$(OBJ_DIR)unit_test.o: $(TEST_DIR)unit_test.c
-	$(CC) $(CFLAGS) $(TEST_DIR)unit_test.c -o $@
-
-$(OBJ_DIR)test_piece.o: $(TEST_DIR)test_piece.c 
-	$(CC) $(CFLAGS) $(TEST_DIR)test_piece.c -o $@
+$(OBJ_DIR)%.o: $(TEST_DIR)%.c
+	$(CC) $(CFLAGS) $< -o $@
 
 
 clean:
