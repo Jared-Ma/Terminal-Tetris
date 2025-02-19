@@ -20,7 +20,7 @@ void stats_destroy(Stats* stats);
 
 void stats_debug_print(Stats* stats);
 
-void stats_restart(Stats* stats);
+void stats_reset(Stats* stats);
 
 void stats_increase_time(Stats* stats, double seconds);
 

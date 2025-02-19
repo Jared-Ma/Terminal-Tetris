@@ -20,11 +20,11 @@ Stats* stats_init(void) {
 }
 
 void stats_destroy(Stats* stats) {
-    if (stats) {
-        *stats = (Stats){ 0 };
-        free(stats);
-        stats = NULL;
+    if (!stats) {
+        return;
     }
+    *stats = (Stats){ 0 };
+    free(stats);
 }
 
 void stats_debug_print(Stats* stats) {
@@ -44,20 +44,23 @@ void stats_debug_print(Stats* stats) {
     }
 }
 
-void stats_restart(Stats* stats) {
-    if (stats) {
-        *stats = stats_get();
+void stats_reset(Stats* stats) {
+    if (!stats) {
+        return;
     }
+    *stats = stats_get();
 }
 
 void stats_increase_time(Stats* stats, double seconds) {
-    if (stats) {
-        stats->time += seconds;
+    if (!stats) {
+        return;    
     }
+    stats->time += seconds;
 }
 
 void stats_increment_frame_count(Stats* stats) {
-    if (stats) {
-        stats->frame_count++;
+    if (!stats) {
+        return;
     }
+    stats->frame_count++;
 }

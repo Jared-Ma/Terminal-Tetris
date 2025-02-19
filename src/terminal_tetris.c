@@ -125,7 +125,7 @@ int main(int argc, char* argv[argc+1]) {
                 break;
             case 'r':
                 game_state_restart(game_state);
-                stats_restart(stats);
+                stats_reset(stats);
                 input_state = PLAYING;
                 break;
             case ESC:
@@ -136,7 +136,7 @@ int main(int argc, char* argv[argc+1]) {
             switch (input) {
             case 'r':
                 game_state_restart(game_state);
-                stats_restart(stats);
+                stats_reset(stats);
                 input_state = PLAYING;
                 break;
             case ESC:
