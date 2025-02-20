@@ -265,20 +265,20 @@ void piece_destroy(Piece* piece) {
 
 void piece_debug_print(Piece* piece) {
     if (!piece) {
-        fprintf(
-            debug_log,
-            "%p = {shape = %c, y = %i, x = %i, n = %u, l = %u, r = %u, M = ...}\n",
-            piece,
-            shape_to_char(piece->shape),
-            piece->y,
-            piece->x,
-            piece->n,
-            piece->l,
-            piece->r
-        );
-    } else {
         fprintf(debug_log, "NULL\n");
+        return;
     }
+    fprintf(
+        debug_log,
+        "%p = {shape = %c, y = %i, x = %i, n = %u, l = %u, r = %u, M = ...}\n",
+        piece,
+        shape_to_char(piece->shape),
+        piece->y,
+        piece->x,
+        piece->n,
+        piece->l,
+        piece->r
+    );
 }
 
 void piece_move(Piece* piece, int8_t y, int8_t x) {
