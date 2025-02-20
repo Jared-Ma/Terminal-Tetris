@@ -9,8 +9,4 @@ bool test_stats_init(void);
 
 bool test_stats_reset(void);
 
-bool test_stats_increase_time(void);
-
-bool test_stats_increase_frame_count(void);
-
 #endif

@@ -1,6 +1,7 @@
 #ifndef PIECE_H
 #define PIECE_H
 #include <stdlib.h>
+#include <stdint.h>
 #include <stdbool.h>
 
 #define NUM_SHAPES 7
