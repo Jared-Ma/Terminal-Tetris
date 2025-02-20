@@ -4,7 +4,7 @@
 #include "logger.h"
 
 
-Piece piece_get(Shape shape, int y, int x) {
+Piece piece_get(Shape shape, int8_t y, int8_t x) {
     switch (shape) {
         case I: {
             Piece piece = {
@@ -249,7 +249,7 @@ Piece piece_get(Shape shape, int y, int x) {
     return (Piece){ 0 };
 }
 
-Piece* piece_init(Shape shape, int y, int x) {
+Piece* piece_init(Shape shape, int8_t y, int8_t x) {
     Piece* piece = malloc(sizeof(Piece));
     *piece = piece_get(shape, y, x);
     return piece;
@@ -267,7 +267,7 @@ void piece_debug_print(Piece* piece) {
     if (!piece) {
         fprintf(
             debug_log,
-            "%p = {shape = %c, y = %i, x = %i, n = %lu, l = %lu, r = %lu, M = ...}\n",
+            "%p = {shape = %c, y = %i, x = %i, n = %u, l = %u, r = %u, M = ...}\n",
             piece,
             shape_to_char(piece->shape),
             piece->y,
@@ -281,7 +281,7 @@ void piece_debug_print(Piece* piece) {
     }
 }
 
-void piece_move(Piece* piece, int y, int x) {
+void piece_move(Piece* piece, int8_t y, int8_t x) {
     if (!piece) {
         return;
     }
@@ -289,7 +289,7 @@ void piece_move(Piece* piece, int y, int x) {
     piece->y = y;
 }
 
-size_t compute_r_index(size_t r, Rotation rotation) {
+uint8_t compute_r_index(uint8_t r, Rotation rotation) {
     if (rotation == RIGHT) {
         return (r + 1) % R_MAX;
     } else {

@@ -29,27 +29,27 @@ typedef enum Rotation Rotation;
 
 struct Piece {
     Shape shape;
-    int y;
-    int x;
-    size_t n;
-    size_t l;
-    size_t r;
+    int8_t y;
+    int8_t x;
+    uint8_t n;
+    uint8_t l;
+    uint8_t r;
     bool M[R_MAX][N_MAX][N_MAX];
 };
 
 typedef struct Piece Piece;
 
-Piece piece_get(Shape shape, int y, int x);
+Piece piece_get(Shape shape, int8_t y, int8_t x);
 
-Piece* piece_init(Shape shape, int y, int x);
+Piece* piece_init(Shape shape, int8_t y, int8_t x);
 
 void piece_destroy(Piece* piece);
 
 void piece_debug_print(Piece* piece);
 
-void piece_move(Piece* piece, int y, int x);
+void piece_move(Piece* piece, int8_t y, int8_t x);
 
-size_t compute_r_index(size_t r, Rotation rotation);
+uint8_t compute_r_index(uint8_t r, Rotation rotation);
 
 void piece_rotate(Piece* piece, Rotation rotation);
 
