@@ -28,20 +28,21 @@ void stats_destroy(Stats* stats) {
 }
 
 void stats_debug_print(Stats* stats) {
-    if (stats) {
-        fprintf(
-            debug_log,
-            "%p = {\n"
-            "\ttime = %lu\n"
-            "\tframe_count = %lu\n"
-            "\tfps = %lf\n"
-            "}\n",
-            stats,
-            stats->time,
-            stats->frame_count,
-            stats->fps
-        );
+    if (!stats) {
+        return;
     }
+    fprintf(
+        debug_log,
+        "%p = {\n"
+        "\ttime = %lu\n"
+        "\tframe_count = %lu\n"
+        "\tfps = %lf\n"
+        "}\n",
+        stats,
+        stats->time,
+        stats->frame_count,
+        stats->fps
+    );
 }
 
 void stats_reset(Stats* stats) {
@@ -49,18 +50,4 @@ void stats_reset(Stats* stats) {
         return;
     }
     *stats = stats_get();
-}
-
-void stats_increase_time(Stats* stats, double seconds) {
-    if (!stats) {
-        return;    
-    }
-    stats->time += seconds;
-}
-
-void stats_increment_frame_count(Stats* stats) {
-    if (!stats) {
-        return;
-    }
-    stats->frame_count++;
 }

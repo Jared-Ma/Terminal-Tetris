@@ -195,10 +195,10 @@ int main(int argc, char* argv[argc+1]) {
         if (input_state == PLAYING) {
             time(&time_end);
             double time_s = difftime(time_end, time_start);
-            stats_increase_time(stats, time_s);
+            stats->time += time_s;
         }
 
-        stats_increment_frame_count(stats);
+        stats->frame_count++;
     }
     
     game_state_destroy(game_state);
