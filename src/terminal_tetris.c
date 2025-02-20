@@ -57,6 +57,9 @@ int main(int argc, char* argv[argc+1]) {
 
     GameState* game_state = game_state_init();
     Stats* stats = stats_init();
+    
+    srand(time(0));
+    game_state_start(game_state);
 
     InputState input_state = PLAYING;
     clock_t frame_start, frame_end;
@@ -110,7 +113,7 @@ int main(int argc, char* argv[argc+1]) {
                 game_state_lock_curr_piece(game_state);
                 game_state_clear_lines(game_state);
                 game_state_load_next_piece(game_state);
-                if (game_state_check_top_out(game_state)) {
+                if (game_state_check_collision(game_state, game_state->curr_piece)) {
                     input_state = GAME_OVER;
                 }
                 break;
@@ -147,17 +150,15 @@ int main(int argc, char* argv[argc+1]) {
         
         if (input_state == PLAYING) {
             if (game_state_check_curr_piece_grounded(game_state)) {
-                game_state_decrement_lock_delay_timer(game_state);
+                game_state->lock_delay_timer--;
                 if (game_state->lock_delay_timer == 0) {
                     game_state_lock_curr_piece(game_state);
                     game_state_clear_lines(game_state);
                     game_state_load_next_piece(game_state);
-                    if (game_state_check_top_out(game_state)) {
+                    if (game_state_check_collision(game_state, game_state->curr_piece)) {
                         input_state = GAME_OVER;
                     }
                 }
-            } else {
-                game_state_reset_lock_delay_timer(game_state);
             }
 
             if (game_state->soft_drop == true) {

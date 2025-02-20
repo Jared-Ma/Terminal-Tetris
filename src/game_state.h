@@ -80,21 +80,31 @@ GameState* game_state_init(void);
 
 void game_state_destroy(GameState* game_state);
 
+void game_state_start(GameState* game_state);
+
 void game_state_restart(GameState* game_state);
 
 void game_state_debug_print(GameState* game_state);
 
-void game_state_gen_next_queue(GameState* game_state);
+void game_state_generate_next_queue(GameState* game_state);
 
 void game_state_load_next_piece(GameState* game_state);
 
+void game_state_spawn_curr_piece(GameState* game_state);
+
 void game_state_hold_piece(GameState* game_state);
+
+bool game_state_check_collision(GameState* game_state, Piece piece);
+
+bool game_state_check_curr_piece_grounded(GameState* game_state);
 
 void game_state_move_curr_piece(GameState* game_state, int y, int x);
 
+void game_state_rotate_curr_piece(GameState* game_state, Rotation rotation);
+
 void game_state_rotate_curr_piece_srs(GameState* game_state, Rotation rotation);
 
-void game_state_rotate_curr_piece(GameState* game_state, Rotation rotation);
+void game_state_hard_drop_curr_piece(GameState* game_state);
 
 void game_state_lock_curr_piece(GameState* game_state);
 
@@ -104,68 +114,32 @@ void game_state_clear_line(GameState* game_state, size_t row);
 
 void game_state_clear_lines(GameState* game_state);
 
-void game_state_hard_drop_curr_piece(GameState* game_state);
+void game_state_apply_gravity(GameState* game_state);
+
+void game_state_apply_soft_drop_gravity(GameState* game_state);
+
+void game_state_soft_drop_curr_piece(GameState* game_state);
 
 void game_state_move_ghost_piece(GameState* game_state, int y, int x);
 
 void game_state_update_ghost_piece(GameState* game_state);
-
-bool game_state_check_top_out(GameState* game_state);
-
-void game_state_reset_lock_delay_timer(GameState* game_state);
-
-void game_state_decrement_lock_delay_timer(GameState* game_state);
-
-void game_state_reset_move_reset_count(GameState* game_state);
-
-void game_state_increment_move_reset_count(GameState* game_state);
-
-bool game_state_check_curr_piece_grounded(GameState* game_state);
-
-size_t game_state_calc_t_spin_points(GameState* game_state, size_t num_lines);
-
-size_t game_state_calc_line_clear_points(GameState* game_state, size_t num_lines);
-
-size_t game_state_calc_perfect_clear_points(GameState* game_state, size_t num_lines);
-
-size_t game_state_calc_combo_points(GameState* game_state, size_t num_lines);
-
-float game_state_calc_difficult_clear_mult(GameState* game_state, size_t num_lines);
-
-void game_state_increase_score(GameState* game_state, size_t points);
-
-void game_state_increment_level(GameState* game_state);
-
-void game_state_increase_lines(GameState* game_state, size_t num_lines);
-
-void game_state_reset_combo(GameState* game_state);
-
-void game_state_increment_combo(GameState* game_state);
-
-void game_state_set_prev_clear_difficult(GameState* game_state, bool value);
-
-void game_state_set_curr_clear_difficult(GameState* game_state, bool value);
-
-void game_state_set_prev_clear_perfect_tetris(GameState* game_state, bool value);
-
-void game_state_reset_gravity_value(GameState* game_state);
-
-void game_state_increase_gravity_value(GameState* game_state, float value);
-
-void game_state_set_soft_drop(GameState* game_state, bool value);
-
-void game_state_apply_gravity(GameState* game_state);
-
-void game_state_soft_drop_curr_piece(GameState* game_state);
-
-void game_state_apply_soft_drop_gravity(GameState* game_state);
-
-void game_state_set_t_rotation_test_num(GameState* game_state, uint8_t value);
 
 bool game_state_check_t_spin(GameState* game_state);
 
 bool game_state_check_t_spin_mini(GameState* game_state);
 
 bool game_state_check_empty_board(GameState* game_state);
+
+size_t game_state_calc_t_spin_points(GameState* game_state, size_t num_lines);
+
+size_t game_state_calc_line_clear_points(GameState* game_state, size_t num_lines);
+
+size_t game_state_calc_t_spin_points(GameState* game_state, size_t num_lines);
+
+size_t game_state_calc_perfect_clear_points(GameState* game_state, size_t num_lines);
+
+size_t game_state_calc_combo_points(GameState* game_state, size_t num_lines);
+
+float game_state_calc_difficult_clear_mult(GameState* game_state, size_t num_lines);
 
 #endif
