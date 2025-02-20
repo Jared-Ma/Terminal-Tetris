@@ -50,25 +50,26 @@ struct GameState {
     Piece hold_piece;
     Piece next_piece;
     Piece ghost_piece;
-    bool holding_piece;
-    bool hold_allowed;
-    uint8_t next_index;
-    Shape next_queue[NUM_SHAPES];
     Shape board[BOARD_H][BOARD_W];
 
-    size_t score;
-    uint8_t level;
-    size_t lines;
-    int combo;
-    bool prev_clear_difficult;
-    bool curr_clear_difficult;
-    bool prev_clear_perfect_tetris;
-    uint8_t t_rotation_test_num;
-    
+    bool holding_piece;
+    bool hold_blocked;
+    uint8_t next_index;
+    Shape next_queue[NUM_SHAPES];
+
+    bool soft_drop;
+    float gravity_value;
     uint8_t lock_delay_timer;
     uint8_t move_reset_count;
-    float gravity_value;
-    bool soft_drop;
+
+    size_t level;
+    size_t lines;
+    size_t score;
+    int combo;
+    uint8_t t_rotation_test_num;
+    bool curr_clear_difficult;
+    bool prev_clear_difficult;
+    bool prev_clear_perfect_tetris;
 };
 
 typedef struct GameState GameState;

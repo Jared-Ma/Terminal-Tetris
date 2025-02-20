@@ -157,10 +157,10 @@ void draw_hold_piece(WINDOW* window, GameState* game_state) {
         for (size_t i = 0; i < game_state->hold_piece.n; ++i) {
             for (size_t j = 0; j < game_state->hold_piece.n; ++j) {
                 if (game_state->hold_piece.M[0][i][j] == 1) {
-                    if (game_state->hold_allowed) {
-                        mvwprintw(window, start_y + i, start_x + 2*j, "%c%c", BLOCK_LEFT, BLOCK_RIGHT);
-                    } else {
+                    if (game_state->hold_blocked) {
                         mvwprintw(window, start_y + i, start_x + 2*j, "%c%c", GHOST_LEFT, GHOST_RIGHT);
+                    } else {
+                        mvwprintw(window, start_y + i, start_x + 2*j, "%c%c", BLOCK_LEFT, BLOCK_RIGHT);
                     }
                 }
             }
@@ -238,7 +238,7 @@ void draw_stats_lines(WINDOW* window, GameState* game_state) {
 }
 
 void draw_stats_level(WINDOW* window, GameState* game_state) {
-    mvwprintw(window, 6, 1, "level: %u", game_state->level);
+    mvwprintw(window, 6, 1, "level: %lu", game_state->level);
 }
 
 void draw_stats_combo(WINDOW* window, GameState* game_state) {
