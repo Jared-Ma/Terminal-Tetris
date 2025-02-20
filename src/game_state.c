@@ -113,7 +113,7 @@ void game_state_restart(GameState* game_state) {
 
     *game_state = game_state_get();
     game_state_gen_next_queue(game_state);
-    game_state->next_piece = piece_get(game_state->next_queue[game_state->next_index], SPAWN_Y, SPAWN_X);
+    // game_state->next_piece = piece_get(game_state->next_queue[game_state->next_index], SPAWN_Y, SPAWN_X);
     game_state_load_next_piece(game_state);
 }
 
@@ -174,7 +174,7 @@ void game_state_debug_print(GameState* game_state) {
         "\tlines = %lu\n"
         "\tscore = %lu\n"
         "\tcombo = %i\n"
-        "\tt_rotation_test_num = %i\n",
+        "\tt_rotation_test_num = %i\n"
         "\tcurr_clear_difficult = %i\n"
         "\tprev_clear_difficult = %i\n"
         "\tprev_clear_perfect_tetris = %i\n",
@@ -486,7 +486,7 @@ void game_state_update_ghost_piece(GameState* game_state) {
 
 bool game_state_check_top_out(GameState* game_state) {
     if (!game_state) {
-        return;
+        return false;
     }
 
     int top_left_y = game_state->curr_piece.y - game_state->curr_piece.n / 2; 
@@ -506,7 +506,7 @@ bool game_state_check_top_out(GameState* game_state) {
 
 bool game_state_check_curr_piece_grounded(GameState* game_state) {
     if (!game_state) {
-        return;
+        return false;
     }
 
     int top_left_y = game_state->curr_piece.y - game_state->curr_piece.n / 2; 
@@ -528,7 +528,7 @@ bool game_state_check_curr_piece_grounded(GameState* game_state) {
 
 size_t game_state_calc_t_spin_points(GameState* game_state, size_t num_lines) {
     if (!game_state) {
-        return;
+        return 0;
     }
 
     size_t points = 0;
@@ -563,7 +563,7 @@ size_t game_state_calc_t_spin_points(GameState* game_state, size_t num_lines) {
 
 size_t game_state_calc_line_clear_points(GameState* game_state, size_t num_lines) {
     if (!game_state) {
-        return;
+        return 0;
     }
 
     size_t points = 0;
@@ -587,7 +587,7 @@ size_t game_state_calc_line_clear_points(GameState* game_state, size_t num_lines
 
 size_t game_state_calc_perfect_clear_points(GameState* game_state, size_t num_lines) {
     if (!game_state) {
-        return;
+        return 0;
     }
 
     size_t points = 0;
@@ -618,7 +618,7 @@ size_t game_state_calc_perfect_clear_points(GameState* game_state, size_t num_li
 
 size_t game_state_calc_combo_points(GameState* game_state, size_t num_lines) {
     if (!game_state) {
-        return;
+        return 0;
     }
 
     size_t points = 0;
@@ -633,7 +633,7 @@ size_t game_state_calc_combo_points(GameState* game_state, size_t num_lines) {
 
 float game_state_calc_difficult_clear_mult(GameState* game_state, size_t num_lines) {
     if (!game_state) {
-        return;
+        return 0.0;
     }
 
     if (num_lines > 0 && game_state->prev_clear_difficult && game_state->curr_clear_difficult) {
@@ -803,7 +803,7 @@ void game_state_set_t_rotation_test_num(GameState* game_state, uint8_t value) {
 
 bool game_state_check_t_spin(GameState* game_state) {
     if (!game_state) {
-        return;
+        return false;
     }
 
     if (game_state->t_rotation_test_num > 0) {
@@ -877,7 +877,7 @@ bool game_state_check_t_spin(GameState* game_state) {
 
 bool game_state_check_t_spin_mini(GameState* game_state) {
     if (!game_state) {
-        return;
+        return false;
     }
 
     if (game_state->t_rotation_test_num > 0 && game_state->t_rotation_test_num < SRS_NUM_TESTS) {
@@ -945,7 +945,7 @@ bool game_state_check_t_spin_mini(GameState* game_state) {
 
 bool game_state_check_empty_board(GameState* game_state) {
     if (!game_state) {
-        return;
+        return false;
     }
 
     for (size_t i = 0; i < BOARD_H; ++i) {
