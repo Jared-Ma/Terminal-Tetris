@@ -6,6 +6,12 @@
 #include "stats.h"
 #include "logger.h"
 
+#define BLOCK_LEFT '['
+#define BLOCK_RIGHT ']'
+#define GHOST_LEFT ':'
+#define GHOST_RIGHT ':'
+#define BOARD_SPACE ' '
+#define BUFFER_ZONE_LINE '_'
 
 
 WINDOW* draw_hold_window(int height, int width, int y, int x) {
@@ -96,7 +102,7 @@ void clear_window(WINDOW* window) {
 
     for (size_t i = 1; i <= internal_h; ++i) {
         for (size_t j = 1; j <= internal_w; ++j) {
-            mvwprintw(window, i, j, "%c", SPACE);
+            mvwprintw(window, i, j, "%c", BOARD_SPACE);
         }
     }
 }

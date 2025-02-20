@@ -14,16 +14,8 @@
 #define NEXT_WINDOW_W 14
 #define CONTROLS_WINDOW_H 16
 #define CONTROLS_WINDOW_W 14
-
 #define DEBUG_WINDOW_H 24
 #define DEBUG_WINDOW_W 36
-
-#define BLOCK_LEFT '['
-#define BLOCK_RIGHT ']'
-#define GHOST_LEFT ':'
-#define GHOST_RIGHT ':'
-#define SPACE ' '
-#define BUFFER_ZONE_LINE '_'
 
 
 WINDOW *draw_hold_window(int height, int width, int y, int x);

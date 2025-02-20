@@ -1,48 +1,13 @@
 #ifndef GAME_STATE_H
 #define GAME_STATE_H
 #include <stdlib.h>
-#include <stdbool.h>
 #include <stdint.h>
+#include <stdbool.h>
 #include "piece.h"
 
-#define TARGET_FPS 60
-
-#define BOARD_H 22
-#define BOARD_W 10
 #define BUFFER_ZONE_H 2
-#define SPAWN_Y 1
-#define SPAWN_X (BOARD_W - 1) / 2
-
-#define SRS_NUM_ROTATIONS 8
-#define SRS_NUM_TESTS 5
-#define SRS_NUM_COORDS 2
-
-#define MAX_GRAVITY_LEVEL 15
-#define LEVEL_LINE_REQ 10
-#define LOCK_DELAY 30
-#define MAX_MOVE_RESET 15
-#define SOFT_DROP_GRAVITY_MULT 20
-
-#define SINGLE_MULT 100
-#define DOUBLE_MULT 300
-#define TRIPLE_MULT 500
-#define TETRIS_MULT 800
-#define T_SPIN_ZERO_MULT 400
-#define T_SPIN_SINGLE_MULT 800
-#define T_SPIN_DOUBLE_MULT 1200
-#define T_SPIN_TRIPLE_MULT 1600
-#define T_SPIN_MINI_ZERO_MULT 100
-#define T_SPIN_MINI_SINGLE_MULT 200
-#define T_SPIN_MINI_DOUBLE_MULT 400
-#define SINGLE_PERFECT_CLEAR_MULT 800
-#define DOUBLE_PERFECT_CLEAR_MULT 1200
-#define TRIPLE_PERFECT_CLEAR_MULT 1800
-#define TETRIS_PERFECT_CLEAR_MULT 2000
-#define B2B_TETRIS_PERFECT_CLEAR_MULT 3200
-#define B2B_DIFFICULT_CLEAR_MULT 1.5
-#define COMBO_MULT 50
-#define SOFT_DROP_MULT 1
-#define HARD_DROP_MULT 2
+#define BOARD_H 20 + BUFFER_ZONE_H
+#define BOARD_W 10
 
 
 struct GameState {

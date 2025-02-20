@@ -9,6 +9,7 @@
 #include "stats.h"
 #include "logger.h"
 
+#define TARGET_FPS 60
 #define TARGET_FRAME_TIME_MS (1e3 / TARGET_FPS)
 
 #define ESC '\e'

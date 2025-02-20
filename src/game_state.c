@@ -1,11 +1,48 @@
 #include <stdlib.h>
 #include <stdbool.h>
-#include <time.h>
 #include <math.h>
 #include "game_state.h"
 #include "piece.h"
 #include "logger.h"
 
+#define SRS_NUM_ROTATIONS 8
+#define SRS_NUM_TESTS 5
+#define SRS_NUM_COORDS 2
+#define MAX_GRAVITY_LEVEL 15
+
+
+const int8_t SPAWN_Y = 1;
+const int8_t SPAWN_X = (BOARD_W - 1) / 2;
+
+const uint8_t LEVEL_LINE_REQ = 10;
+const uint8_t LOCK_DELAY = 30;
+const uint8_t MAX_MOVE_RESET = 15;
+const uint8_t SOFT_DROP_GRAVITY_MULT = 20;
+
+const uint16_t SINGLE_POINTS = 100;
+const uint16_t DOUBLE_POINTS = 300;
+const uint16_t TRIPLE_POINTS = 500;
+const uint16_t TETRIS_POINTS = 800;
+
+const uint16_t T_SPIN_ZERO_POINTS = 400;
+const uint16_t T_SPIN_SINGLE_POINTS = 800;
+const uint16_t T_SPIN_DOUBLE_POINTS = 1200;
+const uint16_t T_SPIN_TRIPLE_POINTS = 1600;
+
+const uint16_t T_SPIN_MINI_ZERO_POINTS =   100;
+const uint16_t T_SPIN_MINI_SINGLE_POINTS = 200;
+const uint16_t T_SPIN_MINI_DOUBLE_POINTS = 400;
+
+const uint16_t SINGLE_PERFECT_CLEAR_POINTS = 800;
+const uint16_t DOUBLE_PERFECT_CLEAR_POINTS = 1200;
+const uint16_t TRIPLE_PERFECT_CLEAR_POINTS = 1800;
+const uint16_t TETRIS_PERFECT_CLEAR_POINTS = 2000;
+const uint16_t B2B_TETRIS_PERFECT_CLEAR_POINTS = 3200;
+
+const uint16_t COMBO_POINTS = 50;
+const uint16_t SOFT_DROP_POINTS = 1;
+const uint16_t HARD_DROP_POINTS = 2;
+const float B2B_DIFFICULT_CLEAR_MULT = 1.5;
 
 const int SRS_TABLE[SRS_NUM_ROTATIONS][SRS_NUM_TESTS][SRS_NUM_COORDS] = {
     {{0, 0}, {-1, 0}, {-1, +1}, {0, -2}, {-1, -2}},
@@ -396,7 +433,7 @@ void game_state_hard_drop_curr_piece(GameState* game_state) {
             break;
         }
     }
-    game_state->score += HARD_DROP_MULT * (game_state->curr_piece.y - prev_y);
+    game_state->score += HARD_DROP_POINTS * (game_state->curr_piece.y - prev_y);
 }
 
 void game_state_lock_curr_piece(GameState* game_state) {
@@ -513,7 +550,7 @@ void game_state_apply_soft_drop_gravity(GameState* game_state) {
         game_state->gravity_value += SOFT_DROP_GRAVITY_MULT * GRAVITY_TABLE[game_state->level - 1];
     }
     game_state_apply_gravity(game_state);
-    game_state->score += SOFT_DROP_MULT * (game_state->curr_piece.y - prev_y);
+    game_state->score += SOFT_DROP_POINTS * (game_state->curr_piece.y - prev_y);
     game_state->soft_drop = false;
 }
 
@@ -524,7 +561,7 @@ void game_state_soft_drop_curr_piece(GameState* game_state) {
     
     int prev_y = game_state->curr_piece.y;
     game_state_move_curr_piece(game_state, game_state->curr_piece.y + 1, game_state->curr_piece.x);
-    game_state->score += SOFT_DROP_MULT * (game_state->curr_piece.y - prev_y);
+    game_state->score += SOFT_DROP_POINTS * (game_state->curr_piece.y - prev_y);
     game_state->soft_drop = true;
 }
 
@@ -721,27 +758,27 @@ size_t game_state_calc_t_spin_points(GameState* game_state, size_t num_lines) {
     size_t points = 0;
     if (game_state_check_t_spin(game_state)) {
         if (num_lines == 0) {
-            points += T_SPIN_ZERO_MULT * game_state->level;
+            points += T_SPIN_ZERO_POINTS * game_state->level;
             game_state->curr_clear_difficult = game_state->prev_clear_difficult;
         } else if (num_lines == 1) {
-            points += T_SPIN_SINGLE_MULT * game_state->level;
+            points += T_SPIN_SINGLE_POINTS * game_state->level;
             game_state->curr_clear_difficult = true;
         } else if (num_lines == 2) {
-            points += T_SPIN_DOUBLE_MULT * game_state->level;
+            points += T_SPIN_DOUBLE_POINTS * game_state->level;
             game_state->curr_clear_difficult = true;
         } else if (num_lines == 3) {
-            points += T_SPIN_TRIPLE_MULT * game_state->level;
+            points += T_SPIN_TRIPLE_POINTS * game_state->level;
             game_state->curr_clear_difficult = true;
         }
     } else if (game_state_check_t_spin_mini(game_state)) {
         if (num_lines == 0) {
-            points += T_SPIN_MINI_ZERO_MULT * game_state->level;
+            points += T_SPIN_MINI_ZERO_POINTS * game_state->level;
             game_state->curr_clear_difficult = game_state->prev_clear_difficult;
         } else if (num_lines == 1) {
-            points += T_SPIN_MINI_SINGLE_MULT * game_state->level;
+            points += T_SPIN_MINI_SINGLE_POINTS * game_state->level;
             game_state->curr_clear_difficult = true;
         } else if (num_lines == 2) {
-            points += T_SPIN_MINI_DOUBLE_MULT * game_state->level;
+            points += T_SPIN_MINI_DOUBLE_POINTS * game_state->level;
             game_state->curr_clear_difficult = true;
         }
     }
@@ -756,16 +793,16 @@ size_t game_state_calc_line_clear_points(GameState* game_state, size_t num_lines
     size_t points = 0;
     if (!game_state_check_t_spin(game_state) && !game_state_check_t_spin_mini(game_state)) {
         if (num_lines == 1) {
-            points += SINGLE_MULT * game_state->level;
+            points += SINGLE_POINTS * game_state->level;
             game_state->curr_clear_difficult = false;
         } else if (num_lines == 2) {
-            points += DOUBLE_MULT * game_state->level;
+            points += DOUBLE_POINTS * game_state->level;
             game_state->curr_clear_difficult = false;
         } else if (num_lines == 3) {
-            points += TRIPLE_MULT * game_state->level;
+            points += TRIPLE_POINTS * game_state->level;
             game_state->curr_clear_difficult = false;
         } else if (num_lines == 4) {
-            points += TETRIS_MULT * game_state->level;
+            points += TETRIS_POINTS * game_state->level;
             game_state->curr_clear_difficult = true;
         }
     }
@@ -780,16 +817,16 @@ size_t game_state_calc_perfect_clear_points(GameState* game_state, size_t num_li
     size_t points = 0;
     if (game_state_check_empty_board(game_state)) {
         if (num_lines == 1) {
-            points += SINGLE_PERFECT_CLEAR_MULT * game_state->level;
+            points += SINGLE_PERFECT_CLEAR_POINTS * game_state->level;
         } else if (num_lines == 2) {
-            points += DOUBLE_PERFECT_CLEAR_MULT * game_state->level;
+            points += DOUBLE_PERFECT_CLEAR_POINTS * game_state->level;
         } else if (num_lines == 3) {
-            points += TRIPLE_PERFECT_CLEAR_MULT * game_state->level;
+            points += TRIPLE_PERFECT_CLEAR_POINTS * game_state->level;
         } else if (num_lines == 4) {
             if (game_state->prev_clear_perfect_tetris) {
-                points += B2B_TETRIS_PERFECT_CLEAR_MULT * game_state->level;
+                points += B2B_TETRIS_PERFECT_CLEAR_POINTS * game_state->level;
             } else {
-                points += TETRIS_PERFECT_CLEAR_MULT * game_state->level;
+                points += TETRIS_PERFECT_CLEAR_POINTS * game_state->level;
             }
         }
     } 
@@ -811,7 +848,7 @@ size_t game_state_calc_combo_points(GameState* game_state, size_t num_lines) {
     size_t points = 0;
     if (num_lines > 0) {
         game_state->combo++;
-        points += COMBO_MULT * game_state->combo * game_state->level;
+        points += COMBO_POINTS * game_state->combo * game_state->level;
     } else {
         game_state->combo = -1;
     }
