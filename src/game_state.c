@@ -110,13 +110,13 @@ GameState game_state_get(void) {
 
         .soft_drop = false,
         .gravity_value = 0.0,
-        .lock_delay_timer = LOCK_DELAY,
+        .lock_delay_timer = 0,
         .move_reset_count = 0,
         
-        .level = 1,
+        .level = 0,
         .lines = 0,
         .score = 0,
-        .combo = -1,
+        .combo = 0,
         .t_rotation_test_num = 0,
         .curr_clear_difficult = false,
         .prev_clear_difficult = false,
@@ -140,6 +140,11 @@ void game_state_destroy(GameState* game_state) {
 }
 
 void game_state_start(GameState* game_state) {
+    if (!game_state) {
+        return;
+    }
+    game_state->level = 1;
+    game_state->combo = -1;
     game_state_generate_next_queue(game_state);
     game_state->next_piece = piece_get(game_state->next_queue[game_state->next_index++], 0, 0);
     game_state_load_next_piece(game_state);
