@@ -51,6 +51,8 @@ void piece_move(Piece* piece, int8_t y, int8_t x);
 
 uint8_t compute_r_index(uint8_t r, Rotation rotation);
 
+void piece_reset_rotation(Piece* piece);
+
 void piece_rotate(Piece* piece, Rotation rotation);
 
 char shape_to_char(Shape shape);

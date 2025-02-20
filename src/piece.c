@@ -297,6 +297,13 @@ uint8_t compute_r_index(uint8_t r, Rotation rotation) {
     }
 }
 
+void piece_reset_rotation(Piece* piece) {
+    if (!piece) {
+        return;
+    }
+    piece->r = 0;
+}
+
 void piece_rotate(Piece* piece, Rotation rotation) {
     if (!piece) {
         return;
