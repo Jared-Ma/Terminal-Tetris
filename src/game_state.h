@@ -10,6 +10,39 @@
 #define BOARD_W 10
 
 
+extern const int8_t SPAWN_Y;
+extern const int8_t SPAWN_X;
+
+extern const uint8_t LEVEL_LINE_REQ;
+extern const uint8_t LOCK_DELAY;
+extern const uint8_t MAX_MOVE_RESET;
+extern const uint8_t SOFT_DROP_GRAVITY_MULT;
+
+extern const uint16_t SINGLE_POINTS;
+extern const uint16_t DOUBLE_POINTS;
+extern const uint16_t TRIPLE_POINTS;
+extern const uint16_t TETRIS_POINTS;
+
+extern const uint16_t T_SPIN_ZERO_POINTS;
+extern const uint16_t T_SPIN_SINGLE_POINTS;
+extern const uint16_t T_SPIN_DOUBLE_POINTS;
+extern const uint16_t T_SPIN_TRIPLE_POINTS;
+
+extern const uint16_t T_SPIN_MINI_ZERO_POINTS;
+extern const uint16_t T_SPIN_MINI_SINGLE_POINTS;
+extern const uint16_t T_SPIN_MINI_DOUBLE_POINTS;
+
+extern const uint16_t SINGLE_PERFECT_CLEAR_POINTS;
+extern const uint16_t DOUBLE_PERFECT_CLEAR_POINTS;
+extern const uint16_t TRIPLE_PERFECT_CLEAR_POINTS;
+extern const uint16_t TETRIS_PERFECT_CLEAR_POINTS;
+extern const uint16_t B2B_TETRIS_PERFECT_CLEAR_POINTS;
+
+extern const uint16_t COMBO_POINTS;
+extern const uint16_t SOFT_DROP_POINTS;
+extern const uint16_t HARD_DROP_POINTS;
+extern const float B2B_DIFFICULT_CLEAR_MULT;
+
 struct GameState {
     Piece curr_piece;
     Piece hold_piece;
