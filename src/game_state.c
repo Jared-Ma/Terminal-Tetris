@@ -29,7 +29,7 @@ const uint16_t T_SPIN_SINGLE_POINTS = 800;
 const uint16_t T_SPIN_DOUBLE_POINTS = 1200;
 const uint16_t T_SPIN_TRIPLE_POINTS = 1600;
 
-const uint16_t T_SPIN_MINI_ZERO_POINTS =   100;
+const uint16_t T_SPIN_MINI_ZERO_POINTS = 100;
 const uint16_t T_SPIN_MINI_SINGLE_POINTS = 200;
 const uint16_t T_SPIN_MINI_DOUBLE_POINTS = 400;
 
@@ -354,7 +354,7 @@ void game_state_move_curr_piece(GameState* game_state, int y, int x) {
     if (!game_state_check_collision(game_state, test_piece)) {
         piece_move(&game_state->curr_piece, y, x);
         game_state_update_ghost_piece(game_state);
-        if (game_state->move_reset_count < MAX_MOVE_RESET) {
+        if (game_state->lock_delay_timer < LOCK_DELAY && game_state->move_reset_count < MAX_MOVE_RESET) {
             game_state->lock_delay_timer = LOCK_DELAY;
             game_state->move_reset_count++;
         }
@@ -412,7 +412,7 @@ void game_state_rotate_curr_piece_srs(GameState* game_state, Rotation rotation) 
         game_state_rotate_curr_piece(game_state, rotation);
         if (game_state->curr_piece.r != curr_piece_copy.r) {
             game_state_update_ghost_piece(game_state);
-            if (game_state->move_reset_count < MAX_MOVE_RESET) {
+            if (game_state->lock_delay_timer < LOCK_DELAY && game_state->move_reset_count < MAX_MOVE_RESET) {
                 game_state->lock_delay_timer = LOCK_DELAY;
                 game_state->move_reset_count++;
             }
