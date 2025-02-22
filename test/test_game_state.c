@@ -1,0 +1,919 @@
+#include <stdio.h>
+#include <stdbool.h>
+#include "utils/assert_trace.h"
+#include "game_state.h"
+
+
+bool check_piece_equals_zero(Piece piece) {
+    ASSERT(piece.shape == 0);
+    ASSERT(piece.y == 0);
+    ASSERT(piece.x == 0);
+    ASSERT(piece.n == 0);
+    ASSERT(piece.l == 0);
+    ASSERT(piece.r == 0);
+    for (size_t i = 0; i < R_MAX; ++i) {
+        for (size_t j = 0; j < N_MAX; ++j) {
+            for (size_t k = 0; k < N_MAX; ++k) {
+                ASSERT(piece.M[i][j][k] == 0);
+            }
+        }
+    }
+    return true;
+}
+
+bool test_game_state_get(void) {
+    GameState game_state = game_state_get();
+    ASSERT(check_piece_equals_zero(game_state.curr_piece));
+    ASSERT(check_piece_equals_zero(game_state.hold_piece));
+    ASSERT(check_piece_equals_zero(game_state.next_piece));
+    ASSERT(check_piece_equals_zero(game_state.ghost_piece));
+    for (size_t i = 0; i < BOARD_H; ++i) {
+        for (size_t j = 0; j < BOARD_W; ++j) {
+            ASSERT(game_state.board[i][j] == 0);
+        }
+    }
+    ASSERT(game_state.holding_piece == false);
+    ASSERT(game_state.hold_blocked == false);
+    ASSERT(game_state.next_index == 0);
+    for (size_t i = 0; i < NUM_SHAPES; ++i) {
+        ASSERT(game_state.next_queue[i] == 0);
+    }
+    ASSERT(game_state.soft_drop == false);
+    ASSERT(game_state.gravity_value == 0.0);
+    ASSERT(game_state.lock_delay_timer == 0);
+    ASSERT(game_state.move_reset_count == 0);
+    ASSERT(game_state.level == 0);
+    ASSERT(game_state.lines == 0);
+    ASSERT(game_state.score == 0);
+    ASSERT(game_state.combo == 0);
+    ASSERT(game_state.t_rotation_test_num == 0);
+    ASSERT(game_state.curr_clear_difficult == false);
+    ASSERT(game_state.prev_clear_difficult == false);
+    ASSERT(game_state.prev_clear_perfect_tetris == false);
+    return true;
+}
+
+bool test_game_state_init(void) {
+    GameState* game_state = game_state_init();
+    ASSERT(check_piece_equals_zero(game_state->curr_piece));
+    ASSERT(check_piece_equals_zero(game_state->hold_piece));
+    ASSERT(check_piece_equals_zero(game_state->next_piece));
+    ASSERT(check_piece_equals_zero(game_state->ghost_piece));
+    for (size_t i = 0; i < BOARD_H; ++i) {
+        for (size_t j = 0; j < BOARD_W; ++j) {
+            ASSERT(game_state->board[i][j] == 0);
+        }
+    }
+    ASSERT(game_state->holding_piece == false);
+    ASSERT(game_state->hold_blocked == false);
+    ASSERT(game_state->next_index == 0);
+    for (size_t i = 0; i < NUM_SHAPES; ++i) {
+        ASSERT(game_state->next_queue[i] == 0);
+    }
+    ASSERT(game_state->soft_drop == false);
+    ASSERT(game_state->gravity_value == 0.0);
+    ASSERT(game_state->lock_delay_timer == 0);
+    ASSERT(game_state->move_reset_count == 0);
+    ASSERT(game_state->level == 0);
+    ASSERT(game_state->lines == 0);
+    ASSERT(game_state->score == 0);
+    ASSERT(game_state->combo == 0);
+    ASSERT(game_state->t_rotation_test_num == 0);
+    ASSERT(game_state->curr_clear_difficult == false);
+    ASSERT(game_state->prev_clear_difficult == false);
+    ASSERT(game_state->prev_clear_perfect_tetris == false);
+    game_state_destroy(game_state);
+    return true;
+}
+
+bool test_game_state_start(void) {
+    GameState game_state = game_state_get();
+    game_state_start(&game_state);
+
+    Shape next_shape = game_state.next_queue[game_state.next_index-1];
+    ASSERT(game_state.level == 1);
+    ASSERT(game_state.combo == -1);
+    ASSERT(game_state.next_piece.shape = next_shape);
+    
+    return true;
+}
+
+bool test_game_state_restart(void) {
+    GameState game_state = game_state_get();
+    game_state_start(&game_state);
+    piece_move(&game_state.curr_piece, 5, 10);
+
+    game_state_restart(&game_state);
+
+    Shape next_shape = game_state.next_queue[game_state.next_index-1];
+    ASSERT(game_state.level == 1);
+    ASSERT(game_state.combo == -1);
+    ASSERT(game_state.next_piece.shape == next_shape);
+    return true;
+}
+
+bool test_game_state_generate_next_queue(void) {
+    GameState game_state = game_state_get();
+    game_state_generate_next_queue(&game_state);
+
+    // test that next_queue has 1 of each shape
+    size_t unique_shapes[NUM_SHAPES] = { 0 };
+    for (size_t i = 0; i < NUM_SHAPES; ++i) {
+        unique_shapes[game_state.next_queue[i] - 1]++;
+    }
+    for (size_t i = 0; i < NUM_SHAPES; ++i) {
+        ASSERT(unique_shapes[i] == 1);
+    }
+
+    // copy the next_queue and generate the next one
+    Shape prev_next_queue[NUM_SHAPES] = { 0 };
+    for(size_t i = 0; i < NUM_SHAPES; ++i) {
+        prev_next_queue[i] = game_state.next_queue[i];
+    }
+    game_state_generate_next_queue(&game_state);
+
+    // check that the previous next_queue != current next_queue
+    // this may fail by chance with probability 1/7! = 1/5040 
+    bool equal_arrays = true;
+    for (size_t i = 0; i < NUM_SHAPES; ++i) {
+        if (prev_next_queue[i] != game_state.next_queue[i]) {
+            equal_arrays = false;
+        }
+    }
+    ASSERT(equal_arrays == false);
+
+    return true;
+}
+
+bool test_game_state_load_next_piece(void) {
+    GameState game_state = game_state_get();
+    game_state_start(&game_state);
+    
+    // check that the next shape is equal to curr_piece.shape after loading the next piece 
+    // and check that the function handles the case correctly when running out of next shapes
+    for (size_t i = 0; i <= NUM_SHAPES; ++i) {
+        Shape next_shape = game_state.next_piece.shape;
+        game_state_load_next_piece(&game_state);
+        ASSERT(game_state.curr_piece.shape == next_shape);
+    }
+
+    return true;
+}
+
+bool test_game_state_spawn_curr_piece(void) {
+    GameState game_state = game_state_get();
+    game_state_start(&game_state);
+    game_state_spawn_curr_piece(&game_state);
+    ASSERT(game_state.curr_piece.y = SPAWN_Y);
+    ASSERT(game_state.curr_piece.x = SPAWN_X);
+    ASSERT(game_state.curr_piece.r == 0);
+    ASSERT(game_state.gravity_value == 0.0);
+    ASSERT(game_state.lock_delay_timer == LOCK_DELAY);
+    ASSERT(game_state.move_reset_count == 0);
+    ASSERT(game_state.t_rotation_test_num == 0);
+    return true;
+}
+
+bool test_game_state_hold_piece(void) {
+    GameState game_state = game_state_get();
+    game_state_start(&game_state);
+
+    // check initial hold
+    Shape curr_shape = game_state.curr_piece.shape;
+    game_state_hold_piece(&game_state);
+    ASSERT(game_state.hold_piece.shape == curr_shape);
+    ASSERT(game_state.holding_piece == true);
+    ASSERT(game_state.hold_blocked == true);
+
+    // check that holding piece is blocked afterwards
+    Shape hold_shape = game_state.hold_piece.shape;
+    game_state_hold_piece(&game_state);
+    ASSERT(game_state.hold_piece.shape == hold_shape);
+
+    // check that holding is no longer blocked after locking a piece
+    game_state_lock_curr_piece(&game_state);
+    ASSERT(game_state.hold_blocked == false);
+
+    // check that holding swaps curr_piece and hold_piece
+    curr_shape = game_state.curr_piece.shape;
+    hold_shape = game_state.hold_piece.shape;
+    game_state_hold_piece(&game_state);
+    ASSERT(game_state.curr_piece.shape == hold_shape);
+    ASSERT(game_state.hold_piece.shape == curr_shape);
+
+    return true;
+}
+
+bool test_game_state_check_collision(void) {
+    GameState game_state = game_state_get();
+    game_state_start(&game_state);
+
+    ASSERT(!game_state_check_collision(&game_state, game_state.curr_piece));
+    piece_move(&game_state.curr_piece, -1, 5);
+    ASSERT(game_state_check_collision(&game_state, game_state.curr_piece));
+    piece_move(&game_state.curr_piece, 5, -1);
+    ASSERT(game_state_check_collision(&game_state, game_state.curr_piece));
+    piece_move(&game_state.curr_piece, BOARD_H, 5);
+    ASSERT(game_state_check_collision(&game_state, game_state.curr_piece));
+    piece_move(&game_state.curr_piece, 5, BOARD_W);
+    ASSERT(game_state_check_collision(&game_state, game_state.curr_piece));
+    piece_move(&game_state.curr_piece, SPAWN_Y, SPAWN_X);
+    game_state.board[SPAWN_Y][SPAWN_X] = 1;
+    ASSERT(game_state_check_collision(&game_state, game_state.curr_piece));
+
+    return true;
+}
+
+bool test_game_state_check_curr_piece_grounded(void) {
+    GameState game_state = game_state_get();
+    game_state_start(&game_state);
+
+    game_state.curr_piece = piece_get(T, BOARD_H - 1, 5);
+    ASSERT(game_state_check_curr_piece_grounded(&game_state));
+
+    game_state.board[BOARD_H - 1][5] = 1;
+    piece_move(&game_state.curr_piece, BOARD_H - 2, 5);
+    ASSERT(game_state_check_curr_piece_grounded(&game_state));
+
+    piece_move(&game_state.curr_piece, BOARD_H - 3, 5);
+    ASSERT(!game_state_check_curr_piece_grounded(&game_state));
+
+    return true;
+}
+
+bool test_game_state_move_curr_piece(void) {
+    GameState game_state = game_state_get();
+    game_state_start(&game_state);
+
+    // check that t_rotation_test_num resets when T pieces make a valid move
+    game_state.curr_piece = piece_get(T, SPAWN_Y, SPAWN_X);
+    game_state.t_rotation_test_num = 3;
+    game_state_move_curr_piece(&game_state, 10, 5);
+    ASSERT(game_state.curr_piece.y == 10);
+    ASSERT(game_state.curr_piece.x == 5);
+    ASSERT(game_state.t_rotation_test_num == 0);
+
+    // check that y and x don't change when making an invalid move
+    game_state_move_curr_piece(&game_state, -1, 10);
+    ASSERT(game_state.curr_piece.y == 10);
+    ASSERT(game_state.curr_piece.x == 5);
+
+    // check that lock_delay_timer and move_reset_count don't change when making an invalid move
+    game_state.lock_delay_timer = LOCK_DELAY - 1;
+    game_state.move_reset_count = MAX_MOVE_RESET - 1;
+    game_state_move_curr_piece(&game_state, -1, 5);
+    ASSERT(game_state.lock_delay_timer == LOCK_DELAY - 1);
+    ASSERT(game_state.move_reset_count == MAX_MOVE_RESET - 1);
+
+    // check that they change when making a valid move
+    game_state_move_curr_piece(&game_state, 10, 5);
+    ASSERT(game_state.lock_delay_timer == LOCK_DELAY);
+    ASSERT(game_state.move_reset_count == MAX_MOVE_RESET);
+
+    // check that they only change when both 
+    // lock_delay_timer < LOCK_DELAY and move_reset_count < MAX_MOVE_RESET
+    game_state.lock_delay_timer = LOCK_DELAY;
+    game_state.move_reset_count = MAX_MOVE_RESET - 1;
+    game_state_move_curr_piece(&game_state, 11, 5);
+    ASSERT(game_state.lock_delay_timer == LOCK_DELAY);
+    ASSERT(game_state.move_reset_count == MAX_MOVE_RESET - 1);
+
+    game_state.lock_delay_timer = LOCK_DELAY - 1;
+    game_state.move_reset_count = MAX_MOVE_RESET;
+    game_state_move_curr_piece(&game_state, 12, 5);
+    ASSERT(game_state.lock_delay_timer == LOCK_DELAY - 1);
+    ASSERT(game_state.move_reset_count == MAX_MOVE_RESET);
+    
+    return true;
+}
+
+bool test_game_state_rotate_curr_piece(void) {
+    GameState game_state = game_state_get();
+    game_state_start(&game_state);
+
+    game_state_rotate_curr_piece(&game_state, RIGHT);
+    ASSERT(game_state.curr_piece.r == 1);
+
+    game_state_rotate_curr_piece(&game_state, LEFT);
+    ASSERT(game_state.curr_piece.r == 0);
+
+    game_state.curr_piece = piece_get(I, BOARD_H - 1, SPAWN_X);
+    game_state_rotate_curr_piece(&game_state, RIGHT);
+    ASSERT(game_state.curr_piece.r == 0);
+
+    game_state_rotate_curr_piece(&game_state, LEFT);
+    ASSERT(game_state.curr_piece.r == 0);
+
+    return true;
+}
+
+bool test_game_state_rotate_curr_piece_srs_i_piece(void) {
+    GameState game_state = game_state_get();
+    game_state_start(&game_state);
+    Piece test_spawn_piece = piece_get(I, (BOARD_H-1)/2, (BOARD_W-1)/2);
+    
+    // iterate through each possible RIGHT and LEFT rotation and SRS test
+    for (size_t r = 0; r < 2 * R_MAX; ++r) {
+        Rotation rotation = (r < R_MAX) ? RIGHT : LEFT;
+        test_spawn_piece.r = r % R_MAX;
+
+        // calculate index into SRS_TABLE
+        size_t r_index;
+        if (rotation == RIGHT) {
+            r_index = 2 * test_spawn_piece.r;
+        } else {
+            r_index = SRS_NUM_ROTATIONS - 1;
+            r_index -= (test_spawn_piece.r > 0) ? 2*(R_MAX - test_spawn_piece.r) : 0;
+        }
+        
+        // clear board of any obstructions
+        for (size_t i = 0; i < BOARD_H; ++i) {
+            for (size_t j = 0; j < BOARD_W; ++j) {
+                game_state.board[i][j] = 0;
+            }
+        }
+
+        for (size_t i = 0; i < SRS_NUM_TESTS; ++i) {
+            // reset curr_piece to test_spawn_piece
+            game_state.curr_piece = test_spawn_piece;
+
+            // resulting piece after kick and rotation
+            Piece result_piece = game_state.curr_piece;
+            result_piece.y = game_state.curr_piece.y - SRS_TABLE_I[r_index][i][1];
+            result_piece.x = game_state.curr_piece.x + SRS_TABLE_I[r_index][i][0];
+            result_piece.r = compute_r_index(game_state.curr_piece.r, rotation);
+
+            // remove any obstruction in resulting placement of curr_piece after SRS rotation
+            int result_top_left_y = result_piece.y - result_piece.n / 2; 
+            int result_top_left_x = result_piece.x - result_piece.n / 2;
+            for (size_t j = 0; j < result_piece.n; ++j) {
+                for (size_t k = 0; k < result_piece.n; ++k) {
+                    if (result_piece.M[result_piece.r][j][k] == 1) {
+                        game_state.board[result_top_left_y + j][result_top_left_x + k] = 0;
+                    }
+                }
+            }
+
+            // perform SRS rotation on curr_piece
+            game_state_rotate_curr_piece_srs(&game_state, rotation);
+
+            // check that curr_piece matches result_piece
+            ASSERT(game_state.curr_piece.y == result_piece.y);
+            ASSERT(game_state.curr_piece.x == result_piece.x);
+            ASSERT(game_state.curr_piece.r == result_piece.r);
+
+            // add obstruction according to curr_piece placement, so that next SRS test is triggered
+            int curr_top_left_y = game_state.curr_piece.y - game_state.curr_piece.n / 2; 
+            int curr_top_left_x = game_state.curr_piece.x - game_state.curr_piece.n / 2;
+            for (size_t j = 0; j < game_state.curr_piece.n; ++j) {
+                for (size_t k = 0; k < game_state.curr_piece.n; ++k) {
+                    if (game_state.curr_piece.M[game_state.curr_piece.r][j][k] == 1) {
+                        game_state.board[curr_top_left_y + j][curr_top_left_x + k] = 1;
+                    }
+                }
+            }
+            
+            // remove any obstruction that blocks test_spawn_piece
+            int test_top_left_y = test_spawn_piece.y - test_spawn_piece.n / 2; 
+            int test_top_left_x = test_spawn_piece.x - test_spawn_piece.n / 2;
+            for (size_t j = 0; j < test_spawn_piece.n; ++j) {
+                for (size_t k = 0; k < test_spawn_piece.n; ++k) {
+                    if (test_spawn_piece.M[test_spawn_piece.r][j][k] == 1) {
+                        game_state.board[test_top_left_y + j][test_top_left_x + k] = 0;
+                    }
+                }
+            }
+
+            // check that curr_piece doesn't rotate after last test
+            if (i == SRS_NUM_TESTS - 1) {
+                game_state.curr_piece = test_spawn_piece;
+                game_state_rotate_curr_piece_srs(&game_state, rotation);
+                ASSERT(game_state.curr_piece.y == test_spawn_piece.y);
+                ASSERT(game_state.curr_piece.x == test_spawn_piece.x);
+                ASSERT(game_state.curr_piece.r == test_spawn_piece.r);
+            }
+        }
+    }
+
+    return true;
+}
+
+bool test_game_state_rotate_curr_piece_srs_j_piece(void) {
+    GameState game_state = game_state_get();
+    game_state_start(&game_state);
+    Piece test_spawn_piece = piece_get(J, (BOARD_H-1)/2, (BOARD_W-1)/2);
+    
+    // iterate through each possible RIGHT and LEFT rotation and SRS test
+    for (size_t r = 0; r < 2 * R_MAX; ++r) {
+        Rotation rotation = (r < R_MAX) ? RIGHT : LEFT;
+        test_spawn_piece.r = r % R_MAX;
+
+        // calculate index into SRS_TABLE
+        size_t r_index;
+        if (rotation == RIGHT) {
+            r_index = 2 * test_spawn_piece.r;
+        } else {
+            r_index = SRS_NUM_ROTATIONS - 1;
+            r_index -= (test_spawn_piece.r > 0) ? 2*(R_MAX - test_spawn_piece.r) : 0;
+        }
+        
+        // clear board of any obstructions
+        for (size_t i = 0; i < BOARD_H; ++i) {
+            for (size_t j = 0; j < BOARD_W; ++j) {
+                game_state.board[i][j] = 0;
+            }
+        }
+
+        for (size_t i = 0; i < SRS_NUM_TESTS; ++i) {
+            // reset curr_piece to test_spawn_piece
+            game_state.curr_piece = test_spawn_piece;
+
+            // resulting piece after kick and rotation
+            Piece result_piece = game_state.curr_piece;
+            result_piece.y = game_state.curr_piece.y - SRS_TABLE[r_index][i][1];
+            result_piece.x = game_state.curr_piece.x + SRS_TABLE[r_index][i][0];
+            result_piece.r = compute_r_index(game_state.curr_piece.r, rotation);
+
+            // remove any obstruction in resulting placement of curr_piece after SRS rotation
+            int result_top_left_y = result_piece.y - result_piece.n / 2; 
+            int result_top_left_x = result_piece.x - result_piece.n / 2;
+            for (size_t j = 0; j < result_piece.n; ++j) {
+                for (size_t k = 0; k < result_piece.n; ++k) {
+                    if (result_piece.M[result_piece.r][j][k] == 1) {
+                        game_state.board[result_top_left_y + j][result_top_left_x + k] = 0;
+                    }
+                }
+            }
+
+            // perform SRS rotation on curr_piece
+            game_state_rotate_curr_piece_srs(&game_state, rotation);
+
+            // check that curr_piece matches result_piece
+            ASSERT(game_state.curr_piece.y == result_piece.y);
+            ASSERT(game_state.curr_piece.x == result_piece.x);
+            ASSERT(game_state.curr_piece.r == result_piece.r);
+
+            // add obstruction according to curr_piece placement, so that next SRS test is triggered
+            int curr_top_left_y = game_state.curr_piece.y - game_state.curr_piece.n / 2; 
+            int curr_top_left_x = game_state.curr_piece.x - game_state.curr_piece.n / 2;
+            for (size_t j = 0; j < game_state.curr_piece.n; ++j) {
+                for (size_t k = 0; k < game_state.curr_piece.n; ++k) {
+                    if (game_state.curr_piece.M[game_state.curr_piece.r][j][k] == 1) {
+                        game_state.board[curr_top_left_y + j][curr_top_left_x + k] = 1;
+                    }
+                }
+            }
+            
+            // remove any obstruction that blocks test_spawn_piece
+            int test_top_left_y = test_spawn_piece.y - test_spawn_piece.n / 2; 
+            int test_top_left_x = test_spawn_piece.x - test_spawn_piece.n / 2;
+            for (size_t j = 0; j < test_spawn_piece.n; ++j) {
+                for (size_t k = 0; k < test_spawn_piece.n; ++k) {
+                    if (test_spawn_piece.M[test_spawn_piece.r][j][k] == 1) {
+                        game_state.board[test_top_left_y + j][test_top_left_x + k] = 0;
+                    }
+                }
+            }
+            
+            // check that curr_piece doesn't rotate after last test
+            if (i == SRS_NUM_TESTS - 1) {
+                game_state.curr_piece = test_spawn_piece;
+                game_state_rotate_curr_piece_srs(&game_state, rotation);
+                ASSERT(game_state.curr_piece.y == test_spawn_piece.y);
+                ASSERT(game_state.curr_piece.x == test_spawn_piece.x);
+                ASSERT(game_state.curr_piece.r == test_spawn_piece.r);
+            }
+        }
+    }
+
+    return true;
+}
+
+bool test_game_state_rotate_curr_piece_srs_l_piece(void) {
+    GameState game_state = game_state_get();
+    game_state_start(&game_state);
+    Piece test_spawn_piece = piece_get(L, (BOARD_H-1)/2, (BOARD_W-1)/2);
+    
+    // iterate through each possible RIGHT and LEFT rotation and SRS test
+    for (size_t r = 0; r < 2 * R_MAX; ++r) {
+        Rotation rotation = (r < R_MAX) ? RIGHT : LEFT;
+        test_spawn_piece.r = r % R_MAX;
+
+        // calculate index into SRS_TABLE
+        size_t r_index;
+        if (rotation == RIGHT) {
+            r_index = 2 * test_spawn_piece.r;
+        } else {
+            r_index = SRS_NUM_ROTATIONS - 1;
+            r_index -= (test_spawn_piece.r > 0) ? 2*(R_MAX - test_spawn_piece.r) : 0;
+        }
+        
+        // clear board of any obstructions
+        for (size_t i = 0; i < BOARD_H; ++i) {
+            for (size_t j = 0; j < BOARD_W; ++j) {
+                game_state.board[i][j] = 0;
+            }
+        }
+
+        for (size_t i = 0; i < SRS_NUM_TESTS; ++i) {
+            // reset curr_piece to test_spawn_piece
+            game_state.curr_piece = test_spawn_piece;
+
+            // resulting piece after kick and rotation
+            Piece result_piece = game_state.curr_piece;
+            result_piece.y = game_state.curr_piece.y - SRS_TABLE[r_index][i][1];
+            result_piece.x = game_state.curr_piece.x + SRS_TABLE[r_index][i][0];
+            result_piece.r = compute_r_index(game_state.curr_piece.r, rotation);
+
+            // remove any obstruction in resulting placement of curr_piece after SRS rotation
+            int result_top_left_y = result_piece.y - result_piece.n / 2; 
+            int result_top_left_x = result_piece.x - result_piece.n / 2;
+            for (size_t j = 0; j < result_piece.n; ++j) {
+                for (size_t k = 0; k < result_piece.n; ++k) {
+                    if (result_piece.M[result_piece.r][j][k] == 1) {
+                        game_state.board[result_top_left_y + j][result_top_left_x + k] = 0;
+                    }
+                }
+            }
+
+            // perform SRS rotation on curr_piece
+            game_state_rotate_curr_piece_srs(&game_state, rotation);
+
+            // check that curr_piece matches result_piece
+            ASSERT(game_state.curr_piece.y == result_piece.y);
+            ASSERT(game_state.curr_piece.x == result_piece.x);
+            ASSERT(game_state.curr_piece.r == result_piece.r);
+
+            // add obstruction according to curr_piece placement, so that next SRS test is triggered
+            int curr_top_left_y = game_state.curr_piece.y - game_state.curr_piece.n / 2; 
+            int curr_top_left_x = game_state.curr_piece.x - game_state.curr_piece.n / 2;
+            for (size_t j = 0; j < game_state.curr_piece.n; ++j) {
+                for (size_t k = 0; k < game_state.curr_piece.n; ++k) {
+                    if (game_state.curr_piece.M[game_state.curr_piece.r][j][k] == 1) {
+                        game_state.board[curr_top_left_y + j][curr_top_left_x + k] = 1;
+                    }
+                }
+            }
+            
+            // remove any obstruction that blocks test_spawn_piece
+            int test_top_left_y = test_spawn_piece.y - test_spawn_piece.n / 2; 
+            int test_top_left_x = test_spawn_piece.x - test_spawn_piece.n / 2;
+            for (size_t j = 0; j < test_spawn_piece.n; ++j) {
+                for (size_t k = 0; k < test_spawn_piece.n; ++k) {
+                    if (test_spawn_piece.M[test_spawn_piece.r][j][k] == 1) {
+                        game_state.board[test_top_left_y + j][test_top_left_x + k] = 0;
+                    }
+                }
+            }
+
+            // check that curr_piece doesn't rotate after last test
+            if (i == SRS_NUM_TESTS - 1) {
+                game_state.curr_piece = test_spawn_piece;
+                game_state_rotate_curr_piece_srs(&game_state, rotation);
+                ASSERT(game_state.curr_piece.y == test_spawn_piece.y);
+                ASSERT(game_state.curr_piece.x == test_spawn_piece.x);
+                ASSERT(game_state.curr_piece.r == test_spawn_piece.r);
+            }
+        }
+    }
+
+    return true;
+}
+
+bool test_game_state_rotate_curr_piece_srs_o_piece(void) {
+    GameState game_state = game_state_get();
+    game_state_start(&game_state);
+    game_state.curr_piece = piece_get(O, (BOARD_H-1)/2, (BOARD_W-1)/2);
+    
+    // check that the relative coordinates of O piece minos don't change after each rotation
+    // i.e. the O piece doesn't appear to move on the board when rotated
+    for (size_t r = 0; r < 2 * R_MAX; ++r) {
+        Rotation rotation = (r < R_MAX) ? RIGHT : LEFT;
+
+        // calculate coordinates of each O piece mino before the rotation
+        int prev_mino_coordinates[4][2] = {{ 0 }};
+        int prev_num_minos = 0;
+        int top_left_y = game_state.curr_piece.y - game_state.curr_piece.n / 2; 
+        int top_left_x = game_state.curr_piece.x - game_state.curr_piece.n / 2;
+        for (size_t i = 0; i < game_state.curr_piece.n; ++i) {
+            for (size_t j = 0; j < game_state.curr_piece.n; ++j) {
+                if (game_state.curr_piece.M[game_state.curr_piece.r][i][j] == 1) {
+                    prev_mino_coordinates[prev_num_minos][0] = top_left_y + i;
+                    prev_mino_coordinates[prev_num_minos][1] = top_left_x + j;
+                    prev_num_minos++;
+                }
+            }
+        }
+    
+        // perform rotation on O piece
+        game_state_rotate_curr_piece_srs(&game_state, rotation);
+        
+        // calculate coordinates of each O piece mino after the rotation
+        int curr_mino_coordinates[4][2] = {{ 0 }};
+        int curr_num_minos = 0;
+        top_left_y = game_state.curr_piece.y - game_state.curr_piece.n / 2; 
+        top_left_x = game_state.curr_piece.x - game_state.curr_piece.n / 2;
+        for (size_t i = 0; i < game_state.curr_piece.n; ++i) {
+            for (size_t j = 0; j < game_state.curr_piece.n; ++j) {
+                if (game_state.curr_piece.M[game_state.curr_piece.r][i][j] == 1) {
+                    curr_mino_coordinates[curr_num_minos][0] = top_left_y + i;
+                    curr_mino_coordinates[curr_num_minos][1] = top_left_x + j;
+                    curr_num_minos++;
+                }
+            }
+        }
+    
+        // check that coordinates are the same before and after rotation
+        for (size_t i = 0; i < curr_num_minos; ++i) {
+            ASSERT(prev_mino_coordinates[i][0] == curr_mino_coordinates[i][0])
+            ASSERT(prev_mino_coordinates[i][1] == curr_mino_coordinates[i][1])
+        }
+    }
+
+    return true;
+}
+
+bool test_game_state_rotate_curr_piece_srs_s_piece(void) {
+    GameState game_state = game_state_get();
+    game_state_start(&game_state);
+    Piece test_spawn_piece = piece_get(S, (BOARD_H-1)/2, (BOARD_W-1)/2);
+    
+    // iterate through each possible RIGHT and LEFT rotation and SRS test
+    for (size_t r = 0; r < 2 * R_MAX; ++r) {
+        Rotation rotation = (r < R_MAX) ? RIGHT : LEFT;
+        test_spawn_piece.r = r % R_MAX;
+
+        // calculate index into SRS_TABLE
+        size_t r_index;
+        if (rotation == RIGHT) {
+            r_index = 2 * test_spawn_piece.r;
+        } else {
+            r_index = SRS_NUM_ROTATIONS - 1;
+            r_index -= (test_spawn_piece.r > 0) ? 2*(R_MAX - test_spawn_piece.r) : 0;
+        }
+        
+        // clear board of any obstructions
+        for (size_t i = 0; i < BOARD_H; ++i) {
+            for (size_t j = 0; j < BOARD_W; ++j) {
+                game_state.board[i][j] = 0;
+            }
+        }
+
+        for (size_t i = 0; i < SRS_NUM_TESTS; ++i) {
+            // reset curr_piece to test_spawn_piece
+            game_state.curr_piece = test_spawn_piece;
+
+            // resulting piece after kick and rotation
+            Piece result_piece = game_state.curr_piece;
+            result_piece.y = game_state.curr_piece.y - SRS_TABLE[r_index][i][1];
+            result_piece.x = game_state.curr_piece.x + SRS_TABLE[r_index][i][0];
+            result_piece.r = compute_r_index(game_state.curr_piece.r, rotation);
+
+            // remove any obstruction in resulting placement of curr_piece after SRS rotation
+            int result_top_left_y = result_piece.y - result_piece.n / 2; 
+            int result_top_left_x = result_piece.x - result_piece.n / 2;
+            for (size_t j = 0; j < result_piece.n; ++j) {
+                for (size_t k = 0; k < result_piece.n; ++k) {
+                    if (result_piece.M[result_piece.r][j][k] == 1) {
+                        game_state.board[result_top_left_y + j][result_top_left_x + k] = 0;
+                    }
+                }
+            }
+            
+            // perform SRS rotation on curr_piece
+            game_state_rotate_curr_piece_srs(&game_state, rotation);
+
+            // check that curr_piece matches result_piece
+            ASSERT(game_state.curr_piece.y == result_piece.y);
+            ASSERT(game_state.curr_piece.x == result_piece.x);
+            ASSERT(game_state.curr_piece.r == result_piece.r);
+
+            // add obstruction according to curr_piece placement, so that next SRS test is triggered
+            int curr_top_left_y = game_state.curr_piece.y - game_state.curr_piece.n / 2; 
+            int curr_top_left_x = game_state.curr_piece.x - game_state.curr_piece.n / 2;
+            for (size_t j = 0; j < game_state.curr_piece.n; ++j) {
+                for (size_t k = 0; k < game_state.curr_piece.n; ++k) {
+                    if (game_state.curr_piece.M[game_state.curr_piece.r][j][k] == 1) {
+                        game_state.board[curr_top_left_y + j][curr_top_left_x + k] = 1;
+                    }
+                }
+            }
+            
+            // remove any obstruction that blocks test_spawn_piece
+            int test_top_left_y = test_spawn_piece.y - test_spawn_piece.n / 2; 
+            int test_top_left_x = test_spawn_piece.x - test_spawn_piece.n / 2;
+            for (size_t j = 0; j < test_spawn_piece.n; ++j) {
+                for (size_t k = 0; k < test_spawn_piece.n; ++k) {
+                    if (test_spawn_piece.M[test_spawn_piece.r][j][k] == 1) {
+                        game_state.board[test_top_left_y + j][test_top_left_x + k] = 0;
+                    }
+                }
+            }
+            
+            // check that curr_piece doesn't rotate after last test
+            if (i == SRS_NUM_TESTS - 1) {
+                game_state.curr_piece = test_spawn_piece;
+                game_state_rotate_curr_piece_srs(&game_state, rotation);
+                ASSERT(game_state.curr_piece.y == test_spawn_piece.y);
+                ASSERT(game_state.curr_piece.x == test_spawn_piece.x);
+                ASSERT(game_state.curr_piece.r == test_spawn_piece.r);
+            }
+        }
+    }
+
+    return true;
+}
+
+bool test_game_state_rotate_curr_piece_srs_t_piece(void) {
+    GameState game_state = game_state_get();
+    game_state_start(&game_state);
+    Piece test_spawn_piece = piece_get(T, (BOARD_H-1)/2, (BOARD_W-1)/2);
+    
+    // iterate through each possible RIGHT and LEFT rotation and SRS test
+    for (size_t r = 0; r < 2 * R_MAX; ++r) {
+        Rotation rotation = (r < R_MAX) ? RIGHT : LEFT;
+        test_spawn_piece.r = r % R_MAX;
+
+        // calculate index into SRS_TABLE
+        size_t r_index;
+        if (rotation == RIGHT) {
+            r_index = 2 * test_spawn_piece.r;
+        } else {
+            r_index = SRS_NUM_ROTATIONS - 1;
+            r_index -= (test_spawn_piece.r > 0) ? 2*(R_MAX - test_spawn_piece.r) : 0;
+        }
+        
+        // clear board of any obstructions
+        for (size_t i = 0; i < BOARD_H; ++i) {
+            for (size_t j = 0; j < BOARD_W; ++j) {
+                game_state.board[i][j] = 0;
+            }
+        }
+
+        for (size_t i = 0; i < SRS_NUM_TESTS; ++i) {
+
+            // for the T piece there are special cases in the SRS_TABLE that not possible
+            if (
+                (r_index == 0 && i == 3) || (r_index == 4 && i == 2) ||
+                (r_index == 7 && i == 3) || (r_index == 3 && i == 2) 
+            ) {
+                continue;
+            }
+
+            // reset curr_piece to test_spawn_piece
+            game_state.curr_piece = test_spawn_piece;
+
+            // resulting piece after kick and rotation
+            Piece result_piece = game_state.curr_piece;
+            result_piece.y = game_state.curr_piece.y - SRS_TABLE[r_index][i][1];
+            result_piece.x = game_state.curr_piece.x + SRS_TABLE[r_index][i][0];
+            result_piece.r = compute_r_index(game_state.curr_piece.r, rotation);
+
+            // remove any obstruction in resulting placement of curr_piece after SRS rotation
+            int result_top_left_y = result_piece.y - result_piece.n / 2; 
+            int result_top_left_x = result_piece.x - result_piece.n / 2;
+            for (size_t j = 0; j < result_piece.n; ++j) {
+                for (size_t k = 0; k < result_piece.n; ++k) {
+                    if (result_piece.M[result_piece.r][j][k] == 1) {
+                        game_state.board[result_top_left_y + j][result_top_left_x + k] = 0;
+                    }
+                }
+            }
+
+            // perform SRS rotation on curr_piece
+            game_state_rotate_curr_piece_srs(&game_state, rotation);
+
+            // check that curr_piece matches result_piece
+            ASSERT(game_state.curr_piece.y == result_piece.y);
+            ASSERT(game_state.curr_piece.x == result_piece.x);
+            ASSERT(game_state.curr_piece.r == result_piece.r);
+
+            // add obstruction according to curr_piece placement, so that next SRS test is triggered
+            int curr_top_left_y = game_state.curr_piece.y - game_state.curr_piece.n / 2; 
+            int curr_top_left_x = game_state.curr_piece.x - game_state.curr_piece.n / 2;
+            for (size_t j = 0; j < game_state.curr_piece.n; ++j) {
+                for (size_t k = 0; k < game_state.curr_piece.n; ++k) {
+                    if (game_state.curr_piece.M[game_state.curr_piece.r][j][k] == 1) {
+                        game_state.board[curr_top_left_y + j][curr_top_left_x + k] = 1;
+                    }
+                }
+            }
+            
+            // remove any obstruction that blocks test_spawn_piece
+            int test_top_left_y = test_spawn_piece.y - test_spawn_piece.n / 2; 
+            int test_top_left_x = test_spawn_piece.x - test_spawn_piece.n / 2;
+            for (size_t j = 0; j < test_spawn_piece.n; ++j) {
+                for (size_t k = 0; k < test_spawn_piece.n; ++k) {
+                    if (test_spawn_piece.M[test_spawn_piece.r][j][k] == 1) {
+                        game_state.board[test_top_left_y + j][test_top_left_x + k] = 0;
+                    }
+                }
+            }
+            
+            // check that curr_piece doesn't rotate after last test
+            if (i == SRS_NUM_TESTS - 1) {
+                game_state.curr_piece = test_spawn_piece;
+                game_state_rotate_curr_piece_srs(&game_state, rotation);
+                ASSERT(game_state.curr_piece.y == test_spawn_piece.y);
+                ASSERT(game_state.curr_piece.x == test_spawn_piece.x);
+                ASSERT(game_state.curr_piece.r == test_spawn_piece.r);
+            }
+        }
+    }
+
+    return true;
+}
+
+
+
+bool test_game_state_rotate_curr_piece_srs_z_piece(void) {
+    GameState game_state = game_state_get();
+    game_state_start(&game_state);
+    Piece test_spawn_piece = piece_get(Z, (BOARD_H-1)/2, (BOARD_W-1)/2);
+    
+    // iterate through each possible RIGHT and LEFT rotation and SRS test
+    for (size_t r = 0; r < 2 * R_MAX; ++r) {
+        Rotation rotation = (r < R_MAX) ? RIGHT : LEFT;
+        test_spawn_piece.r = r % R_MAX;
+
+        // calculate index into SRS_TABLE
+        size_t r_index;
+        if (rotation == RIGHT) {
+            r_index = 2 * test_spawn_piece.r;
+        } else {
+            r_index = SRS_NUM_ROTATIONS - 1;
+            r_index -= (test_spawn_piece.r > 0) ? 2*(R_MAX - test_spawn_piece.r) : 0;
+        }
+        
+        // clear board of any obstructions
+        for (size_t i = 0; i < BOARD_H; ++i) {
+            for (size_t j = 0; j < BOARD_W; ++j) {
+                game_state.board[i][j] = 0;
+            }
+        }
+
+        for (size_t i = 0; i < SRS_NUM_TESTS; ++i) {
+            // reset curr_piece to test_spawn_piece
+            game_state.curr_piece = test_spawn_piece;
+
+            // resulting piece after kick and rotation
+            Piece result_piece = game_state.curr_piece;
+            result_piece.y = game_state.curr_piece.y - SRS_TABLE[r_index][i][1];
+            result_piece.x = game_state.curr_piece.x + SRS_TABLE[r_index][i][0];
+            result_piece.r = compute_r_index(game_state.curr_piece.r, rotation);
+
+            // remove any obstruction in resulting placement of curr_piece after SRS rotation
+            int result_top_left_y = result_piece.y - result_piece.n / 2; 
+            int result_top_left_x = result_piece.x - result_piece.n / 2;
+            for (size_t j = 0; j < result_piece.n; ++j) {
+                for (size_t k = 0; k < result_piece.n; ++k) {
+                    if (result_piece.M[result_piece.r][j][k] == 1) {
+                        game_state.board[result_top_left_y + j][result_top_left_x + k] = 0;
+                    }
+                }
+            }
+
+            // perform SRS rotation on curr_piece
+            game_state_rotate_curr_piece_srs(&game_state, rotation);
+
+            // check that curr_piece matches result_piece
+            ASSERT(game_state.curr_piece.y == result_piece.y);
+            ASSERT(game_state.curr_piece.x == result_piece.x);
+            ASSERT(game_state.curr_piece.r == result_piece.r);
+
+            // add obstruction according to curr_piece placement, so that next SRS test is triggered
+            int curr_top_left_y = game_state.curr_piece.y - game_state.curr_piece.n / 2; 
+            int curr_top_left_x = game_state.curr_piece.x - game_state.curr_piece.n / 2;
+            for (size_t j = 0; j < game_state.curr_piece.n; ++j) {
+                for (size_t k = 0; k < game_state.curr_piece.n; ++k) {
+                    if (game_state.curr_piece.M[game_state.curr_piece.r][j][k] == 1) {
+                        game_state.board[curr_top_left_y + j][curr_top_left_x + k] = 1;
+                    }
+                }
+            }
+
+            // remove any obstruction that blocks test_spawn_piece
+            int test_top_left_y = test_spawn_piece.y - test_spawn_piece.n / 2; 
+            int test_top_left_x = test_spawn_piece.x - test_spawn_piece.n / 2;
+            for (size_t j = 0; j < test_spawn_piece.n; ++j) {
+                for (size_t k = 0; k < test_spawn_piece.n; ++k) {
+                    if (test_spawn_piece.M[test_spawn_piece.r][j][k] == 1) {
+                        game_state.board[test_top_left_y + j][test_top_left_x + k] = 0;
+                    }
+                }
+            }
+
+            // check that curr_piece doesn't rotate after last test
+            if (i == SRS_NUM_TESTS - 1) {
+                game_state.curr_piece = test_spawn_piece;
+                game_state_rotate_curr_piece_srs(&game_state, rotation);
+                ASSERT(game_state.curr_piece.y == test_spawn_piece.y);
+                ASSERT(game_state.curr_piece.x == test_spawn_piece.x);
+                ASSERT(game_state.curr_piece.r == test_spawn_piece.r);
+            }
+        }
+    }
+
+    return true;
+}
+

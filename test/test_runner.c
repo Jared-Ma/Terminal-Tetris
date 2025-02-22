@@ -3,8 +3,9 @@
 #include "utils/unit_test.h"
 #include "test_piece.h"
 #include "test_stats.h"
+#include "test_game_state.h"
 
-#define NUM_TESTS 11
+#define NUM_TESTS 30
 
 
 int main(void) {
@@ -21,6 +22,26 @@ int main(void) {
         UNIT_TEST(test_stats_get),
         UNIT_TEST(test_stats_init),
         UNIT_TEST(test_stats_reset),
+
+        UNIT_TEST(test_game_state_get),
+        UNIT_TEST(test_game_state_init),
+        UNIT_TEST(test_game_state_start),
+        UNIT_TEST(test_game_state_restart),
+        UNIT_TEST(test_game_state_generate_next_queue),
+        UNIT_TEST(test_game_state_load_next_piece),
+        UNIT_TEST(test_game_state_spawn_curr_piece),
+        UNIT_TEST(test_game_state_hold_piece),
+        UNIT_TEST(test_game_state_check_collision),
+        UNIT_TEST(test_game_state_check_curr_piece_grounded),
+        UNIT_TEST(test_game_state_move_curr_piece),
+        UNIT_TEST(test_game_state_rotate_curr_piece),
+        UNIT_TEST(test_game_state_rotate_curr_piece_srs_i_piece),
+        UNIT_TEST(test_game_state_rotate_curr_piece_srs_j_piece),
+        UNIT_TEST(test_game_state_rotate_curr_piece_srs_l_piece),
+        UNIT_TEST(test_game_state_rotate_curr_piece_srs_o_piece),
+        UNIT_TEST(test_game_state_rotate_curr_piece_srs_s_piece),
+        UNIT_TEST(test_game_state_rotate_curr_piece_srs_t_piece),
+        UNIT_TEST(test_game_state_rotate_curr_piece_srs_z_piece),
     };
 
     size_t failed_unit_tests[NUM_TESTS] = { 0 };
