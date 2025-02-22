@@ -5,11 +5,6 @@
 #include "piece.h"
 #include "logger.h"
 
-#define SRS_NUM_ROTATIONS 8
-#define SRS_NUM_TESTS 5
-#define SRS_NUM_COORDS 2
-#define MAX_GRAVITY_LEVEL 15
-
 
 const int8_t SPAWN_Y = 1;
 const int8_t SPAWN_X = (BOARD_W - 1) / 2;

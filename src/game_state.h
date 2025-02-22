@@ -6,8 +6,13 @@
 #include "piece.h"
 
 #define BUFFER_ZONE_H 2
-#define BOARD_H 20 + BUFFER_ZONE_H
+#define BOARD_H 22
 #define BOARD_W 10
+
+#define SRS_NUM_ROTATIONS 8
+#define SRS_NUM_TESTS 5
+#define SRS_NUM_COORDS 2
+#define MAX_GRAVITY_LEVEL 15
 
 
 extern const int8_t SPAWN_Y;
@@ -42,6 +47,11 @@ extern const uint16_t COMBO_POINTS;
 extern const uint16_t SOFT_DROP_POINTS;
 extern const uint16_t HARD_DROP_POINTS;
 extern const float B2B_DIFFICULT_CLEAR_MULT;
+
+extern const int SRS_TABLE[SRS_NUM_ROTATIONS][SRS_NUM_TESTS][SRS_NUM_COORDS];
+extern const int SRS_TABLE_I[SRS_NUM_ROTATIONS][SRS_NUM_TESTS][SRS_NUM_COORDS];
+extern const int SRS_TABLE_O[SRS_NUM_ROTATIONS][SRS_NUM_TESTS][SRS_NUM_COORDS];
+extern const float GRAVITY_TABLE[MAX_GRAVITY_LEVEL];
 
 struct GameState {
     Piece curr_piece;
