@@ -502,9 +502,7 @@ void game_state_clear_lines(GameState* game_state) {
 
     // clear lines from board and apply stack gravity
     for (size_t i = 0; i < num_lines; ++i) {
-        for (size_t j = 0; j < BOARD_W; ++j) {
-            game_state->board[rows[i]][j] = 0;
-        }
+        game_state_clear_line(game_state, rows[i]);
         game_state_apply_stack_gravity(game_state, rows[i]);
     }
 
