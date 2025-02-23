@@ -63,6 +63,18 @@ bool test_game_state_update_ghost_piece(void);
 
 bool test_game_state_check_t_spin(void);
 
+bool test_game_state_check_t_spin_mini(void);
+
 bool test_game_state_check_empty_board(void);
+
+bool test_game_state_calc_t_spin_points(void);
+
+bool test_game_state_calc_line_clear_points(void);
+
+bool test_game_state_calc_perfect_clear_points(void);
+
+bool test_game_state_calc_combo_points(void);
+
+bool test_game_state_calc_difficult_clear_mult(void);
 
 #endif

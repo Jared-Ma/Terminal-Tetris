@@ -1183,80 +1183,198 @@ bool test_game_state_check_t_spin(void) {
 
     game_state.t_rotation_test_num = 1;
     game_state.curr_piece.r = 0;
-    game_state.board[top_left_y][top_left_x] = 1;
-    game_state.board[top_left_y][top_left_x + 2] = 1;
-    game_state.board[top_left_y + 2][top_left_x] = 1;
-    game_state.board[top_left_y + 2][top_left_x + 2] = 0;
-    ASSERT(game_state_check_t_spin(&game_state) == true);
 
-    game_state.board[top_left_y + 2][top_left_x] = 0;
-    game_state.board[top_left_y + 2][top_left_x + 2] = 1;
-    ASSERT(game_state_check_t_spin(&game_state) == true);
+    // cases when there should be a t-spin:
+    // each corner is specified by a bit in order from top-left, top-right, 
+    // bottom-left, bottom-right, from least to most significant bit
+    size_t true_case_1 = 0b0111;
+    size_t true_case_2 = 0b1011;
+    size_t true_case_3 = 0b1111;
+
+    // enumerate and test every possible combination of corners 
+    for (size_t i = 0; i < 16; ++i) {
+        game_state.board[top_left_y][top_left_x] =         (bool)(i & 0b0001);
+        game_state.board[top_left_y][top_left_x + 2] =     (bool)(i & 0b0010);
+        game_state.board[top_left_y + 2][top_left_x] =     (bool)(i & 0b0100);
+        game_state.board[top_left_y + 2][top_left_x + 2] = (bool)(i & 0b1000);
+
+        if (i == true_case_1 || i == true_case_2 || i == true_case_3) {
+            ASSERT(game_state_check_t_spin(&game_state) == true);
+        } else {
+            ASSERT(game_state_check_t_spin(&game_state) == false);
+        }
+    }
 
     game_state.t_rotation_test_num = 2;
     game_state.curr_piece.r = 1;
-    game_state.board[top_left_y][top_left_x] = 1;
-    game_state.board[top_left_y][top_left_x + 2] = 1;
-    game_state.board[top_left_y + 2][top_left_x] = 0;
-    game_state.board[top_left_y + 2][top_left_x + 2] = 1;
-    ASSERT(game_state_check_t_spin(&game_state) == true);
-    
-    game_state.board[top_left_y][top_left_x] = 1;
-    game_state.board[top_left_y + 2][top_left_x] = 0;
-    ASSERT(game_state_check_t_spin(&game_state) == true);
+    true_case_1 = 0b1011;
+    true_case_2 = 0b1110;
+    true_case_3 = 0b1111;
+
+    for (size_t i = 0; i < 16; ++i) {
+        game_state.board[top_left_y][top_left_x] =         (bool)(i & 0b0001);
+        game_state.board[top_left_y][top_left_x + 2] =     (bool)(i & 0b0010);
+        game_state.board[top_left_y + 2][top_left_x] =     (bool)(i & 0b0100);
+        game_state.board[top_left_y + 2][top_left_x + 2] = (bool)(i & 0b1000);
+
+        if (i == true_case_1 || i == true_case_2 || i == true_case_3) {
+            ASSERT(game_state_check_t_spin(&game_state) == true);
+        } else {
+            ASSERT(game_state_check_t_spin(&game_state) == false);
+        }
+    }
 
     game_state.t_rotation_test_num = 3;
     game_state.curr_piece.r = 2;
-    game_state.board[top_left_y][top_left_x] = 1;
-    game_state.board[top_left_y][top_left_x + 2] = 0;
-    game_state.board[top_left_y + 2][top_left_x] = 1;
-    game_state.board[top_left_y + 2][top_left_x + 2] = 1;
-    ASSERT(game_state_check_t_spin(&game_state) == true);
-    
-    game_state.board[top_left_y][top_left_x] = 0;
-    game_state.board[top_left_y][top_left_x + 2] = 1;
-    ASSERT(game_state_check_t_spin(&game_state) == true);
+    true_case_1 = 0b1101;
+    true_case_2 = 0b1110;
+    true_case_3 = 0b1111;
+
+    for (size_t i = 0; i < 16; ++i) {
+        game_state.board[top_left_y][top_left_x] =         (bool)(i & 0b0001);
+        game_state.board[top_left_y][top_left_x + 2] =     (bool)(i & 0b0010);
+        game_state.board[top_left_y + 2][top_left_x] =     (bool)(i & 0b0100);
+        game_state.board[top_left_y + 2][top_left_x + 2] = (bool)(i & 0b1000);
+
+        if (i == true_case_1 || i == true_case_2 || i == true_case_3) {
+            ASSERT(game_state_check_t_spin(&game_state) == true);
+        } else {
+            ASSERT(game_state_check_t_spin(&game_state) == false);
+        }
+    }
 
     game_state.t_rotation_test_num = 4;
     game_state.curr_piece.r = 3;
-    game_state.board[top_left_y][top_left_x] = 1;
-    game_state.board[top_left_y][top_left_x + 2] = 1;
-    game_state.board[top_left_y + 2][top_left_x] = 1;
-    game_state.board[top_left_y + 2][top_left_x + 2] = 0;
-    ASSERT(game_state_check_t_spin(&game_state) == true);
-    
-    game_state.board[top_left_y][top_left_x + 2] = 0;
-    game_state.board[top_left_y + 2][top_left_x + 2] = 1;
-    ASSERT(game_state_check_t_spin(&game_state) == true);
+    true_case_1 = 0b0111;
+    true_case_2 = 0b1101;
+    true_case_3 = 0b1111;
+
+    for (size_t i = 0; i < 16; ++i) {
+        game_state.board[top_left_y][top_left_x] =         (bool)(i & 0b0001);
+        game_state.board[top_left_y][top_left_x + 2] =     (bool)(i & 0b0010);
+        game_state.board[top_left_y + 2][top_left_x] =     (bool)(i & 0b0100);
+        game_state.board[top_left_y + 2][top_left_x + 2] = (bool)(i & 0b1000);
+
+        if (i == true_case_1 || i == true_case_2 || i == true_case_3) {
+            ASSERT(game_state_check_t_spin(&game_state) == true);
+        } else {
+            ASSERT(game_state_check_t_spin(&game_state) == false);
+        }
+    }
 
     game_state.t_rotation_test_num = SRS_NUM_TESTS;
     game_state.curr_piece.r = 0;
-    game_state.board[top_left_y][top_left_x] = 0;
-    game_state.board[top_left_y][top_left_x + 2] = 1;
-    game_state.board[top_left_y + 2][top_left_x] = 1;
-    game_state.board[top_left_y + 2][top_left_x + 2] = 1;
-    ASSERT(game_state_check_t_spin(&game_state) == true);
 
+    for (size_t i = 0; i < 16; ++i) {
+        game_state.board[top_left_y][top_left_x] =         (bool)(i & 0b0001);
+        game_state.board[top_left_y][top_left_x + 2] =     (bool)(i & 0b0010);
+        game_state.board[top_left_y + 2][top_left_x] =     (bool)(i & 0b0100);
+        game_state.board[top_left_y + 2][top_left_x + 2] = (bool)(i & 0b1000);
+
+        // check if true when there are at least 3 corners 
+        if ((bool)(i & 0b0001) + (bool)(i & 0b0010) + (bool)(i & 0b0100) + (bool)(i & 0b1000) >= 3) {
+            ASSERT(game_state_check_t_spin(&game_state) == true);
+        } else {
+            ASSERT(game_state_check_t_spin(&game_state) == false);
+        }
+    }
+
+    return true;
+}
+
+bool test_game_state_check_t_spin_mini(void) {
+    GameState game_state = game_state_get();
+    game_state_start(&game_state);
+    game_state.curr_piece = piece_get(T, (BOARD_H-1)/2, (BOARD_W-1)/2);
+
+    game_state.t_rotation_test_num = 0;
+    ASSERT(game_state_check_t_spin(&game_state) == false);
+    game_state.t_rotation_test_num = SRS_NUM_TESTS;
+    ASSERT(game_state_check_t_spin(&game_state) == false);
+
+    int top_left_y = game_state.curr_piece.y - game_state.curr_piece.n / 2; 
+    int top_left_x = game_state.curr_piece.x - game_state.curr_piece.n / 2;
+
+    game_state.t_rotation_test_num = 1;
+    game_state.curr_piece.r = 0;
+
+    // cases when there should be a mini t-spin:
+    // each corner is specified by a bit in order from top-left, top-right, 
+    // bottom-left, bottom-right, from least to most significant bit
+    size_t true_case_1 = 0b1101;
+    size_t true_case_2 = 0b1110;
+    size_t true_case_3 = 0b1111;
+
+    // enumerate and test every possible combination of corners 
+    for (size_t i = 0; i < 16; ++i) {
+        game_state.board[top_left_y][top_left_x] =         (bool)(i & 0b0001);
+        game_state.board[top_left_y][top_left_x + 2] =     (bool)(i & 0b0010);
+        game_state.board[top_left_y + 2][top_left_x] =     (bool)(i & 0b0100);
+        game_state.board[top_left_y + 2][top_left_x + 2] = (bool)(i & 0b1000);
+
+        if (i == true_case_1 || i == true_case_2 || i == true_case_3) {
+            ASSERT(game_state_check_t_spin_mini(&game_state) == true);
+        } else {
+            ASSERT(game_state_check_t_spin_mini(&game_state) == false);
+        }
+    }
+
+    game_state.t_rotation_test_num = 2;
     game_state.curr_piece.r = 1;
-    game_state.board[top_left_y][top_left_x] = 1;
-    game_state.board[top_left_y][top_left_x + 2] = 0;
-    game_state.board[top_left_y + 2][top_left_x] = 1;
-    game_state.board[top_left_y + 2][top_left_x + 2] = 1;
-    ASSERT(game_state_check_t_spin(&game_state) == true);
+    true_case_1 = 0b0111;
+    true_case_2 = 0b1101;
+    true_case_3 = 0b1111;
 
+    for (size_t i = 0; i < 16; ++i) {
+        game_state.board[top_left_y][top_left_x] =         (bool)(i & 0b0001);
+        game_state.board[top_left_y][top_left_x + 2] =     (bool)(i & 0b0010);
+        game_state.board[top_left_y + 2][top_left_x] =     (bool)(i & 0b0100);
+        game_state.board[top_left_y + 2][top_left_x + 2] = (bool)(i & 0b1000);
+
+        if (i == true_case_1 || i == true_case_2 || i == true_case_3) {
+            ASSERT(game_state_check_t_spin_mini(&game_state) == true);
+        } else {
+            ASSERT(game_state_check_t_spin_mini(&game_state) == false);
+        }
+    }
+
+    game_state.t_rotation_test_num = 3;
     game_state.curr_piece.r = 2;
-    game_state.board[top_left_y][top_left_x] = 1;
-    game_state.board[top_left_y][top_left_x + 2] = 1;
-    game_state.board[top_left_y + 2][top_left_x] = 0;
-    game_state.board[top_left_y + 2][top_left_x + 2] = 1;
-    ASSERT(game_state_check_t_spin(&game_state) == true);
+    true_case_1 = 0b0111;
+    true_case_2 = 0b1011;
+    true_case_3 = 0b1111;
 
+    for (size_t i = 0; i < 16; ++i) {
+        game_state.board[top_left_y][top_left_x] =         (bool)(i & 0b0001);
+        game_state.board[top_left_y][top_left_x + 2] =     (bool)(i & 0b0010);
+        game_state.board[top_left_y + 2][top_left_x] =     (bool)(i & 0b0100);
+        game_state.board[top_left_y + 2][top_left_x + 2] = (bool)(i & 0b1000);
+
+        if (i == true_case_1 || i == true_case_2 || i == true_case_3) {
+            ASSERT(game_state_check_t_spin_mini(&game_state) == true);
+        } else {
+            ASSERT(game_state_check_t_spin_mini(&game_state) == false);
+        }
+    }
+
+    game_state.t_rotation_test_num = 4;
     game_state.curr_piece.r = 3;
-    game_state.board[top_left_y][top_left_x] = 1;
-    game_state.board[top_left_y][top_left_x + 2] = 1;
-    game_state.board[top_left_y + 2][top_left_x] = 1;
-    game_state.board[top_left_y + 2][top_left_x + 2] = 0;
-    ASSERT(game_state_check_t_spin(&game_state) == true);
+    true_case_1 = 0b1011;
+    true_case_2 = 0b1110;
+    true_case_3 = 0b1111;
+
+    for (size_t i = 0; i < 16; ++i) {
+        game_state.board[top_left_y][top_left_x] =         (bool)(i & 0b0001);
+        game_state.board[top_left_y][top_left_x + 2] =     (bool)(i & 0b0010);
+        game_state.board[top_left_y + 2][top_left_x] =     (bool)(i & 0b0100);
+        game_state.board[top_left_y + 2][top_left_x + 2] = (bool)(i & 0b1000);
+
+        if (i == true_case_1 || i == true_case_2 || i == true_case_3) {
+            ASSERT(game_state_check_t_spin_mini(&game_state) == true);
+        } else {
+            ASSERT(game_state_check_t_spin_mini(&game_state) == false);
+        }
+    }
 
     return true;
 }
@@ -1279,3 +1397,251 @@ bool test_game_state_check_empty_board(void) {
     return true;
 }
 
+bool test_game_state_calc_t_spin_points(void) {
+    GameState game_state = game_state_get();
+    game_state_start(&game_state);
+    game_state.curr_piece = piece_get(T, (BOARD_H-1)/2, (BOARD_W-1)/2);
+
+    int top_left_y = game_state.curr_piece.y - game_state.curr_piece.n / 2; 
+    int top_left_x = game_state.curr_piece.x - game_state.curr_piece.n / 2;
+
+    // force a t-spin
+    game_state.t_rotation_test_num = 1;
+    game_state.curr_piece.r = 0;
+    game_state.board[top_left_y][top_left_x] = 1;
+    game_state.board[top_left_y][top_left_x + 2] = 1;
+    game_state.board[top_left_y + 2][top_left_x] = 1;
+    game_state.board[top_left_y + 2][top_left_x + 2] = 0;
+
+    game_state.level = 1;
+    size_t num_lines = 0;
+    size_t points = game_state_calc_t_spin_points(&game_state, num_lines);
+    ASSERT(points == T_SPIN_ZERO_POINTS * game_state.level);
+    ASSERT(game_state.curr_clear_difficult == game_state.prev_clear_difficult);
+
+    game_state.level = 2;
+    num_lines = 1;
+    points = game_state_calc_t_spin_points(&game_state, num_lines);
+    ASSERT(points == T_SPIN_SINGLE_POINTS * game_state.level);
+    ASSERT(game_state.curr_clear_difficult == true);
+
+    game_state.level = 3;
+    num_lines = 2;
+    points = game_state_calc_t_spin_points(&game_state, num_lines);
+    ASSERT(points == T_SPIN_DOUBLE_POINTS * game_state.level);
+    ASSERT(game_state.curr_clear_difficult == true);
+
+    game_state.level = 4;
+    num_lines = 3;
+    points = game_state_calc_t_spin_points(&game_state, num_lines);
+    ASSERT(points == T_SPIN_TRIPLE_POINTS * game_state.level);
+    ASSERT(game_state.curr_clear_difficult == true);
+
+    game_state.level = 5;
+    num_lines = 4;
+    points = game_state_calc_t_spin_points(&game_state, num_lines);
+    ASSERT(points == 0);
+
+    // force a t-spin mini
+    game_state.board[top_left_y][top_left_x] = 1;
+    game_state.board[top_left_y][top_left_x + 2] = 0;
+    game_state.board[top_left_y + 2][top_left_x] = 1;
+    game_state.board[top_left_y + 2][top_left_x + 2] = 1;
+
+    game_state.level = 6;
+    num_lines = 0;
+    points = game_state_calc_t_spin_points(&game_state, num_lines);
+    ASSERT(points == T_SPIN_MINI_ZERO_POINTS * game_state.level);
+    ASSERT(game_state.curr_clear_difficult == game_state.prev_clear_difficult);
+
+    game_state.level = 7;
+    num_lines = 1;
+    points = game_state_calc_t_spin_points(&game_state, num_lines);
+    ASSERT(points == T_SPIN_MINI_SINGLE_POINTS * game_state.level);
+    ASSERT(game_state.curr_clear_difficult == true);
+
+    game_state.level = 8;
+    num_lines = 2;
+    points = game_state_calc_t_spin_points(&game_state, num_lines);
+    ASSERT(points == T_SPIN_MINI_DOUBLE_POINTS * game_state.level);
+    ASSERT(game_state.curr_clear_difficult == true);
+
+    game_state.level = 9;
+    num_lines = 3;
+    points = game_state_calc_t_spin_points(&game_state, num_lines);
+    ASSERT(points == 0);
+
+    game_state.level = 10;
+    num_lines = 4;
+    points = game_state_calc_t_spin_points(&game_state, num_lines);
+    ASSERT(points == 0);
+
+    return true;
+}
+
+bool test_game_state_calc_line_clear_points(void) {
+    GameState game_state = game_state_get();
+    game_state_start(&game_state);
+
+    game_state.level = 1;
+    size_t num_lines = 0;
+    size_t points = game_state_calc_line_clear_points(&game_state, num_lines);
+    ASSERT(points == 0);
+
+    game_state.level = 2;
+    num_lines = 1;
+    points = game_state_calc_line_clear_points(&game_state, num_lines);
+    ASSERT(points == SINGLE_POINTS * game_state.level);
+    ASSERT(game_state.curr_clear_difficult == false);
+
+    game_state.level = 3;
+    num_lines = 2;
+    points = game_state_calc_line_clear_points(&game_state, num_lines);
+    ASSERT(points == DOUBLE_POINTS * game_state.level);
+    ASSERT(game_state.curr_clear_difficult == false);
+
+    game_state.level = 4;
+    num_lines = 3;
+    points = game_state_calc_line_clear_points(&game_state, num_lines);
+    ASSERT(points == TRIPLE_POINTS * game_state.level);
+    ASSERT(game_state.curr_clear_difficult == false);
+
+    game_state.level = 5;
+    num_lines = 4;
+    points = game_state_calc_line_clear_points(&game_state, num_lines);
+    ASSERT(points == TETRIS_POINTS * game_state.level);
+    ASSERT(game_state.curr_clear_difficult == true);
+
+    game_state.curr_piece = piece_get(T, (BOARD_H-1)/2, (BOARD_W-1)/2);
+    int top_left_y = game_state.curr_piece.y - game_state.curr_piece.n / 2; 
+    int top_left_x = game_state.curr_piece.x - game_state.curr_piece.n / 2;
+
+    // force a t-spin
+    game_state.t_rotation_test_num = 1;
+    game_state.curr_piece.r = 0;
+    game_state.board[top_left_y][top_left_x] = 1;
+    game_state.board[top_left_y][top_left_x + 2] = 1;
+    game_state.board[top_left_y + 2][top_left_x] = 1;
+    game_state.board[top_left_y + 2][top_left_x + 2] = 0;
+
+    game_state.level = 6;
+    num_lines = 4;
+    points = game_state_calc_line_clear_points(&game_state, num_lines);
+    ASSERT(points == 0);
+
+    // force a t-spin mini
+    game_state.board[top_left_y][top_left_x] = 1;
+    game_state.board[top_left_y][top_left_x + 2] = 0;
+    game_state.board[top_left_y + 2][top_left_x] = 1;
+    game_state.board[top_left_y + 2][top_left_x + 2] = 1;
+
+    game_state.level = 7;
+    num_lines = 4;
+    points = game_state_calc_line_clear_points(&game_state, num_lines);
+    ASSERT(points == 0);    
+
+    return true;
+}
+
+bool test_game_state_calc_perfect_clear_points(void) {
+    GameState game_state = game_state_get();
+    game_state_start(&game_state);
+
+    for (size_t i = 0; i < BOARD_H; ++i) {
+        for (size_t j = 0; j < BOARD_W; ++j) {
+            game_state.board[i][j] = 0;
+        }
+    }
+    
+    game_state.level = 1;
+    size_t num_lines = 0;
+    size_t points = game_state_calc_perfect_clear_points(&game_state, num_lines);
+    ASSERT(points == 0);
+
+    game_state.level = 2;
+    num_lines = 1;
+    points = game_state_calc_perfect_clear_points(&game_state, num_lines);
+    ASSERT(points == SINGLE_PERFECT_CLEAR_POINTS * game_state.level);
+    ASSERT(game_state.prev_clear_perfect_tetris == false);
+
+    game_state.level = 3;
+    num_lines = 2;
+    points = game_state_calc_perfect_clear_points(&game_state, num_lines);
+    ASSERT(points == DOUBLE_PERFECT_CLEAR_POINTS * game_state.level);
+    ASSERT(game_state.prev_clear_perfect_tetris == false);
+
+    game_state.level = 4;
+    num_lines = 3;
+    points = game_state_calc_perfect_clear_points(&game_state, num_lines);
+    ASSERT(points == TRIPLE_PERFECT_CLEAR_POINTS * game_state.level);
+    ASSERT(game_state.prev_clear_perfect_tetris == false);
+
+    game_state.level = 5;
+    num_lines = 4;
+    points = game_state_calc_perfect_clear_points(&game_state, num_lines);
+    ASSERT(points == TETRIS_PERFECT_CLEAR_POINTS * game_state.level);
+    ASSERT(game_state.prev_clear_perfect_tetris == true);
+
+    game_state.level = 6;
+    num_lines = 4;
+    game_state.prev_clear_difficult = true;
+    points = game_state_calc_perfect_clear_points(&game_state, num_lines);
+    ASSERT(points == B2B_TETRIS_PERFECT_CLEAR_POINTS * game_state.level);
+    ASSERT(game_state.prev_clear_perfect_tetris == true);
+
+    return true;
+}
+
+bool test_game_state_calc_combo_points(void) {
+    GameState game_state = game_state_get();
+    game_state_start(&game_state);
+
+    game_state.level = 1;
+    size_t num_lines = 1;
+    size_t points = game_state_calc_combo_points(&game_state, num_lines);
+    ASSERT(points == COMBO_POINTS * game_state.combo * game_state.level);
+    ASSERT(game_state.combo == 0);
+
+    game_state.level = 2;
+    num_lines = 2;
+    points = game_state_calc_combo_points(&game_state, num_lines);
+    ASSERT(points == COMBO_POINTS * game_state.combo * game_state.level);
+    ASSERT(game_state.combo == 1);
+
+    game_state.level = 3;
+    num_lines = 3;
+    points = game_state_calc_combo_points(&game_state, num_lines);
+    ASSERT(points == COMBO_POINTS * game_state.combo * game_state.level);
+    ASSERT(game_state.combo == 2);
+
+    game_state.level = 4;
+    num_lines = 4;
+    points = game_state_calc_combo_points(&game_state, num_lines);
+    ASSERT(points == COMBO_POINTS * game_state.combo * game_state.level);
+    ASSERT(game_state.combo == 3);
+
+    game_state.level = 5;
+    num_lines = 0;
+    points = game_state_calc_combo_points(&game_state, num_lines);
+    ASSERT(points == 0);
+    ASSERT(game_state.combo == -1);
+
+    return true;
+}
+
+bool test_game_state_calc_difficult_clear_mult(void) {
+    GameState game_state = game_state_get();
+    game_state_start(&game_state);
+
+    size_t num_lines = 0;
+    float mult = game_state_calc_difficult_clear_mult(&game_state, num_lines);
+    ASSERT(mult == 1.0);
+
+    num_lines = 1;
+    game_state.prev_clear_difficult = true;
+    game_state.curr_clear_difficult = true;
+    mult = game_state_calc_difficult_clear_mult(&game_state, num_lines);
+    ASSERT(mult == 1.5);
+
+    return true;
+}
