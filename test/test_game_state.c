@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdbool.h>
+#include <math.h>
 #include "utils/assert_trace.h"
 #include "game_state.h"
 
@@ -787,6 +788,7 @@ bool test_game_state_rotate_curr_piece_srs_t_piece(void) {
             ASSERT(game_state.curr_piece.y == result_piece.y);
             ASSERT(game_state.curr_piece.x == result_piece.x);
             ASSERT(game_state.curr_piece.r == result_piece.r);
+            ASSERT(game_state.t_rotation_test_num == i + 1);
 
             // add obstruction according to curr_piece placement, so that next SRS test is triggered
             int curr_top_left_y = game_state.curr_piece.y - game_state.curr_piece.n / 2; 
@@ -817,14 +819,13 @@ bool test_game_state_rotate_curr_piece_srs_t_piece(void) {
                 ASSERT(game_state.curr_piece.y == test_spawn_piece.y);
                 ASSERT(game_state.curr_piece.x == test_spawn_piece.x);
                 ASSERT(game_state.curr_piece.r == test_spawn_piece.r);
+                ASSERT(game_state.t_rotation_test_num == i + 1);
             }
         }
     }
 
     return true;
 }
-
-
 
 bool test_game_state_rotate_curr_piece_srs_z_piece(void) {
     GameState game_state = game_state_get();
@@ -913,6 +914,367 @@ bool test_game_state_rotate_curr_piece_srs_z_piece(void) {
             }
         }
     }
+
+    return true;
+}
+
+bool test_game_state_hard_drop_curr_piece(void) {
+    GameState game_state = game_state_get();
+    game_state_start(&game_state);
+    
+    game_state.board[(BOARD_H-1)/2][(BOARD_W-1)/2] = 1;
+    game_state_hard_drop_curr_piece(&game_state);
+    ASSERT(game_state.curr_piece.y == (BOARD_H-1)/2 - 1);
+    ASSERT(game_state_check_curr_piece_grounded(&game_state));
+
+    game_state.board[(BOARD_H-1)/2][(BOARD_W-1)/2] = 0;
+    game_state_hard_drop_curr_piece(&game_state);
+    ASSERT(game_state.curr_piece.y == BOARD_H - 1);
+    ASSERT(game_state_check_curr_piece_grounded(&game_state));
+
+    return true;
+}
+
+bool test_game_state_lock_curr_piece(void) {
+    GameState game_state = game_state_get();
+    game_state_start(&game_state);
+    game_state_move_curr_piece(&game_state, (BOARD_H-1)/2, (BOARD_W-1)/2);
+    game_state_lock_curr_piece(&game_state);
+
+    int top_left_y = game_state.curr_piece.y - game_state.curr_piece.n / 2; 
+    int top_left_x = game_state.curr_piece.x - game_state.curr_piece.n / 2;
+    int bottom_right_y = game_state.curr_piece.y + game_state.curr_piece.n / 2; 
+    int bottom_right_x = game_state.curr_piece.x + game_state.curr_piece.n / 2;
+    for (size_t i = 0; i < BOARD_H; ++i) {
+        for (size_t j = 0; j < BOARD_W; ++j) {
+            if (
+                i >= top_left_y && i <= bottom_right_y && 
+                j >= top_left_x && j <= bottom_right_x &&
+                game_state.curr_piece.M[game_state.curr_piece.r][i - top_left_y][j - top_left_x] > 0
+            ) {
+                ASSERT(game_state.board[i][j] == game_state.curr_piece.shape); 
+            } else {
+                ASSERT(game_state.board[i][j] == 0);
+            }
+        }
+    }
+    ASSERT(game_state.hold_blocked == false);
+
+    return true;
+}
+
+bool test_game_state_apply_stack_gravity(void) {
+    GameState game_state = game_state_get();
+    game_state_start(&game_state);
+
+    for (size_t i = 0; i < BOARD_H/2; ++i) {
+        for (size_t j = 0; j < BOARD_W; ++j) {
+            if (i % 2 == 0) {
+                game_state.board[i][j] = 1;
+            }
+        }
+    }
+
+    game_state_apply_stack_gravity(&game_state, BOARD_H/2);
+
+    for (size_t i = 0; i < BOARD_H; ++i) {
+        for (size_t j = 0; j < BOARD_W; ++j) {
+            if (i < BOARD_H/2 + 1) {
+                if (i % 2 == 0) {
+                    ASSERT(game_state.board[i][j] == 0);
+                } else {
+                    ASSERT(game_state.board[i][j] == 1);
+                }
+            } else {   
+                ASSERT(game_state.board[i][j] == 0);
+            }
+        }
+    }
+
+    return true;
+}
+
+bool test_game_state_clear_line(void) {
+    GameState game_state = game_state_get();
+    game_state_start(&game_state);
+
+    size_t row = BOARD_H/2;
+    for (size_t j = 0; j < BOARD_W; ++j) {
+        game_state.board[row][j] = 1;
+    }
+
+    game_state_clear_line(&game_state, row);
+
+    for (size_t j = 0; j < BOARD_W; ++j) {
+        ASSERT(game_state.board[row][j] == 0);
+    }
+
+    return true;
+}
+
+bool test_game_state_clear_lines(void) {
+    GameState game_state = game_state_get();
+    game_state_start(&game_state);
+
+    for (size_t num_lines = 0; num_lines <= 4; ++num_lines) {
+        for (size_t i = 0; i < BOARD_H - num_lines; ++i) {
+            for (size_t j = 0; j < BOARD_W; ++j) {
+                if (i % 2 == 0) {
+                    game_state.board[i][j] = (j % 2 == 0) ? 1 : 0;
+                } else {
+                    game_state.board[i][j] = (j % 2 == 0) ? 0 : 1;
+                }
+            }
+        }
+        
+        for (size_t i = BOARD_H - num_lines; i < BOARD_H; ++i) {
+            for (size_t j = 0; j < BOARD_W; ++j) {
+                game_state.board[i][j] = 1;
+            }
+        }
+        
+        game_state.level = 1; 
+        game_state.lines = LEVEL_LINE_REQ - num_lines; 
+        game_state.score = 0; 
+        game_state.combo = -1; 
+        size_t prev_level = game_state.level;
+        size_t prev_lines = game_state.lines;
+        size_t prev_score = game_state.score;
+
+        game_state_clear_lines(&game_state);
+        
+        ASSERT(game_state.level == prev_level + 1);
+        ASSERT(game_state.lines == prev_lines + num_lines);
+        ASSERT(game_state.prev_clear_difficult == game_state.curr_clear_difficult);
+        if (num_lines == 0) {
+            ASSERT(game_state.score == 0);
+        } else if (num_lines == 1) {
+            ASSERT(game_state.score == prev_score + SINGLE_POINTS);
+        } else if (num_lines == 2) {
+            ASSERT(game_state.score == prev_score + DOUBLE_POINTS);
+        } else if (num_lines == 3) {
+            ASSERT(game_state.score == prev_score + TRIPLE_POINTS);
+        } else if (num_lines == 4) {
+            ASSERT(game_state.score == prev_score + TETRIS_POINTS);
+        }
+    
+        for (size_t i = 0; i < num_lines; ++i) {
+            for (size_t j = 0; j < BOARD_W; ++j) {
+                ASSERT(game_state.board[i][j] == 0);
+            }
+        }
+    
+        for (size_t i = num_lines; i < BOARD_H; ++i) {
+            for (size_t j = 0; j < BOARD_W; ++j) {
+                if ((i + num_lines) % 2 == 0) {
+                    if (j % 2 == 0) {
+                        ASSERT(game_state.board[i][j] == 1);
+                    } else {
+                        ASSERT(game_state.board[i][j] == 0);
+                    }
+                } else {
+                    if (j % 2 == 0) {
+                        ASSERT(game_state.board[i][j] == 0);
+                    } else {
+                        ASSERT(game_state.board[i][j] == 1);
+                    }
+                }
+            }
+        } 
+    }
+
+    return true;
+}
+
+bool test_game_state_apply_gravity(void) {
+    GameState game_state = game_state_get();
+    game_state_start(&game_state);
+
+    for (size_t level = 1; level <= MAX_GRAVITY_LEVEL; ++level) {
+        game_state.level = level;
+        game_state.curr_piece.y = 0;
+        size_t end_frame_count = (BOARD_H - 1) / GRAVITY_TABLE[level-1] + 1;
+        for (size_t frame_count = 0; frame_count < end_frame_count; ++frame_count) {
+            game_state_apply_gravity(&game_state);
+            ASSERT(game_state.gravity_value < 1);
+        }
+        ASSERT(game_state.curr_piece.y == BOARD_H - 1);
+    }
+
+    return true;
+}
+
+bool test_game_state_apply_soft_drop_gravity(void) {
+    GameState game_state = game_state_get();
+    game_state_start(&game_state);
+
+    for (size_t level = 1; level <= MAX_GRAVITY_LEVEL; ++level) {
+        game_state.level = level;
+        game_state.curr_piece.y = 0;
+        size_t end_frame_count = (BOARD_H - 1) / (SOFT_DROP_GRAVITY_MULT * GRAVITY_TABLE[level-1]) + 1;
+        for (size_t frame_count = 0; frame_count < end_frame_count; ++frame_count) {
+            int prev_y = game_state.curr_piece.y;
+            int prev_score = game_state.score;
+            game_state.soft_drop = true;
+            game_state_apply_soft_drop_gravity(&game_state);
+            ASSERT(game_state.gravity_value < 1);
+            ASSERT(game_state.score == prev_score + SOFT_DROP_POINTS * (game_state.curr_piece.y - prev_y))
+            ASSERT(game_state.soft_drop == false);
+        }
+        ASSERT(game_state.curr_piece.y == BOARD_H - 1);
+    }
+
+    return true;
+}
+
+bool test_game_state_soft_drop_curr_piece(void) {
+    GameState game_state = game_state_get();
+    game_state_start(&game_state);
+    game_state.soft_drop = false;
+    int prev_y = game_state.curr_piece.y;
+    game_state_soft_drop_curr_piece(&game_state);
+    ASSERT(game_state.curr_piece.y == prev_y + 1);
+    ASSERT(game_state.score == SOFT_DROP_POINTS);
+    ASSERT(game_state.soft_drop == true);
+    return true;
+}
+
+bool test_game_state_move_ghost_piece(void) {
+    GameState game_state = game_state_get();
+    game_state_start(&game_state);
+
+    int prev_y = game_state.ghost_piece.y;
+    int prev_x = game_state.ghost_piece.x;
+    game_state_move_ghost_piece(&game_state, 10, 5);
+    ASSERT(game_state.ghost_piece.y == 10);
+    ASSERT(game_state.ghost_piece.x == 5);
+
+    prev_y = game_state.ghost_piece.y;
+    prev_x = game_state.ghost_piece.x;
+    game_state_move_ghost_piece(&game_state, -1, -1);
+    ASSERT(game_state.ghost_piece.y == prev_y);
+    ASSERT(game_state.ghost_piece.x == prev_x);
+
+    return true;
+}
+
+bool test_game_state_update_ghost_piece(void) {
+    GameState game_state = game_state_get();
+    game_state_start(&game_state);
+    game_state_move_curr_piece(&game_state, 10, 5);
+    game_state_update_ghost_piece(&game_state);
+    ASSERT(game_state.ghost_piece.shape == game_state.curr_piece.shape);
+    ASSERT(game_state.ghost_piece.y == BOARD_H - 1);
+    ASSERT(game_state.ghost_piece.x == game_state.curr_piece.x);
+    ASSERT(game_state.ghost_piece.r == game_state.curr_piece.r);
+    return true;
+}
+
+bool test_game_state_check_t_spin(void) {
+    GameState game_state = game_state_get();
+    game_state_start(&game_state);
+    game_state.curr_piece = piece_get(T, (BOARD_H-1)/2, (BOARD_W-1)/2);
+
+    game_state.t_rotation_test_num = 0;
+    ASSERT(game_state_check_t_spin(&game_state) == false);
+
+    int top_left_y = game_state.curr_piece.y - game_state.curr_piece.n / 2; 
+    int top_left_x = game_state.curr_piece.x - game_state.curr_piece.n / 2;
+
+    game_state.t_rotation_test_num = 1;
+    game_state.curr_piece.r = 0;
+    game_state.board[top_left_y][top_left_x] = 1;
+    game_state.board[top_left_y][top_left_x + 2] = 1;
+    game_state.board[top_left_y + 2][top_left_x] = 1;
+    game_state.board[top_left_y + 2][top_left_x + 2] = 0;
+    ASSERT(game_state_check_t_spin(&game_state) == true);
+
+    game_state.board[top_left_y + 2][top_left_x] = 0;
+    game_state.board[top_left_y + 2][top_left_x + 2] = 1;
+    ASSERT(game_state_check_t_spin(&game_state) == true);
+
+    game_state.t_rotation_test_num = 2;
+    game_state.curr_piece.r = 1;
+    game_state.board[top_left_y][top_left_x] = 1;
+    game_state.board[top_left_y][top_left_x + 2] = 1;
+    game_state.board[top_left_y + 2][top_left_x] = 0;
+    game_state.board[top_left_y + 2][top_left_x + 2] = 1;
+    ASSERT(game_state_check_t_spin(&game_state) == true);
+    
+    game_state.board[top_left_y][top_left_x] = 1;
+    game_state.board[top_left_y + 2][top_left_x] = 0;
+    ASSERT(game_state_check_t_spin(&game_state) == true);
+
+    game_state.t_rotation_test_num = 3;
+    game_state.curr_piece.r = 2;
+    game_state.board[top_left_y][top_left_x] = 1;
+    game_state.board[top_left_y][top_left_x + 2] = 0;
+    game_state.board[top_left_y + 2][top_left_x] = 1;
+    game_state.board[top_left_y + 2][top_left_x + 2] = 1;
+    ASSERT(game_state_check_t_spin(&game_state) == true);
+    
+    game_state.board[top_left_y][top_left_x] = 0;
+    game_state.board[top_left_y][top_left_x + 2] = 1;
+    ASSERT(game_state_check_t_spin(&game_state) == true);
+
+    game_state.t_rotation_test_num = 4;
+    game_state.curr_piece.r = 3;
+    game_state.board[top_left_y][top_left_x] = 1;
+    game_state.board[top_left_y][top_left_x + 2] = 1;
+    game_state.board[top_left_y + 2][top_left_x] = 1;
+    game_state.board[top_left_y + 2][top_left_x + 2] = 0;
+    ASSERT(game_state_check_t_spin(&game_state) == true);
+    
+    game_state.board[top_left_y][top_left_x + 2] = 0;
+    game_state.board[top_left_y + 2][top_left_x + 2] = 1;
+    ASSERT(game_state_check_t_spin(&game_state) == true);
+
+    game_state.t_rotation_test_num = SRS_NUM_TESTS;
+    game_state.curr_piece.r = 0;
+    game_state.board[top_left_y][top_left_x] = 0;
+    game_state.board[top_left_y][top_left_x + 2] = 1;
+    game_state.board[top_left_y + 2][top_left_x] = 1;
+    game_state.board[top_left_y + 2][top_left_x + 2] = 1;
+    ASSERT(game_state_check_t_spin(&game_state) == true);
+
+    game_state.curr_piece.r = 1;
+    game_state.board[top_left_y][top_left_x] = 1;
+    game_state.board[top_left_y][top_left_x + 2] = 0;
+    game_state.board[top_left_y + 2][top_left_x] = 1;
+    game_state.board[top_left_y + 2][top_left_x + 2] = 1;
+    ASSERT(game_state_check_t_spin(&game_state) == true);
+
+    game_state.curr_piece.r = 2;
+    game_state.board[top_left_y][top_left_x] = 1;
+    game_state.board[top_left_y][top_left_x + 2] = 1;
+    game_state.board[top_left_y + 2][top_left_x] = 0;
+    game_state.board[top_left_y + 2][top_left_x + 2] = 1;
+    ASSERT(game_state_check_t_spin(&game_state) == true);
+
+    game_state.curr_piece.r = 3;
+    game_state.board[top_left_y][top_left_x] = 1;
+    game_state.board[top_left_y][top_left_x + 2] = 1;
+    game_state.board[top_left_y + 2][top_left_x] = 1;
+    game_state.board[top_left_y + 2][top_left_x + 2] = 0;
+    ASSERT(game_state_check_t_spin(&game_state) == true);
+
+    return true;
+}
+
+bool test_game_state_check_empty_board(void) {
+    GameState game_state = game_state_get();
+    game_state_start(&game_state);
+
+    for (size_t i = 0; i < BOARD_H; ++i) {
+        for (size_t j = 0; j < BOARD_W; ++j) {
+            game_state.board[i][j] = 0;
+        }
+    }
+
+    ASSERT(game_state_check_empty_board(&game_state) == true);
+
+    game_state.board[0][0] = 1;
+    ASSERT(game_state_check_empty_board(&game_state) == false);
 
     return true;
 }

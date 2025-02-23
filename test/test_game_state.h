@@ -41,4 +41,28 @@ bool test_game_state_rotate_curr_piece_srs_t_piece(void);
 
 bool test_game_state_rotate_curr_piece_srs_z_piece(void);
 
+bool test_game_state_hard_drop_curr_piece(void);
+
+bool test_game_state_lock_curr_piece(void);
+
+bool test_game_state_apply_stack_gravity(void);
+
+bool test_game_state_clear_line(void);
+
+bool test_game_state_clear_lines(void);
+
+bool test_game_state_apply_gravity(void);
+
+bool test_game_state_apply_soft_drop_gravity(void);
+
+bool test_game_state_soft_drop_curr_piece(void);
+
+bool test_game_state_move_ghost_piece(void);
+
+bool test_game_state_update_ghost_piece(void);
+
+bool test_game_state_check_t_spin(void);
+
+bool test_game_state_check_empty_board(void);
+
 #endif

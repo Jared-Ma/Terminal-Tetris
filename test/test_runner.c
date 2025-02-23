@@ -5,7 +5,7 @@
 #include "test_stats.h"
 #include "test_game_state.h"
 
-#define NUM_TESTS 30
+#define NUM_TESTS 42
 
 
 int main(void) {
@@ -42,6 +42,18 @@ int main(void) {
         UNIT_TEST(test_game_state_rotate_curr_piece_srs_s_piece),
         UNIT_TEST(test_game_state_rotate_curr_piece_srs_t_piece),
         UNIT_TEST(test_game_state_rotate_curr_piece_srs_z_piece),
+        UNIT_TEST(test_game_state_hard_drop_curr_piece),
+        UNIT_TEST(test_game_state_lock_curr_piece),
+        UNIT_TEST(test_game_state_apply_stack_gravity),
+        UNIT_TEST(test_game_state_clear_line),
+        UNIT_TEST(test_game_state_clear_lines),
+        UNIT_TEST(test_game_state_apply_gravity),
+        UNIT_TEST(test_game_state_apply_soft_drop_gravity),
+        UNIT_TEST(test_game_state_soft_drop_curr_piece),
+        UNIT_TEST(test_game_state_move_ghost_piece),
+        UNIT_TEST(test_game_state_update_ghost_piece),
+        UNIT_TEST(test_game_state_check_t_spin),
+        UNIT_TEST(test_game_state_check_empty_board),
     };
 
     size_t failed_unit_tests[NUM_TESTS] = { 0 };
