@@ -24,6 +24,12 @@ TEST_MAIN_OBJ = $(addprefix $(OBJ_DIR), $(addsuffix .o, $(notdir $(basename $(TE
 TEST_CASE_OBJ = $(addprefix $(OBJ_DIR), $(addsuffix .o, $(notdir $(basename $(TEST_CASE_SRC)))))
 TEST_UTIL_OBJ = $(addprefix $(OBJ_DIR), $(addsuffix .o, $(notdir $(basename $(TEST_UTIL_SRC)))))
 
+UI_TEST_EXE      = ui_test_runner
+UI_TEST_MAIN_SRC = $(addprefix $(TEST_DIR), ui_test_runner.c)
+UI_TEST_CASE_SRC = $(addprefix $(TEST_DIR), test_draw.c)
+UI_TEST_MAIN_OBJ = $(addprefix $(OBJ_DIR), $(addsuffix .o, $(notdir $(basename $(UI_TEST_MAIN_SRC)))))
+UI_TEST_CASE_OBJ = $(addprefix $(OBJ_DIR), $(addsuffix .o, $(notdir $(basename $(UI_TEST_CASE_SRC)))))
+
 
 all: $(EXE)
 
@@ -45,5 +51,15 @@ $(OBJ_DIR)%.o: $(TEST_DIR)%.c
 $(OBJ_DIR)%.o: $(TEST_UTILS_DIR)%.c
 	$(CC) $(CFLAGS) $< -o $@
 
+
+ui_test: $(UI_TEST_EXE)
+
+$(UI_TEST_EXE): $(UI_TEST_MAIN_OBJ) $(UI_TEST_CASE_OBJ) $(OBJ)
+	$(CC) $(UI_TEST_MAIN_OBJ) $(UI_TEST_CASE_OBJ) $(OBJ) $(LIBS) -o $(EXE_DIR)$(UI_TEST_EXE)	
+
+$(OBJ_DIR)%.o: $(TEST_DIR)%.c
+	$(CC) $(CFLAGS) $(INCLUDE_SRC) $< -o $@
+
+
 clean:
-	rm $(OBJ_DIR)*.o $(EXE_DIR)$(EXE) $(EXE_DIR)$(TEST_EXE)
+	rm $(OBJ_DIR)*.o $(EXE_DIR)$(EXE) $(EXE_DIR)$(TEST_EXE) $(EXE_DIR)$(UI_TEST_EXE)
