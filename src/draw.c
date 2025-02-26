@@ -225,11 +225,27 @@ void draw_stats(WINDOW* window, GameState* game_state, Stats* stats) {
     mvwprintw(window, 2, 1, "time:");
     mvwprintw(window, 4, 1, "score:");
     mvwprintw(window, 6, 1, "level:");
-    mvwprintw(window, 8, 1, "combo:");
     draw_stats_time(window, stats);
     draw_stats_lines(window, game_state);
     draw_stats_level(window, game_state);
-    draw_stats_combo(window, game_state);
+
+    // draw action point information from bottom to top
+    size_t start_y = getmaxy(window) - 2;
+    if (game_state->last_action_points > 0) {
+        draw_stats_last_action_points(window, game_state, start_y);
+        start_y--;
+    }
+    if (game_state->difficult_clear_combo > 0) {
+        draw_stats_difficult_clear_combo(window, game_state, start_y);
+        start_y--;
+    }
+    if (game_state->combo > 0) {
+        draw_stats_combo(window, game_state, start_y);
+        start_y--;
+    }
+    if (strlen(game_state->last_action_string) > 0) {
+        draw_stats_last_action_string(window, game_state, start_y);
+    }
 }
 
 void draw_stats_time(WINDOW* window, Stats* stats) {
@@ -247,8 +263,55 @@ void draw_stats_level(WINDOW* window, GameState* game_state) {
     mvwprintw(window, 6, 1, "level: %lu", game_state->level);
 }
 
-void draw_stats_combo(WINDOW* window, GameState* game_state) {
-    if (game_state->combo > 0) {
-        mvwprintw(window, 8, 1, "combo: %i", game_state->combo);
+void draw_stats_last_action_string(WINDOW* window, GameState* game_state, size_t start_y) {
+    size_t internal_w = getmaxx(window) - 2;
+    int space_index = strlen(game_state->last_action_string) - 1;
+    int end_index = strlen(game_state->last_action_string) - 1;
+
+    // traverse last_action_string backwards and print maximum length, space 
+    // delimited, chunks of last_action_string from botttom to top
+    for (int i = strlen(game_state->last_action_string); i >= 0; --i) {
+        if (game_state->last_action_string[i] == ' ') {
+            if (end_index - i > internal_w) {
+                mvwprintw(
+                    window, 
+                    start_y--, 
+                    1, 
+                    "%.*s", 
+                    end_index - space_index, 
+                    game_state->last_action_string + space_index + 1
+                );
+                end_index = space_index - 1;
+            }
+            space_index = i;
+        }
     }
+    
+    // print remaining chunk after space if it doesn't fit within internal_w
+    if (end_index + 1 > internal_w) {
+        mvwprintw(
+            window, 
+            start_y--, 
+            1, 
+            "%.*s", 
+            end_index - space_index, 
+            game_state->last_action_string + space_index + 1
+        );
+        end_index = space_index - 1;
+    }
+
+    // print chunk that reaches from beginning of string to either last space or end of string
+    mvwprintw(window, start_y--, 1, "%.*s", end_index + 1, game_state->last_action_string);
+}
+
+void draw_stats_combo(WINDOW* window, GameState* game_state, size_t start_y) {
+    mvwprintw(window, start_y, 1, "%li x combo", game_state->combo);
+}
+
+void draw_stats_difficult_clear_combo(WINDOW* window, GameState* game_state, size_t start_y) {
+    mvwprintw(window, start_y, 1, "%li x b2b", game_state->difficult_clear_combo);
+}
+
+void draw_stats_last_action_points(WINDOW* window, GameState* game_state, size_t start_y) {
+    mvwprintw(window, start_y, 1, "%*lu", getmaxx(window)-2, game_state->last_action_points);
 }

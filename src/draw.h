@@ -60,6 +60,12 @@ void draw_stats_lines(WINDOW* window, GameState* game_state);
 
 void draw_stats_level(WINDOW* window, GameState* game_state);
 
-void draw_stats_combo(WINDOW* window, GameState* game_state);
+void draw_stats_last_action_string(WINDOW* window, GameState* game_state, size_t start_y);
+
+void draw_stats_combo(WINDOW* window, GameState* game_state, size_t start_y);
+
+void draw_stats_difficult_clear_combo(WINDOW* window, GameState* game_state, size_t start_y);
+
+void draw_stats_last_action_points(WINDOW* window, GameState* game_state, size_t start_y);
 
 #endif

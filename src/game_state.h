@@ -70,14 +70,15 @@ struct GameState {
     uint8_t lock_delay_timer;
     uint8_t move_reset_count;
 
-    size_t level;
-    size_t lines;
-    size_t score;
-    int combo;
+    uint64_t level;
+    uint64_t lines;
+    uint64_t score;
+    int64_t combo;
+    int64_t difficult_clear_combo;
+    int64_t tetris_perfect_clear_combo;
     uint8_t t_rotation_test_num;
-    bool curr_clear_difficult;
-    bool prev_clear_difficult;
-    bool prev_clear_perfect_tetris;
+    uint64_t last_action_points;
+    char last_action_string[64];
 };
 
 typedef struct GameState GameState;

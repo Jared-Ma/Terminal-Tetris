@@ -177,11 +177,12 @@ int main(int argc, char* argv[argc+1]) {
         mvwprintw(debug_window, 5, 1, "piece.y: %i", game_state->curr_piece.y);
         mvwprintw(debug_window, 6, 1, "piece.x: %i", game_state->curr_piece.x);
         mvwprintw(debug_window, 7, 1, "t-spin: %i", game_state_check_t_spin(game_state));
-        mvwprintw(debug_window, 8, 1, "mini t-spin: %i", game_state_check_t_spin_mini(game_state));
+        mvwprintw(debug_window, 8, 1, "t-spin mini: %i", game_state_check_t_spin_mini(game_state));
         mvwprintw(debug_window, 9, 1, "t_rotation_test_num: %i", game_state->t_rotation_test_num);
-        mvwprintw(debug_window, 10, 1, "prev_clear_difficult: %i", game_state->prev_clear_difficult);
-        mvwprintw(debug_window, 11, 1, "curr_clear_difficult: %i", game_state->curr_clear_difficult);
-        mvwprintw(debug_window, 12, 1, "prev_clear_perfect_tetris: %i", game_state->prev_clear_perfect_tetris);
+        mvwprintw(debug_window, 10, 1, "difficult_clear_count: %li", game_state->difficult_clear_combo);
+        mvwprintw(debug_window, 11, 1, "perfect_tetris_clear_count: %li", game_state->tetris_perfect_clear_combo);
+        mvwprintw(debug_window, 12, 1, "last_action_points: %lu", game_state->last_action_points);
+        mvwprintw(debug_window, 13, 1, "last_action_string: %s", game_state->last_action_string);
         mvwprintw(debug_window, 22, 1, "frame_count: %lu", stats->frame_count);   
         wrefresh(debug_window);
 
