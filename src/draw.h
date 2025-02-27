@@ -4,68 +4,127 @@
 #include "piece.h"
 #include "stats.h"
 
-#define HOLD_WINDOW_H 6
-#define HOLD_WINDOW_W 14
-#define STATS_WINDOW_H 16
-#define STATS_WINDOW_W 14
-#define BOARD_WINDOW_H 24
-#define BOARD_WINDOW_W 22
-#define NEXT_WINDOW_H 6
-#define NEXT_WINDOW_W 14
-#define CONTROLS_WINDOW_H 16
-#define CONTROLS_WINDOW_W 14
-#define DEBUG_WINDOW_H 24
-#define DEBUG_WINDOW_W 36
 
+extern const int BOARD_WINDOW_H;
+extern const int BOARD_WINDOW_W;
+extern const int BOARD_WINDOW_Y;
+extern const int BOARD_WINDOW_X;
 
-WINDOW *draw_hold_window(int height, int width, int y, int x);
+extern const int HOLD_WINDOW_H;
+extern const int HOLD_WINDOW_W;
+extern const int HOLD_WINDOW_Y;
+extern const int HOLD_WINDOW_X;
 
-WINDOW *draw_stats_window(int height, int width, int y, int x);
+extern const int NEXT_WINDOW_H;
+extern const int NEXT_WINDOW_W;
+extern const int NEXT_WINDOW_Y;
+extern const int NEXT_WINDOW_X;
 
-WINDOW *draw_board_window(int height, int width, int y, int x);
+extern const int STATS_WINDOW_H;
+extern const int STATS_WINDOW_W;
+extern const int STATS_WINDOW_Y;
+extern const int STATS_WINDOW_X;
 
-WINDOW *draw_next_window(int height, int width, int y, int x);
+extern const int CONTROLS_WINDOW_H;
+extern const int CONTROLS_WINDOW_W;
+extern const int CONTROLS_WINDOW_Y;
+extern const int CONTROLS_WINDOW_X;
 
-WINDOW *draw_controls_window(int height, int width, int y, int x);
+extern const int PAUSE_WINDOW_H;
+extern const int PAUSE_WINDOW_W;
+extern const int PAUSE_WINDOW_Y;
+extern const int PAUSE_WINDOW_X;
 
-WINDOW *draw_debug_window(int height, int width, int y, int x);
+extern const int GAME_OVER_WINDOW_H;
+extern const int GAME_OVER_WINDOW_W;
+extern const int GAME_OVER_WINDOW_Y;
+extern const int GAME_OVER_WINDOW_X;
 
-void clear_window(WINDOW* window);
+extern const int DEBUG_WINDOW_H;
+extern const int DEBUG_WINDOW_W;
+extern const int DEBUG_WINDOW_Y;
+extern const int DEBUG_WINDOW_X;
 
-void draw_paused_text(WINDOW* window, GameState* game_state);
+extern const int16_t COLOR_PAIR_DEFAULT;
+extern const int16_t COLOR_PAIR_CYAN;
+extern const int16_t COLOR_PAIR_BLUE;
+extern const int16_t COLOR_PAIR_ORANGE;
+extern const int16_t COLOR_PAIR_YELLOW;
+extern const int16_t COLOR_PAIR_GREEN;
+extern const int16_t COLOR_PAIR_MAGENTA;
+extern const int16_t COLOR_PAIR_RED;
 
-void draw_game_over_text(WINDOW* window, GameState* game_state);
+struct GameWindow {
+    WINDOW* border;
+    WINDOW* content;
+    int border_h;
+    int border_w;
+    int border_y;
+    int border_x;
+    int content_h;
+    int content_w;
+    int content_y;
+    int content_x;
+    char title[64];
+    char content_text[1024];
+};
 
-void draw_buffer_zone(WINDOW* window, GameState* game_state);
+typedef struct GameWindow GameWindow;
 
-void draw_board_state(WINDOW* window, GameState* game_state);
+GameWindow get_game_window(int height, int width, int y, int x);
 
-void draw_board_stack(WINDOW *window, GameState* game_state);
+GameWindow* game_window_init(int height, int width, int y, int x);
 
-void draw_curr_piece(WINDOW* window, GameState* game_state);
+void game_window_destroy(GameWindow* game_window);
 
-void draw_hold_piece(WINDOW* window, GameState* game_state);
+void draw_window_border(GameWindow* game_window, int16_t color_pair);
 
-void draw_next_piece(WINDOW* window, GameState* game_state);
+void draw_window_title(GameWindow* game_window, char* title, int16_t color_pair);
 
-void draw_ghost_piece(WINDOW* window, GameState* game_state);
+void draw_board_window(GameWindow* board_window);
 
-void draw_score(WINDOW* window, GameState* game_state);
+void draw_hold_window(GameWindow* game_window);
 
-void draw_stats(WINDOW* window, GameState* game_state, Stats* stats);
+void draw_next_window(GameWindow* next_window);
 
-void draw_stats_time(WINDOW* window, Stats* stats);
+void draw_stats_window(GameWindow* stats_window);
 
-void draw_stats_lines(WINDOW* window, GameState* game_state);
+void draw_controls_window(GameWindow* controls_window);
 
-void draw_stats_level(WINDOW* window, GameState* game_state);
+void draw_pause_window(GameWindow* pause_window);
 
-void draw_stats_last_action_string(WINDOW* window, GameState* game_state, size_t start_y);
+void draw_game_over_window(GameWindow* game_over_window);
 
-void draw_stats_combo(WINDOW* window, GameState* game_state, size_t start_y);
+void draw_debug_window(GameWindow* debug_window);
 
-void draw_stats_difficult_clear_combo(WINDOW* window, GameState* game_state, size_t start_y);
+void draw_game_over_text(GameWindow* board_window, GameState* game_state);
 
-void draw_stats_last_action_points(WINDOW* window, GameState* game_state, size_t start_y);
+void draw_board_state(GameWindow* board_window, GameState* game_state);
+
+void draw_buffer_zone_line(GameWindow* board_window, GameState* game_state);
+
+void draw_board_stack(GameWindow* board_window, GameState* game_state);
+
+void draw_curr_piece(GameWindow* board_window, GameState* game_state);
+
+void draw_ghost_piece(GameWindow* board_window, GameState* game_state);
+
+void draw_score(GameWindow* board_window, GameState* game_state);
+
+void draw_hold_piece(GameWindow* hold_window, GameState* game_state);
+
+void draw_next_piece(GameWindow* next_window, GameState* game_state);
+
+void draw_stats(GameWindow* stats_window, GameState* game_state, Stats* stats);
+
+void draw_stats_last_action_string(GameWindow* stats_window, GameState* game_state, size_t start_y);
+
+void draw_stats_combo(GameWindow* stats_window, GameState* game_state, size_t start_y);
+
+void draw_stats_difficult_clear_combo(GameWindow* stats_window, GameState* game_state, size_t start_y);
+
+void draw_stats_last_action_points(GameWindow* stats_window, GameState* game_state, size_t start_y);
+
+void draw_debug_variables(GameWindow* debug_window, GameState* game_state, Stats* stats);
 
 #endif

@@ -37,7 +37,6 @@ int main(int argc, char* argv[argc+1]) {
     start_color();
     use_default_colors();
     init_color(COLOR_ORANGE, 900, 600, 0);
-    
     init_pair(I, COLOR_CYAN,    -1);
     init_pair(J, COLOR_BLUE,    -1);
     init_pair(L, COLOR_ORANGE,  -1);
@@ -46,15 +45,24 @@ int main(int argc, char* argv[argc+1]) {
     init_pair(T, COLOR_MAGENTA, -1);
     init_pair(Z, COLOR_RED,     -1);
     
-    WINDOW* hold_window = draw_hold_window(HOLD_WINDOW_H, HOLD_WINDOW_W, BUFFER_ZONE_H, 0);
-    WINDOW* stats_window = draw_stats_window(STATS_WINDOW_H, STATS_WINDOW_W, 6 + BUFFER_ZONE_H, 0);
-    WINDOW* board_window = draw_board_window(BOARD_WINDOW_H, BOARD_WINDOW_W, 0, 14);
-    WINDOW* next_window = draw_next_window(NEXT_WINDOW_H, NEXT_WINDOW_W, BUFFER_ZONE_H, 36);
-    WINDOW* controls_window = draw_controls_window(CONTROLS_WINDOW_H, CONTROLS_WINDOW_W, 6 + BUFFER_ZONE_H, 36);
-    WINDOW* debug_window = draw_debug_window(DEBUG_WINDOW_H, DEBUG_WINDOW_W, 0, 50);
+    GameWindow* board_window = game_window_init(BOARD_WINDOW_H, BOARD_WINDOW_W, BOARD_WINDOW_Y, BOARD_WINDOW_X);
+    GameWindow* hold_window = game_window_init(HOLD_WINDOW_H, HOLD_WINDOW_W, HOLD_WINDOW_Y, HOLD_WINDOW_X);
+    GameWindow* next_window = game_window_init(NEXT_WINDOW_H, NEXT_WINDOW_W, NEXT_WINDOW_Y, NEXT_WINDOW_X);
+    GameWindow* stats_window = game_window_init(STATS_WINDOW_H, STATS_WINDOW_W, STATS_WINDOW_Y, STATS_WINDOW_X);
+    GameWindow* controls_window = game_window_init(CONTROLS_WINDOW_H, CONTROLS_WINDOW_W, CONTROLS_WINDOW_Y, CONTROLS_WINDOW_X);
+    GameWindow* pause_window = game_window_init(PAUSE_WINDOW_H, PAUSE_WINDOW_W, PAUSE_WINDOW_Y, PAUSE_WINDOW_X);
+    GameWindow* game_over_window = game_window_init(GAME_OVER_WINDOW_H, GAME_OVER_WINDOW_W, GAME_OVER_WINDOW_Y, GAME_OVER_WINDOW_X);
+    GameWindow* debug_window = game_window_init(DEBUG_WINDOW_H, DEBUG_WINDOW_W, DEBUG_WINDOW_Y, DEBUG_WINDOW_X);
     
-    keypad(board_window, true);     // Enables arrow key input
-    nodelay(board_window, true);    // wgetch() doesn't block
+    draw_board_window(board_window);
+    draw_hold_window(hold_window);
+    draw_next_window(next_window);
+    draw_stats_window(stats_window);
+    draw_controls_window(controls_window);
+    draw_debug_window(debug_window);
+
+    keypad(board_window->content, true);     // Enables arrow key input
+    nodelay(board_window->content, true);    // wgetch() doesn't block
 
     GameState* game_state = game_state_init();
     Stats* stats = stats_init();
@@ -71,21 +79,18 @@ int main(int argc, char* argv[argc+1]) {
         frame_start = clock();
         time(&time_start);
 
-        draw_stats(stats_window, game_state, stats);
-        draw_hold_piece(hold_window, game_state);
-        draw_next_piece(next_window, game_state);
-        wrefresh(stats_window);
-        wrefresh(hold_window);
-        wrefresh(next_window);
-        
-        draw_board_state(board_window, game_state);
-        if (input_state == PAUSED) {
-            draw_paused_text(board_window, game_state);
+        if (input_state == PLAYING) {
+            draw_board_state(board_window, game_state);
+            draw_hold_piece(hold_window, game_state);
+            draw_next_piece(next_window, game_state);
+            draw_stats(stats_window, game_state, stats);
+        } else if (input_state == PAUSED) {
+            draw_pause_window(pause_window);
         } else if (input_state == GAME_OVER) {
-            draw_game_over_text(board_window, game_state);
+            draw_game_over_window(game_over_window);
         }
         
-        int input = wgetch(board_window);
+        int input = wgetch(board_window->content);
         if (input_state == PLAYING) {
             switch (input) {
             case 'z':
@@ -169,47 +174,32 @@ int main(int argc, char* argv[argc+1]) {
             }
         }
 
-        clear_window(debug_window);
-        mvwprintw(debug_window, 1, 1, "touching: %i", game_state_check_curr_piece_grounded(game_state));
-        mvwprintw(debug_window, 2, 1, "lock_delay_timer: %u", game_state->lock_delay_timer);
-        mvwprintw(debug_window, 3, 1, "move_reset_count: %u", game_state->move_reset_count);
-        mvwprintw(debug_window, 4, 1, "gravity_value: %f", game_state->gravity_value);
-        mvwprintw(debug_window, 5, 1, "piece.y: %i", game_state->curr_piece.y);
-        mvwprintw(debug_window, 6, 1, "piece.x: %i", game_state->curr_piece.x);
-        mvwprintw(debug_window, 7, 1, "t-spin: %i", game_state_check_t_spin(game_state));
-        mvwprintw(debug_window, 8, 1, "t-spin mini: %i", game_state_check_t_spin_mini(game_state));
-        mvwprintw(debug_window, 9, 1, "t_rotation_test_num: %i", game_state->t_rotation_test_num);
-        mvwprintw(debug_window, 10, 1, "difficult_clear_count: %li", game_state->difficult_clear_combo);
-        mvwprintw(debug_window, 11, 1, "perfect_tetris_clear_count: %li", game_state->tetris_perfect_clear_combo);
-        mvwprintw(debug_window, 12, 1, "last_action_points: %lu", game_state->last_action_points);
-        mvwprintw(debug_window, 13, 1, "last_action_string: %s", game_state->last_action_string);
-        mvwprintw(debug_window, 22, 1, "frame_count: %lu", stats->frame_count);   
-        wrefresh(debug_window);
-
         frame_end = clock();
         double frame_time_ms = (double)(frame_end - frame_start) * 1e3 / CLOCKS_PER_SEC;
         if (frame_time_ms < TARGET_FRAME_TIME_MS) {
             double sleep_time_ms = TARGET_FRAME_TIME_MS - frame_time_ms;
             usleep(sleep_time_ms * 1e3);
         }
-
+        
         if (input_state == PLAYING) {
             time(&time_end);
             double time_s = difftime(time_end, time_start);
             stats->time += time_s;
         }
-
+        
+        draw_debug_variables(debug_window, game_state, stats);
         stats->frame_count++;
     }
     
     game_state_destroy(game_state);
     stats_destroy(stats);
     fclose(debug_log);
-    delwin(hold_window);
-    delwin(stats_window);
-    delwin(board_window);
-    delwin(next_window);
-    delwin(controls_window);
+    game_window_destroy(board_window);
+    game_window_destroy(hold_window);
+    game_window_destroy(next_window);
+    game_window_destroy(stats_window);
+    game_window_destroy(controls_window);
+    game_window_destroy(debug_window);
     endwin();
     curs_set(1);
 
