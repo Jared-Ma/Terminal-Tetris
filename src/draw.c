@@ -38,7 +38,7 @@ const int DEBUG_WINDOW_Y = 0;
 const int DEBUG_WINDOW_X = 50;
 
 const int PAUSE_WINDOW_H = 5;
-const int PAUSE_WINDOW_W = 16;
+const int PAUSE_WINDOW_W = 14;
 const int PAUSE_WINDOW_Y = 9;
 const int PAUSE_WINDOW_X = 17;
 
@@ -58,8 +58,8 @@ const int16_t COLOR_PAIR_RED       = Z;
 
 const char BLOCK_LEFT       = '[';
 const char BLOCK_RIGHT      = ']';
-const char GHOST_LEFT       = ':';
-const char GHOST_RIGHT      = ':';
+const char GHOST_LEFT       = '[';
+const char GHOST_RIGHT      = ']';
 const char BOARD_SPACE      = ' ';
 const char BUFFER_ZONE_LINE = '_';
 
@@ -144,16 +144,31 @@ void draw_stats_window(GameWindow* stats_window) {
 void draw_controls_window(GameWindow* controls_window) {
     draw_window_border(controls_window, COLOR_PAIR_DEFAULT);
     draw_window_title(controls_window, "CONTROLS", COLOR_PAIR_DEFAULT);
+
+    char* key_bind_move    = "< >";
+    char* key_bind_rotate  = "z x";
+    char* key_bind_hold      = "c";
+    char* key_bind_soft_drop = "v";
+    char* key_bind_hard_drop = "_";
+    char* key_bind_pause   = "esc";
+
     mvwprintw(
         controls_window->content, 0, 0, 
         "\n"
-        "move:    < >\n"
-        "rotate:  z x\n"
-        "hold:      c\n"
-        "soft drop: v\n"
-        "hard drop: _\n"
-        "pause:   esc\n"
+        "move: %*s\n"
+        "rotate: %*s\n"
+        "hold: %*s\n"
+        "soft drop: %*s\n"
+        "hard drop: %*s\n"
+        "pause: %*s\n",
+        controls_window->content_w-6, key_bind_move,
+        controls_window->content_w-8, key_bind_rotate,
+        controls_window->content_w-6, key_bind_hold,
+        controls_window->content_w-11, key_bind_soft_drop,
+        controls_window->content_w-11, key_bind_hard_drop,
+        controls_window->content_w-7, key_bind_pause
     );
+
     wrefresh(controls_window->border);
     wrefresh(controls_window->content);
 }
@@ -164,9 +179,9 @@ void draw_pause_window(GameWindow* pause_window) {
     mvwprintw(
         pause_window->content,
         0, 0,
-        "space: resume\n"
-        "r: restart\n"
-        "esc: quit\n"
+        " resume:  _\n"
+        " restart: r\n"
+        " quit:  esc\n"
     );
     wrefresh(pause_window->border);
     wrefresh(pause_window->content);
@@ -178,8 +193,8 @@ void draw_game_over_window(GameWindow* game_over_window) {
     mvwprintw(
         game_over_window->content,
         0, 0,
-        "r: restart\n"
-        "esc: quit\n"
+        " restart: r\n"
+        " quit:  esc\n"
     );
     wrefresh(game_over_window->border);
     wrefresh(game_over_window->content);
@@ -201,9 +216,11 @@ void draw_board_state(GameWindow* board_window, GameState* game_state) {
 }
 
 void draw_buffer_zone_line(GameWindow* board_window, GameState* game_state) {
+    wattron(board_window->content, COLOR_PAIR(COLOR_PAIR_RED) | A_DIM);
     for (size_t i = 0; i < board_window->content_w; ++i) {
         mvwprintw(board_window->content, BUFFER_ZONE_H-1, i, "%c", BUFFER_ZONE_LINE);
     }
+    wattroff(board_window->content, COLOR_PAIR(COLOR_PAIR_RED) | A_DIM);
 }
 
 void draw_board_stack(GameWindow* board_window, GameState* game_state) {
@@ -238,7 +255,7 @@ void draw_ghost_piece(GameWindow* board_window, GameState* game_state) {
     if (game_state->ghost_piece.y != game_state->curr_piece.y) {
         int start_y = game_state->ghost_piece.y - game_state->ghost_piece.n/2;
         int start_x = 2*(game_state->ghost_piece.x - game_state->ghost_piece.n/2);
-        wattron(board_window->content, COLOR_PAIR(game_state->ghost_piece.shape));
+        wattron(board_window->content, COLOR_PAIR(game_state->ghost_piece.shape) | A_DIM);
 
         for (size_t i = 0; i < game_state->ghost_piece.n; ++i) {
             for (size_t j = 0; j < game_state->ghost_piece.n; ++j) {
@@ -248,7 +265,7 @@ void draw_ghost_piece(GameWindow* board_window, GameState* game_state) {
             }
         }
         
-        wattroff(board_window->content, COLOR_PAIR(game_state->ghost_piece.shape));
+        wattroff(board_window->content, COLOR_PAIR(game_state->ghost_piece.shape) | A_DIM);
     }
 }
 
@@ -260,6 +277,7 @@ void draw_score(GameWindow* board_window, GameState* game_state) {
         "%08lu", 
         game_state->score
     );
+    wrefresh(board_window->border);
 }
 
 void draw_hold_piece(GameWindow* hold_window, GameState* game_state) {
@@ -376,7 +394,7 @@ void draw_stats_last_action_string(GameWindow* stats_window, GameState* game_sta
         mvwprintw(
             stats_window->content, 
             start_y--, 
-            1, 
+            0, 
             "%.*s", 
             end_index - space_index, 
             game_state->last_action_string + space_index + 1
@@ -404,8 +422,7 @@ void draw_debug_variables(GameWindow* debug_window, GameState* game_state, Stats
     werase(debug_window->content);
     mvwprintw(
         debug_window->content, 0, 0,
-        "y: %i\n"
-        "x: %i\n"
+        "y, x: %i, %i\n"
         "lock_delay_timer: %u\n"
         "move_reset_count: %u\n"
         "gravity_value: %f\n"
