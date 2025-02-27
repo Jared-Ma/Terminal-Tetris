@@ -79,6 +79,10 @@ int main(int argc, char* argv[argc+1]) {
         frame_start = clock();
         time(&time_start);
 
+        if (game_state_check_collision(game_state, game_state->curr_piece)) {
+            input_state = GAME_OVER;
+        }
+
         if (input_state == PLAYING) {
             draw_board_state(board_window, game_state);
             draw_hold_piece(hold_window, game_state);
@@ -119,9 +123,6 @@ int main(int argc, char* argv[argc+1]) {
                 game_state_lock_curr_piece(game_state);
                 game_state_clear_lines(game_state);
                 game_state_load_next_piece(game_state);
-                if (game_state_check_collision(game_state, game_state->curr_piece)) {
-                    input_state = GAME_OVER;
-                }
                 break;
             case ESC:
                 input_state = PAUSED;
@@ -161,9 +162,6 @@ int main(int argc, char* argv[argc+1]) {
                     game_state_lock_curr_piece(game_state);
                     game_state_clear_lines(game_state);
                     game_state_load_next_piece(game_state);
-                    if (game_state_check_collision(game_state, game_state->curr_piece)) {
-                        input_state = GAME_OVER;
-                    }
                 }
             }
 
