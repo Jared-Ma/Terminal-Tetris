@@ -26,6 +26,7 @@ typedef enum InputState InputState;
 
 int main(int argc, char* argv[argc+1]) {
     if (!debug_log_open("./logs/debug.txt")) {
+        fprintf(stderr, "Failed to open debug log file (debug.txt).\n");
         return EXIT_FAILURE;
     }
 
