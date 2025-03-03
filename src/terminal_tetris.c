@@ -29,10 +29,13 @@ int main(int argc, char* argv[argc+1]) {
         return EXIT_FAILURE;
     }
 
-    initscr();          // Initialize curses screen
-    noecho();           // Don't echo input to screen
-    curs_set(0);        // Hide cursor
-    set_escdelay(0);    // Remove delay after reading escape key
+    initscr();             // Initialize curses screen
+    noecho();              // Don't echo input to screen
+    curs_set(0);           // Hide cursor
+    set_escdelay(0);       // Remove delay after reading escape key
+    keypad(stdscr, true);  // Enables arrow key input
+    nodelay(stdscr, true); // getch() no longer blocks
+    refresh();
     
     start_color();
     use_default_colors();
@@ -60,9 +63,6 @@ int main(int argc, char* argv[argc+1]) {
     draw_stats_window(stats_window);
     draw_controls_window(controls_window);
     draw_debug_window(debug_window);
-
-    keypad(board_window->content, true);     // Enables arrow key input
-    nodelay(board_window->content, true);    // wgetch() doesn't block
 
     GameState* game_state = game_state_init();
     Stats* stats = stats_init();
@@ -93,8 +93,8 @@ int main(int argc, char* argv[argc+1]) {
         } else if (input_state == GAME_OVER) {
             draw_game_over_window(game_over_window);
         }
-        
-        int input = wgetch(board_window->content);
+
+        int input = getch();
         if (input_state == PLAYING) {
             switch (input) {
             case 'z':
