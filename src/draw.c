@@ -213,6 +213,7 @@ void draw_board_state(GameWindow* board_window, GameState* game_state) {
     draw_ghost_piece(board_window, game_state);
     draw_curr_piece(board_window, game_state);
     draw_score(board_window, game_state);
+    wrefresh(board_window->content);
 }
 
 void draw_buffer_zone_line(GameWindow* board_window, GameState* game_state) {
