@@ -11,9 +11,7 @@
 
 #define TARGET_FPS 60
 #define TARGET_FRAME_TIME_MS (1e3 / TARGET_FPS)
-
 #define ESC '\e'
-#define COLOR_ORANGE 8
 
 
 enum InputState {
@@ -24,23 +22,24 @@ enum InputState {
 
 typedef enum InputState InputState;
 
-int main(int argc, char* argv[argc+1]) {
-    if (!debug_log_open("./logs/debug.txt")) {
-        fprintf(stderr, "Failed to open debug log file (debug.txt).\n");
-        return EXIT_FAILURE;
-    }
 
-    initscr();             // Initialize curses screen
-    noecho();              // Don't echo input to screen
-    curs_set(0);           // Hide cursor
-    set_escdelay(0);       // Remove delay after reading escape key
-    keypad(stdscr, true);  // Enables arrow key input
-    nodelay(stdscr, true); // getch() no longer blocks
-    refresh();
+
+static void start_curses(void) {
+    initscr();                // initialize curses screen
+    noecho();                 // disable echo input to screen
+    curs_set(0);              // hide cursor
+    set_escdelay(0);          // remove delay after reading escape key
+    keypad(stdscr, true);     // enable arrow key input
+    nodelay(stdscr, true);    // enable non-blocking getch()
+    refresh();                // initial refresh of stdscr
     
+    // initialize color pairs of tetronimos
     start_color();
     use_default_colors();
+
+    short COLOR_ORANGE = 8;
     init_color(COLOR_ORANGE, 900, 600, 0);
+
     init_pair(I, COLOR_CYAN,    -1);
     init_pair(J, COLOR_BLUE,    -1);
     init_pair(L, COLOR_ORANGE,  -1);
@@ -48,15 +47,53 @@ int main(int argc, char* argv[argc+1]) {
     init_pair(S, COLOR_GREEN,   -1);
     init_pair(T, COLOR_MAGENTA, -1);
     init_pair(Z, COLOR_RED,     -1);
+}
+
+static void end_curses(void) {
+    endwin();
+    curs_set(2);
+}
+
+int main(int argc, char* argv[argc+1]) {
+    if (!debug_log_open("./logs/debug.txt")) {
+        fprintf(stderr, "Failed to open debug log file (debug.txt).\n");
+        return EXIT_FAILURE;
+    }
+
+    start_curses();
     
-    GameWindow* board_window = game_window_init(BOARD_WINDOW_H, BOARD_WINDOW_W, BOARD_WINDOW_Y, BOARD_WINDOW_X);
-    GameWindow* hold_window = game_window_init(HOLD_WINDOW_H, HOLD_WINDOW_W, HOLD_WINDOW_Y, HOLD_WINDOW_X);
-    GameWindow* next_window = game_window_init(NEXT_WINDOW_H, NEXT_WINDOW_W, NEXT_WINDOW_Y, NEXT_WINDOW_X);
-    GameWindow* stats_window = game_window_init(STATS_WINDOW_H, STATS_WINDOW_W, STATS_WINDOW_Y, STATS_WINDOW_X);
-    GameWindow* controls_window = game_window_init(CONTROLS_WINDOW_H, CONTROLS_WINDOW_W, CONTROLS_WINDOW_Y, CONTROLS_WINDOW_X);
-    GameWindow* pause_window = game_window_init(PAUSE_WINDOW_H, PAUSE_WINDOW_W, PAUSE_WINDOW_Y, PAUSE_WINDOW_X);
-    GameWindow* game_over_window = game_window_init(GAME_OVER_WINDOW_H, GAME_OVER_WINDOW_W, GAME_OVER_WINDOW_Y, GAME_OVER_WINDOW_X);
-    GameWindow* debug_window = game_window_init(DEBUG_WINDOW_H, DEBUG_WINDOW_W, DEBUG_WINDOW_Y, DEBUG_WINDOW_X);
+    GameWindow* board_window = game_window_init(
+        BOARD_WINDOW_H, BOARD_WINDOW_W, 
+        BOARD_WINDOW_Y, BOARD_WINDOW_X
+    );
+    GameWindow* hold_window = game_window_init(
+        HOLD_WINDOW_H, HOLD_WINDOW_W, 
+        HOLD_WINDOW_Y, HOLD_WINDOW_X
+    );
+    GameWindow* next_window = game_window_init(
+        NEXT_WINDOW_H, NEXT_WINDOW_W, 
+        NEXT_WINDOW_Y, NEXT_WINDOW_X
+    );
+    GameWindow* stats_window = game_window_init(
+        STATS_WINDOW_H, STATS_WINDOW_W, 
+        STATS_WINDOW_Y, STATS_WINDOW_X
+    );
+    GameWindow* controls_window = game_window_init(
+        CONTROLS_WINDOW_H, CONTROLS_WINDOW_W, 
+        CONTROLS_WINDOW_Y, CONTROLS_WINDOW_X
+    );
+    GameWindow* pause_window = game_window_init(
+        PAUSE_WINDOW_H, PAUSE_WINDOW_W, 
+        PAUSE_WINDOW_Y, PAUSE_WINDOW_X
+    );
+    GameWindow* game_over_window = game_window_init(
+        GAME_OVER_WINDOW_H, GAME_OVER_WINDOW_W, 
+        GAME_OVER_WINDOW_Y, GAME_OVER_WINDOW_X
+    );
+    GameWindow* debug_window = game_window_init(
+        DEBUG_WINDOW_H, DEBUG_WINDOW_W, 
+        DEBUG_WINDOW_Y, DEBUG_WINDOW_X
+    );
     
     draw_board_window(board_window);
     draw_hold_window(hold_window);
@@ -199,8 +236,7 @@ int main(int argc, char* argv[argc+1]) {
     game_window_destroy(stats_window);
     game_window_destroy(controls_window);
     game_window_destroy(debug_window);
-    endwin();
-    curs_set(1);
+    end_curses();
 
     return EXIT_SUCCESS;
 }
