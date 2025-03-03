@@ -22,8 +22,6 @@ enum InputState {
 
 typedef enum InputState InputState;
 
-
-
 static void start_curses(void) {
     initscr();                // initialize curses screen
     noecho();                 // disable echo input to screen
