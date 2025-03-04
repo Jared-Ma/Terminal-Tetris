@@ -83,12 +83,11 @@ static void start_tetris(
     draw_debug_variables(debug_window, game_state, stats);
     
     InputState input_state = PLAYING;
-    time_t time_start, time_end;
     bool running = true;
 
     while (running) {
         clock_t frame_start = clock();
-        time(&time_start);
+        time_t time_start = time(NULL);
 
         // Input        
         int input = getch();
@@ -167,23 +166,7 @@ static void start_tetris(
             if (game_state_check_collision(game_state, game_state->curr_piece)) {
                 input_state = GAME_OVER;
             }
-
         }
-
-        clock_t frame_end = clock();
-        double frame_time_ms = (double)(frame_end - frame_start) * 1e3 / CLOCKS_PER_SEC;
-        if (frame_time_ms < TARGET_FRAME_TIME_MS) {
-            double sleep_time_ms = TARGET_FRAME_TIME_MS - frame_time_ms;
-            usleep(sleep_time_ms * 1e3);
-        }
-        
-        if (input_state == PLAYING) {
-            time(&time_end);
-            double time_s = difftime(time_end, time_start);
-            stats->time += time_s;
-        }
-        
-        stats->frame_count++;
 
         // Render
         if (input_state == PLAYING) {
@@ -197,6 +180,18 @@ static void start_tetris(
         } else if (input_state == GAME_OVER) {
             draw_game_over_window(game_over_window);
         }
+
+        double frame_time_ms = (double)(clock() - frame_start) * 1e3 / CLOCKS_PER_SEC;
+        if (frame_time_ms < TARGET_FRAME_TIME_MS) {
+            double sleep_time_ms = TARGET_FRAME_TIME_MS - frame_time_ms;
+            usleep(sleep_time_ms * 1e3);
+        }
+        
+        if (input_state == PLAYING) {
+            stats->time += difftime(time(NULL), time_start);
+        }
+        
+        stats->frame_count++;
     }
 }
 
