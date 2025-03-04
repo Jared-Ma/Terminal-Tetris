@@ -149,7 +149,7 @@ void game_state_start(GameState* game_state) {
     game_state_load_next_piece(game_state);
 }
 
-void game_state_restart(GameState* game_state) {
+void game_state_reset(GameState* game_state) {
     if (!game_state) {
         return;
     }
@@ -440,6 +440,7 @@ void game_state_hard_drop_curr_piece(GameState* game_state) {
         }
     }
     game_state->score += HARD_DROP_POINTS * (game_state->curr_piece.y - prev_y);
+    game_state->lock_delay_timer = 0;
 }
 
 void game_state_lock_curr_piece(GameState* game_state) {
