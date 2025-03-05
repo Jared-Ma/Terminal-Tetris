@@ -5,7 +5,7 @@
 
 
 struct Stats {
-    size_t time;
+    double seconds;
     size_t frame_count;
     double fps;
 };

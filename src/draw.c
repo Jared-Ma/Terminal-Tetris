@@ -332,9 +332,9 @@ void draw_next_piece(GameWindow* next_window, GameState* game_state) {
 void draw_stats(GameWindow* stats_window, GameState* game_state, Stats* stats) {
     werase(stats_window->content);
 
-    size_t h = stats->time / 3600;
-    size_t m = (stats->time - 3600*h) / 60;
-    size_t s = stats->time - 3600*h - 60*m;
+    size_t h = stats->seconds / 3600;
+    size_t m = (stats->seconds - 3600*h) / 60;
+    size_t s = stats->seconds - 3600*h - 60*m;
 
     mvwprintw(
         stats_window->content, 0, 0,

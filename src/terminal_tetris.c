@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#include <unistd.h>
+#include <linux/time.h>
 #include "game_state.h"
 #include "draw.h"
 #include "piece.h"
@@ -10,7 +10,7 @@
 #include "logger.h"
 
 #define TARGET_FPS 60
-#define TARGET_FRAME_TIME_MS (1e3 / TARGET_FPS)
+#define TARGET_FRAME_TIME_NS (1e9 / TARGET_FPS)
 #define ESC '\e'
 
 
@@ -22,6 +22,14 @@ enum InputState {
 
 typedef enum InputState InputState;
 
+static void sleep_ns(uint64_t nanoseconds) {
+    struct timespec duration, remainder;
+    duration.tv_nsec = nanoseconds;
+    while (clock_nanosleep(CLOCK_MONOTONIC, 0, &duration, &remainder) == -1) {
+        duration = remainder;
+    }
+}
+
 static void start_curses(void) {
     initscr();                // initialize curses screen
     noecho();                 // disable echo input to screen
@@ -30,7 +38,7 @@ static void start_curses(void) {
     keypad(stdscr, true);     // enable arrow key input
     nodelay(stdscr, true);    // enable non-blocking getch()
     refresh();                // initial refresh of stdscr
-    
+
     // initialize color pairs of tetronimos
     start_color();
     use_default_colors();
@@ -83,11 +91,11 @@ static void start_tetris(
     draw_debug_variables(debug_window, game_state, stats);
     
     InputState input_state = PLAYING;
+    struct timespec start, end;
     bool running = true;
 
     while (running) {
-        clock_t frame_start = clock();
-        time_t time_start = time(NULL);
+        clock_gettime(CLOCK_MONOTONIC, &start);
 
         // Input        
         int input = getch();
@@ -174,23 +182,24 @@ static void start_tetris(
             draw_hold_piece(hold_window, game_state);
             draw_next_piece(next_window, game_state);
             draw_stats(stats_window, game_state, stats);
-            draw_debug_variables(debug_window, game_state, stats);
         } else if (input_state == PAUSED) {
             draw_pause_window(pause_window);
         } else if (input_state == GAME_OVER) {
             draw_game_over_window(game_over_window);
         }
 
-        double frame_time_ms = (double)(clock() - frame_start) * 1e3 / CLOCKS_PER_SEC;
-        if (frame_time_ms < TARGET_FRAME_TIME_MS) {
-            double sleep_time_ms = TARGET_FRAME_TIME_MS - frame_time_ms;
-            usleep(sleep_time_ms * 1e3);
+        clock_gettime(CLOCK_MONOTONIC, &end);
+        uint64_t frame_time_ns = (end.tv_sec - start.tv_sec) * 1e9 + (end.tv_nsec - start.tv_nsec);
+        if (frame_time_ns < TARGET_FRAME_TIME_NS) {
+            sleep_ns(TARGET_FRAME_TIME_NS - frame_time_ns);
         }
-        
+
         if (input_state == PLAYING) {
-            stats->time += difftime(time(NULL), time_start);
+            clock_gettime(CLOCK_MONOTONIC, &end);
+            stats->seconds += (end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec) / 1e9;
         }
         
+        draw_debug_variables(debug_window, game_state, stats);
         stats->frame_count++;
     }
 }

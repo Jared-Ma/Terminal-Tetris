@@ -6,7 +6,7 @@
 
 Stats stats_get(void) {
     Stats stats = {
-        .time = 0,
+        .seconds = 0,
         .frame_count = 0,
         .fps = 0.0
     };
@@ -34,12 +34,12 @@ void stats_debug_print(Stats* stats) {
     fprintf(
         debug_log,
         "%p = {\n"
-        "\ttime = %lu\n"
+        "\tseconds = %lf\n"
         "\tframe_count = %lu\n"
         "\tfps = %lf\n"
         "}\n",
         stats,
-        stats->time,
+        stats->seconds,
         stats->frame_count,
         stats->fps
     );
