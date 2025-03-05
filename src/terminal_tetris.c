@@ -2,7 +2,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#include <linux/time.h>
 #include "game_state.h"
 #include "draw.h"
 #include "piece.h"
@@ -21,14 +20,6 @@ enum InputState {
 };
 
 typedef enum InputState InputState;
-
-static void sleep_ns(uint64_t nanoseconds) {
-    struct timespec duration, remainder;
-    duration.tv_nsec = nanoseconds;
-    while (clock_nanosleep(CLOCK_MONOTONIC, 0, &duration, &remainder) == -1) {
-        duration = remainder;
-    }
-}
 
 static void start_curses(void) {
     initscr();                // initialize curses screen
@@ -58,6 +49,14 @@ static void start_curses(void) {
 static void end_curses(void) {
     endwin();
     curs_set(2);
+}
+
+static void sleep_ns(uint64_t nanoseconds) {
+    struct timespec duration, remainder;
+    duration.tv_nsec = nanoseconds;
+    while (clock_nanosleep(CLOCK_MONOTONIC, 0, &duration, &remainder) == -1) {
+        duration = remainder;
+    }
 }
 
 static void start_tetris(
@@ -91,11 +90,12 @@ static void start_tetris(
     draw_debug_variables(debug_window, game_state, stats);
     
     InputState input_state = PLAYING;
-    struct timespec start, end;
+    struct timespec start_time, end_time;
+    uint64_t frame_time_ns;
     bool running = true;
 
     while (running) {
-        clock_gettime(CLOCK_MONOTONIC, &start);
+        clock_gettime(CLOCK_MONOTONIC, &start_time);
 
         // Input        
         int input = getch();
@@ -188,15 +188,15 @@ static void start_tetris(
             draw_game_over_window(game_over_window);
         }
 
-        clock_gettime(CLOCK_MONOTONIC, &end);
-        uint64_t frame_time_ns = (end.tv_sec - start.tv_sec) * 1e9 + (end.tv_nsec - start.tv_nsec);
+        clock_gettime(CLOCK_MONOTONIC, &end_time);
+        frame_time_ns = (end_time.tv_sec - start_time.tv_sec) * 1e9 + (end_time.tv_nsec - start_time.tv_nsec);
         if (frame_time_ns < TARGET_FRAME_TIME_NS) {
             sleep_ns(TARGET_FRAME_TIME_NS - frame_time_ns);
         }
 
         if (input_state == PLAYING) {
-            clock_gettime(CLOCK_MONOTONIC, &end);
-            stats->seconds += (end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec) / 1e9;
+            clock_gettime(CLOCK_MONOTONIC, &end_time);
+            stats->seconds += (end_time.tv_sec - start_time.tv_sec) + (end_time.tv_nsec - start_time.tv_nsec) / 1e9;
         }
         
         draw_debug_variables(debug_window, game_state, stats);
