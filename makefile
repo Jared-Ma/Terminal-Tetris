@@ -1,5 +1,5 @@
 CC     = gcc
-CFLAGS = -Wall -c
+CFLAGS = -Wall -c -std=gnu99
 LIBS   = -lncurses -lm
 
 EXE_DIR  = 
