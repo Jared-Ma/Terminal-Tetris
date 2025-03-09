@@ -1,8 +1,9 @@
 #ifndef DRAW_H
 #define DRAW_H
 #include <ncurses.h>
-#include "piece.h"
+#include "game_state.h"
 #include "stats.h"
+#include "piece.h"
 
 
 extern const int BOARD_WINDOW_H;
@@ -65,8 +66,6 @@ struct GameWindow {
     int content_w;
     int content_y;
     int content_x;
-    char title[64];
-    char content_text[1024];
 };
 
 typedef struct GameWindow GameWindow;
@@ -116,14 +115,6 @@ void draw_hold_piece(GameWindow* hold_window, GameState* game_state);
 void draw_next_piece(GameWindow* next_window, GameState* game_state);
 
 void draw_stats(GameWindow* stats_window, GameState* game_state, Stats* stats);
-
-void draw_stats_last_action_string(GameWindow* stats_window, GameState* game_state, size_t start_y);
-
-void draw_stats_combo(GameWindow* stats_window, GameState* game_state, size_t start_y);
-
-void draw_stats_difficult_clear_combo(GameWindow* stats_window, GameState* game_state, size_t start_y);
-
-void draw_stats_last_action_points(GameWindow* stats_window, GameState* game_state, size_t start_y);
 
 void draw_debug_variables(GameWindow* debug_window, GameState* game_state, Stats* stats);
 

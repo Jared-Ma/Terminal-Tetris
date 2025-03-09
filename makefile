@@ -12,7 +12,7 @@ INCLUDE_SRC = -I $(SRC_DIR)
 
 EXE      = terminal_tetris
 MAIN_SRC = $(addprefix $(SRC_DIR), terminal_tetris.c)
-SRC      = $(addprefix $(SRC_DIR), game_state.c draw.c piece.c stats.c logger.c)
+SRC      = $(addprefix $(SRC_DIR), game_state.c draw.c vfx.c piece.c stats.c logger.c)
 MAIN_OBJ = $(addprefix $(OBJ_DIR), $(addsuffix .o, $(notdir $(basename $(MAIN_SRC)))))
 OBJ      = $(addprefix $(OBJ_DIR), $(addsuffix .o, $(notdir $(basename $(SRC)))))
 

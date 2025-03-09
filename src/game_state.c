@@ -97,7 +97,127 @@ GameState game_state_get(void) {
         .hold_piece = { 0 },
         .next_piece = { 0 },
         .ghost_piece = { 0 },
-        .board = {{ 0 }},
+        // .board = {{ 0 }},
+        // .board = {
+        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        //     {1, 1, 1, 1, 1, 1, 1, 1, 1, 0},
+        // },
+        // .board = {
+        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        //     {1, 1, 1, 1, 1, 1, 1, 1, 1, 0},
+        //     {1, 1, 1, 1, 1, 1, 1, 1, 1, 0},
+        // },
+        // .board = {
+        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        //     {1, 1, 1, 1, 1, 1, 1, 1, 1, 0},
+        //     {1, 1, 1, 1, 1, 1, 1, 1, 1, 0},
+        //     {1, 1, 1, 1, 1, 1, 1, 1, 1, 0},
+        // },
+        .board = {
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {1, 1, 1, 1, 1, 1, 1, 1, 1, 0},
+            {1, 1, 1, 1, 1, 1, 1, 1, 1, 0},
+            {1, 1, 1, 1, 1, 1, 1, 1, 1, 0},
+            {1, 1, 1, 1, 1, 1, 1, 1, 1, 0},
+        },
+        // .board = {
+        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        //     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        //     {0, 0, 1, 1, 0, 0, 0, 0, 0, 0},
+        //     {0, 1, 1, 0, 0, 0, 0, 1, 0, 0},
+        //     {1, 1, 1, 0, 1, 1, 1, 1, 1, 1},
+        //     {1, 1, 1, 0, 0, 1, 1, 1, 1, 1},
+        //     {1, 1, 1, 0, 1, 1, 1, 1, 1, 1},
+        // },
 
         .holding_piece = false,
         .hold_blocked = false,
@@ -116,8 +236,13 @@ GameState game_state_get(void) {
         .difficult_clear_combo = 0,
         .tetris_perfect_clear_combo = 0,
         .t_rotation_test_num = 0,
+
         .last_action_points = 0,
-        .last_action_string = { 0 }
+        .last_action_num_lines = 0,
+        .last_action_t_spin = false,
+        .last_action_t_spin_mini = false,
+        .last_action_perfect_clear = false,
+        .last_action_hold_piece = false,
     };
     return game_state;
 }
@@ -142,11 +267,16 @@ void game_state_start(GameState* game_state) {
     }
     game_state->level = 1;
     game_state->combo = -1;
+    game_state->combo = 0;
     game_state->difficult_clear_combo = -1;
+    game_state->difficult_clear_combo = 0;
     game_state->tetris_perfect_clear_combo = -1;
+    game_state->tetris_perfect_clear_combo = 0;
     game_state_generate_next_queue(game_state);
     game_state->next_piece = piece_get(game_state->next_queue[game_state->next_index++], 0, 0);
     game_state_load_next_piece(game_state);
+
+    game_state->curr_piece = piece_get(I, SPAWN_Y, SPAWN_X);
 }
 
 void game_state_reset(GameState* game_state) {
@@ -214,11 +344,14 @@ void game_state_debug_print(GameState* game_state) {
         "\tlines = %lu\n"
         "\tscore = %lu\n"
         "\tcombo = %li\n"
-        "\tdifficult_clear_count = %li\n"
-        "\ttetris_perfect_clear_count = %li\n"
+        "\tdifficult_clear_combo = %li\n"
+        "\ttetris_perfect_clear_combo = %li\n"
         "\tt_rotation_test_num = %u\n"
         "\tlast_action_points = %lu\n"
-        "\tlast_action_string = %s\n",
+        "\tlast_action_num_lines = %u\n"
+        "\tlast_action_t_spin = %i\n"
+        "\tlast_action_t_spin_mini = %i\n"
+        "\tlast_action_perfect_clear = %i\n",
         game_state->level,
         game_state->lines,
         game_state->score,
@@ -227,7 +360,10 @@ void game_state_debug_print(GameState* game_state) {
         game_state->tetris_perfect_clear_combo,
         game_state->t_rotation_test_num,
         game_state->last_action_points,
-        game_state->last_action_string
+        game_state->last_action_num_lines,
+        game_state->last_action_t_spin,
+        game_state->last_action_t_spin_mini,
+        game_state->last_action_perfect_clear
     );
 
     fprintf(debug_log, "}\n");
@@ -296,6 +432,7 @@ void game_state_hold_piece(GameState* game_state) {
             game_state_load_next_piece(game_state);
         }  
         game_state->hold_blocked = true;
+        game_state->last_action_hold_piece = true;
     }
 }
 
@@ -517,13 +654,11 @@ void game_state_clear_lines(GameState* game_state) {
     points += game_state_calc_combo_points(game_state, num_lines);
     points *= game_state_calc_difficult_clear_mult(game_state, num_lines);
     game_state->score += points;
-    
-    if (points > 0) {
-        game_state->last_action_points = points;
-    }
+    game_state->last_action_points = points;
     
     // add the number of lines and increment level accordingly
     game_state->lines += num_lines;
+    game_state->last_action_num_lines = num_lines;
     if (game_state->lines >= game_state->level * LEVEL_LINE_REQ) {
         game_state->level++;
     }
@@ -766,33 +901,28 @@ size_t game_state_calc_t_spin_points(GameState* game_state, size_t num_lines) {
     if (game_state_check_t_spin(game_state)) {
         if (num_lines == 0) {
             points += T_SPIN_ZERO_POINTS * game_state->level;
-            strcpy(game_state->last_action_string, "t-spin");
         } else if (num_lines == 1) {
             points += T_SPIN_SINGLE_POINTS * game_state->level;
-            strcpy(game_state->last_action_string, "t-spin single");
             game_state->difficult_clear_combo++;
         } else if (num_lines == 2) {
             points += T_SPIN_DOUBLE_POINTS * game_state->level;
-            strcpy(game_state->last_action_string, "t-spin double");
             game_state->difficult_clear_combo++;
         } else if (num_lines == 3) {
             points += T_SPIN_TRIPLE_POINTS * game_state->level;
-            strcpy(game_state->last_action_string, "t-spin triple");
             game_state->difficult_clear_combo++;
         }
+        game_state->last_action_t_spin = true;
     } else if (game_state_check_t_spin_mini(game_state)) {
         if (num_lines == 0) {
             points += T_SPIN_MINI_ZERO_POINTS * game_state->level;
-            strcpy(game_state->last_action_string, "t-spin mini");
         } else if (num_lines == 1) {
             points += T_SPIN_MINI_SINGLE_POINTS * game_state->level;
-            strcpy(game_state->last_action_string, "t-spin mini single");
             game_state->difficult_clear_combo++;
         } else if (num_lines == 2) {
             points += T_SPIN_MINI_DOUBLE_POINTS * game_state->level;
-            strcpy(game_state->last_action_string, "t-spin mini double");
             game_state->difficult_clear_combo++;
         }
+        game_state->last_action_t_spin_mini = true;
     }
     return points;
 }
@@ -806,19 +936,15 @@ size_t game_state_calc_line_clear_points(GameState* game_state, size_t num_lines
     if (!game_state_check_t_spin(game_state) && !game_state_check_t_spin_mini(game_state)) {
         if (num_lines == 1) {
             points += SINGLE_POINTS * game_state->level;
-            strcpy(game_state->last_action_string, "single");
             game_state->difficult_clear_combo = -1;
         } else if (num_lines == 2) {
             points += DOUBLE_POINTS * game_state->level;
-            strcpy(game_state->last_action_string, "double");
             game_state->difficult_clear_combo = -1;
         } else if (num_lines == 3) {
             points += TRIPLE_POINTS * game_state->level;
-            strcpy(game_state->last_action_string, "triple");
             game_state->difficult_clear_combo = -1;
         } else if (num_lines == 4) {
             points += TETRIS_POINTS * game_state->level;
-            strcpy(game_state->last_action_string, "tetris");
             game_state->difficult_clear_combo++;
         }
     }
@@ -832,33 +958,25 @@ size_t game_state_calc_perfect_clear_points(GameState* game_state, size_t num_li
 
     size_t points = 0;
     if (game_state_check_empty_board(game_state) && num_lines > 0) {
-
-        if (num_lines == 4) {
-            game_state->tetris_perfect_clear_combo++;
-        } else if (num_lines > 0) {
-            game_state->tetris_perfect_clear_combo = -1;
-        }
-
         if (num_lines == 1) {
             points += SINGLE_PERFECT_CLEAR_POINTS * game_state->level;
-            strcpy(game_state->last_action_string, "single perfect clear");
+            game_state->tetris_perfect_clear_combo = -1;
         } else if (num_lines == 2) {
             points += DOUBLE_PERFECT_CLEAR_POINTS * game_state->level;
-            strcpy(game_state->last_action_string, "double perfect clear");
+            game_state->tetris_perfect_clear_combo = -1;
         } else if (num_lines == 3) {
             points += TRIPLE_PERFECT_CLEAR_POINTS * game_state->level;
-            strcpy(game_state->last_action_string, "triple perfect clear");
+            game_state->tetris_perfect_clear_combo = -1;
         } else if (num_lines == 4) {
             if (game_state->tetris_perfect_clear_combo > 0) {
                 points += B2B_TETRIS_PERFECT_CLEAR_POINTS * game_state->level;
-                strcpy(game_state->last_action_string, "b2b tetris perfect clear");
-        } else {
+            } else {
                 points += TETRIS_PERFECT_CLEAR_POINTS * game_state->level;
-                strcpy(game_state->last_action_string, "tetris perfect clear");
             }
+            game_state->tetris_perfect_clear_combo++;
         }
+        game_state->last_action_perfect_clear = true;
     } 
-
     return points;
 }
 

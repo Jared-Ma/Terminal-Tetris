@@ -40,7 +40,7 @@ const int DEBUG_WINDOW_X = 50;
 const int PAUSE_WINDOW_H = 5;
 const int PAUSE_WINDOW_W = 14;
 const int PAUSE_WINDOW_Y = 9;
-const int PAUSE_WINDOW_X = 17;
+const int PAUSE_WINDOW_X = 18;
 
 const int GAME_OVER_WINDOW_H = 4;
 const int GAME_OVER_WINDOW_W = 14;
@@ -76,9 +76,7 @@ GameWindow game_window_get(int height, int width, int y, int x) {
         .content_h = height-2,
         .content_w = width-2,
         .content_y = y+1,
-        .content_x = x+1,
-        .title = { 0 },
-        .content_text = { 0 }
+        .content_x = x+1
     };
     return game_window;
 }
@@ -240,6 +238,11 @@ void draw_curr_piece(GameWindow* board_window, GameState* game_state) {
     int start_y = game_state->curr_piece.y - game_state->curr_piece.n/2;
     int start_x = 2*(game_state->curr_piece.x - game_state->curr_piece.n/2);
     wattron(board_window->content, COLOR_PAIR(game_state->curr_piece.shape));
+    if (game_state->lock_delay_timer >= 5 && game_state->lock_delay_timer <= 20) {
+        wattron(board_window->content, A_DIM);
+    } else if (game_state->lock_delay_timer < 5) {
+        wattron(board_window->content, A_STANDOUT);
+    }
 
     for (size_t i = 0; i < game_state->curr_piece.n; ++i) {
         for (size_t j = 0; j < game_state->curr_piece.n; ++j) {
@@ -250,6 +253,11 @@ void draw_curr_piece(GameWindow* board_window, GameState* game_state) {
     }
     
     wattroff(board_window->content, COLOR_PAIR(game_state->curr_piece.shape));
+    if (game_state->lock_delay_timer >= 5 && game_state->lock_delay_timer <= 20) {
+        wattroff(board_window->content, A_DIM);
+    } else if (game_state->lock_delay_timer < 5) {
+        wattroff(board_window->content, A_STANDOUT);
+    }
 }
 
 void draw_ghost_piece(GameWindow* board_window, GameState* game_state) {
@@ -289,6 +297,9 @@ void draw_hold_piece(GameWindow* hold_window, GameState* game_state) {
         size_t start_y = hold_window->content_h / 2 - game_state->hold_piece.n/2;
         size_t start_x = hold_window->content_w / 2 - game_state->hold_piece.l - horizontal_padding;
         wattron(hold_window->content, COLOR_PAIR(game_state->hold_piece.shape));
+        if (game_state->hold_blocked) {
+            wattron(hold_window->content, A_DIM);
+        }
     
         for (size_t i = 0; i < game_state->hold_piece.n; ++i) {
             for (size_t j = 0; j < game_state->hold_piece.n; ++j) {
@@ -303,6 +314,9 @@ void draw_hold_piece(GameWindow* hold_window, GameState* game_state) {
         }
 
         wattroff(hold_window->content, COLOR_PAIR(game_state->hold_piece.shape));
+        if (game_state->hold_blocked) {
+            wattroff(hold_window->content, A_DIM);
+        }
     }
 
     wrefresh(hold_window->content);
@@ -325,12 +339,11 @@ void draw_next_piece(GameWindow* next_window, GameState* game_state) {
     }
     
     wattroff(next_window->content, COLOR_PAIR(game_state->next_piece.shape));
-
     wrefresh(next_window->content);
 }
 
 void draw_stats(GameWindow* stats_window, GameState* game_state, Stats* stats) {
-    werase(stats_window->content);
+    // werase(stats_window->content);
 
     size_t h = stats->seconds / 3600;
     size_t m = (stats->seconds - 3600*h) / 60;
@@ -346,77 +359,7 @@ void draw_stats(GameWindow* stats_window, GameState* game_state, Stats* stats) {
         game_state->level
     );
 
-    // draw last action point information from bottom to top
-    size_t start_y = stats_window->content_h - 1;
-    if (game_state->last_action_points > 0) {
-        draw_stats_last_action_points(stats_window, game_state, start_y);
-        start_y--;
-    }
-    if (game_state->difficult_clear_combo > 0) {
-        draw_stats_difficult_clear_combo(stats_window, game_state, start_y);
-        start_y--;
-    }
-    if (game_state->combo > 0) {
-        draw_stats_combo(stats_window, game_state, start_y);
-        start_y--;
-    }
-    if (strlen(game_state->last_action_string) > 0) {
-        draw_stats_last_action_string(stats_window, game_state, start_y);
-    }
-
     wrefresh(stats_window->content);
-}
-
-void draw_stats_last_action_string(GameWindow* stats_window, GameState* game_state, size_t start_y) {
-    int space_index = strlen(game_state->last_action_string) - 1;
-    int end_index = strlen(game_state->last_action_string) - 1;
-
-    // traverse last_action_string backwards and print maximum length, space 
-    // delimited, chunks of last_action_string from botttom to top
-    for (int i = strlen(game_state->last_action_string); i >= 0; --i) {
-        if (game_state->last_action_string[i] == ' ') {
-            if (end_index - i > stats_window->content_w) {
-                mvwprintw(
-                    stats_window->content, 
-                    start_y--, 
-                    0, 
-                    "%.*s", 
-                    end_index - space_index, 
-                    game_state->last_action_string + space_index + 1
-                );
-                end_index = space_index - 1;
-            }
-            space_index = i;
-        }
-    }
-    
-    // print remaining chunk after space if it doesn't fit within internal_w
-    if (end_index + 1 > stats_window->content_w) {
-        mvwprintw(
-            stats_window->content, 
-            start_y--, 
-            0, 
-            "%.*s", 
-            end_index - space_index, 
-            game_state->last_action_string + space_index + 1
-        );
-        end_index = space_index - 1;
-    }
-
-    // print chunk that reaches from beginning of string to either last space or end of string
-    mvwprintw(stats_window->content, start_y--, 0, "%.*s", end_index + 1, game_state->last_action_string);
-}
-
-void draw_stats_combo(GameWindow* stats_window, GameState* game_state, size_t start_y) {
-    mvwprintw(stats_window->content, start_y, 0, "%li x combo", game_state->combo);
-}
-
-void draw_stats_difficult_clear_combo(GameWindow* stats_window, GameState* game_state, size_t start_y) {
-    mvwprintw(stats_window->content, start_y, 0, "%li x b2b", game_state->difficult_clear_combo);
-}
-
-void draw_stats_last_action_points(GameWindow* stats_window, GameState* game_state, size_t start_y) {
-    mvwprintw(stats_window->content, start_y, 0, "%*lu", stats_window->content_w, game_state->last_action_points);
 }
 
 void draw_debug_variables(GameWindow* debug_window, GameState* game_state, Stats* stats) {
@@ -428,7 +371,6 @@ void draw_debug_variables(GameWindow* debug_window, GameState* game_state, Stats
         "move_reset_count: %u\n"
         "gravity_value: %f\n"
         "last_action_points: %lu\n"
-        "last_action_string: %s\n"
         "frame_count: %lu\n",
         game_state->curr_piece.y,
         game_state->curr_piece.x,
@@ -436,7 +378,6 @@ void draw_debug_variables(GameWindow* debug_window, GameState* game_state, Stats
         game_state->move_reset_count,
         game_state->gravity_value,
         game_state->last_action_points,
-        game_state->last_action_string,
         stats->frame_count
     );
     wrefresh(debug_window->content);

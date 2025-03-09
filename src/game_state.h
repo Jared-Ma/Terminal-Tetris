@@ -77,8 +77,13 @@ struct GameState {
     int64_t difficult_clear_combo;
     int64_t tetris_perfect_clear_combo;
     uint8_t t_rotation_test_num;
+
     uint64_t last_action_points;
-    char last_action_string[64];
+    uint8_t last_action_num_lines;
+    bool last_action_t_spin;
+    bool last_action_t_spin_mini;
+    bool last_action_perfect_clear;
+    bool last_action_hold_piece;
 };
 
 typedef struct GameState GameState;

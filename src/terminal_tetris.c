@@ -4,6 +4,7 @@
 #include <time.h>
 #include "game_state.h"
 #include "draw.h"
+#include "vfx.h"
 #include "piece.h"
 #include "stats.h"
 #include "logger.h"
@@ -60,8 +61,6 @@ static void sleep_ns(uint64_t nanoseconds) {
 }
 
 static void start_tetris(
-    GameState* game_state, 
-    Stats* stats,
     GameWindow* board_window,
     GameWindow* hold_window,
     GameWindow* next_window,
@@ -71,9 +70,26 @@ static void start_tetris(
     GameWindow* pause_window,
     GameWindow* game_over_window
 ) {
+    GameState* game_state = game_state_init();
+    Stats* stats = stats_init();
+    VFX* vfx_line_clear = vfx_init(board_window, draw_vfx_line_clear_reset, 30);
+    VFX* vfx_hold_piece = vfx_init(hold_window, draw_vfx_hold_piece_reset, 15);
+    VFX* vfx_last_action_type = vfx_init(stats_window, draw_vfx_last_action_type_reset, 180);
+    VFX* vfx_last_action_combo = vfx_init(stats_window, draw_vfx_last_action_combo_reset, 180);
+    VFX* vfx_last_action_b2b = vfx_init(stats_window, draw_vfx_last_action_b2b_reset, 180);
+    VFX* vfx_last_action_score = vfx_init(stats_window, draw_vfx_last_action_score_reset, 180);
+    VFX* vfx_list[NUM_VFX] = {
+        vfx_line_clear,
+        vfx_hold_piece,
+        vfx_last_action_type,
+        vfx_last_action_combo,
+        vfx_last_action_b2b,
+        vfx_last_action_score
+    };
+
     srand(time(0));
     game_state_start(game_state);
-    
+
     // render windows
     draw_board_window(board_window);
     draw_hold_window(hold_window);
@@ -134,6 +150,9 @@ static void start_tetris(
             case 'r':
                 game_state_reset(game_state);
                 stats_reset(stats);
+                for (size_t i = 0; i < NUM_VFX; ++i) {
+                    vfx_disable(vfx_list[i]);
+                }
                 input_state = PLAYING;
                 break;
             case ESC:
@@ -143,8 +162,12 @@ static void start_tetris(
         } else if (input_state == GAME_OVER) {
             switch (input) {
             case 'r':
+                // restart game function
                 game_state_reset(game_state);
                 stats_reset(stats);
+                for (size_t i = 0; i < NUM_VFX; ++i) {
+                    vfx_disable(vfx_list[i]);
+                } 
                 input_state = PLAYING;
                 break;
             case ESC:
@@ -178,10 +201,35 @@ static void start_tetris(
 
         // Render
         if (input_state == PLAYING) {
+            werase(stats_window->content);
+
+            vfx_enable_line_clear(vfx_line_clear, game_state);
+            vfx_enable_hold_piece(vfx_hold_piece, game_state);
+            vfx_enable_last_action(
+                vfx_last_action_type, 
+                vfx_last_action_combo, 
+                vfx_last_action_b2b, 
+                vfx_last_action_score, 
+                game_state
+            );
+
+            for (size_t i = 0; i < NUM_VFX; ++i) {
+                draw_vfx_frame(vfx_list[i]);
+            }
+            
             draw_board_state(board_window, game_state);
             draw_hold_piece(hold_window, game_state);
             draw_next_piece(next_window, game_state);
             draw_stats(stats_window, game_state, stats);
+            
+            game_state->last_action_num_lines = 0;
+            game_state->last_action_points = 0;
+            game_state->last_action_t_spin = false;
+            game_state->last_action_t_spin_mini = false;
+            game_state->last_action_perfect_clear = false;
+            game_state->last_action_hold_piece = false;
+            
+            wrefresh(hold_window->border);
         } else if (input_state == PAUSED) {
             draw_pause_window(pause_window);
         } else if (input_state == GAME_OVER) {
@@ -202,6 +250,15 @@ static void start_tetris(
         draw_debug_variables(debug_window, game_state, stats);
         stats->frame_count++;
     }
+
+    game_state_destroy(game_state);
+    stats_destroy(stats);
+    vfx_destroy(vfx_line_clear);
+    vfx_destroy(vfx_hold_piece);
+    vfx_destroy(vfx_last_action_type);
+    vfx_destroy(vfx_last_action_combo);
+    vfx_destroy(vfx_last_action_b2b);
+    vfx_destroy(vfx_last_action_score);
 }
 
 int main(int argc, char* argv[argc+1]) {
@@ -245,12 +302,7 @@ int main(int argc, char* argv[argc+1]) {
         DEBUG_WINDOW_Y, DEBUG_WINDOW_X
     );
     
-    GameState* game_state = game_state_init();
-    Stats* stats = stats_init();
-    
     start_tetris(
-        game_state, 
-        stats, 
         board_window, 
         hold_window, 
         next_window, 
@@ -261,8 +313,6 @@ int main(int argc, char* argv[argc+1]) {
         game_over_window
     );
     
-    game_state_destroy(game_state);
-    stats_destroy(stats);
     game_window_destroy(board_window);
     game_window_destroy(hold_window);
     game_window_destroy(next_window);
