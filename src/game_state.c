@@ -243,6 +243,7 @@ GameState game_state_get(void) {
         .last_action_t_spin_mini = false,
         .last_action_perfect_clear = false,
         .last_action_hold_piece = false,
+        .last_action_next_piece = false
     };
     return game_state;
 }
@@ -398,6 +399,7 @@ void game_state_load_next_piece(GameState* game_state) {
         game_state_generate_next_queue(game_state);
     }
     game_state->next_piece = piece_get(game_state->next_queue[game_state->next_index++], 0, 0);
+    game_state->last_action_next_piece = true;
 }
 
 void game_state_spawn_curr_piece(GameState* game_state) {

@@ -88,6 +88,30 @@ void vfx_enable_hold_piece(VFX* vfx, GameState* game_state) {
     }
 }
 
+void vfx_enable_next_piece(VFX* vfx, GameState* game_state) {
+    if (!vfx || !game_state) {
+        return;
+    }
+
+    if (game_state->last_action_next_piece) {
+        if (game_state->next_piece.shape == I) {
+            vfx_enable(vfx, draw_vfx_next_i_piece);
+        } else if (game_state->next_piece.shape == J) {
+            vfx_enable(vfx, draw_vfx_next_j_piece);
+        } else if (game_state->next_piece.shape == L) {
+            vfx_enable(vfx, draw_vfx_next_l_piece);
+        } else if (game_state->next_piece.shape == O) {
+            vfx_enable(vfx, draw_vfx_next_o_piece);
+        } else if (game_state->next_piece.shape == S) {
+            vfx_enable(vfx, draw_vfx_next_s_piece);
+        } else if (game_state->next_piece.shape == T) {
+            vfx_enable(vfx, draw_vfx_next_t_piece);
+        } else if (game_state->next_piece.shape == Z) {
+            vfx_enable(vfx, draw_vfx_next_z_piece);
+        }
+    }
+}
+
 void vfx_enable_last_action(
     VFX* vfx_last_action_type, 
     VFX* vfx_last_action_combo, 
@@ -369,6 +393,70 @@ void draw_vfx_hold_z_piece(VFX* vfx) {
     draw_window_title(vfx->game_window, "HOLD", COLOR_PAIR_RED);
 }
 
+void draw_vfx_next_piece_reset(VFX* vfx) {
+    if (!vfx) {
+        return;
+    }
+    draw_window_border(vfx->game_window, COLOR_PAIR_DEFAULT);
+    draw_window_title(vfx->game_window, "NEXT", COLOR_PAIR_DEFAULT);
+}
+
+void draw_vfx_next_i_piece(VFX* vfx) {
+    if (!vfx) {
+        return;
+    }
+    draw_window_border(vfx->game_window, COLOR_PAIR_CYAN);
+    draw_window_title(vfx->game_window, "NEXT", COLOR_PAIR_CYAN);
+}
+
+void draw_vfx_next_j_piece(VFX* vfx) {
+    if (!vfx) {
+        return;
+    }
+    draw_window_border(vfx->game_window, COLOR_PAIR_BLUE);
+    draw_window_title(vfx->game_window, "NEXT", COLOR_PAIR_BLUE);
+}
+
+void draw_vfx_next_l_piece(VFX* vfx) {
+    if (!vfx) {
+        return;
+    }
+    draw_window_border(vfx->game_window, COLOR_PAIR_ORANGE);
+    draw_window_title(vfx->game_window, "NEXT", COLOR_PAIR_ORANGE);
+}
+
+void draw_vfx_next_o_piece(VFX* vfx) {
+    if (!vfx) {
+        return;
+    }
+    draw_window_border(vfx->game_window, COLOR_PAIR_YELLOW);
+    draw_window_title(vfx->game_window, "NEXT", COLOR_PAIR_YELLOW);
+}
+
+void draw_vfx_next_s_piece(VFX* vfx) {
+    if (!vfx) {
+        return;
+    }
+    draw_window_border(vfx->game_window, COLOR_PAIR_GREEN);
+    draw_window_title(vfx->game_window, "NEXT", COLOR_PAIR_GREEN);
+}
+
+void draw_vfx_next_t_piece(VFX* vfx) {
+    if (!vfx) {
+        return;
+    }
+    draw_window_border(vfx->game_window, COLOR_PAIR_MAGENTA);
+    draw_window_title(vfx->game_window, "NEXT", COLOR_PAIR_MAGENTA);
+}
+
+void draw_vfx_next_z_piece(VFX* vfx) {
+    if (!vfx) {
+        return;
+    }
+    draw_window_border(vfx->game_window, COLOR_PAIR_RED);
+    draw_window_title(vfx->game_window, "NEXT", COLOR_PAIR_RED);
+}
+
 void draw_vfx_last_action_type_reset(VFX* vfx) {
     if (!vfx) {
         return;
@@ -380,45 +468,97 @@ void draw_vfx_last_action_single(VFX* vfx) {
     if (!vfx) {
         return;
     }
+
+    if (vfx->frame_timer < 30) {
+        wattron(vfx->game_window->content, A_DIM);
+    }
+
+    mvwprintw(vfx->game_window->content, vfx->y, 0, "%*s", vfx->game_window->content_w, "");
     wattron(vfx->game_window->content, COLOR_PAIR(COLOR_PAIR_GREEN));
     mvwprintw(vfx->game_window->content, vfx->y, vfx->x, "%s", vfx->text);
     wattroff(vfx->game_window->content, COLOR_PAIR(COLOR_PAIR_GREEN));
+
+    if (vfx->frame_timer < 30) {
+        wattroff(vfx->game_window->content, A_DIM);
+    }
 }
 
 void draw_vfx_last_action_double(VFX* vfx) {
     if (!vfx) {
         return;
     }
+
+    if (vfx->frame_timer < 30) {
+        wattron(vfx->game_window->content, A_DIM);
+    }
+
+    mvwprintw(vfx->game_window->content, vfx->y, 0, "%*s", vfx->game_window->content_w, "");
     wattron(vfx->game_window->content, COLOR_PAIR(COLOR_PAIR_BLUE));
     mvwprintw(vfx->game_window->content, vfx->y, vfx->x, "%s", vfx->text);
     wattroff(vfx->game_window->content, COLOR_PAIR(COLOR_PAIR_BLUE));
+
+    if (vfx->frame_timer < 30) {
+        wattroff(vfx->game_window->content, A_DIM);
+    }
 }
 
 void draw_vfx_last_action_triple(VFX* vfx) {
     if (!vfx) {
         return;
     }
+    
+    mvwprintw(vfx->game_window->content, vfx->y, 0, "%*s", vfx->game_window->content_w, "");
+    
+    if (vfx->frame_timer < 30) {
+        wattron(vfx->game_window->content, A_DIM);
+    }
+    
     wattron(vfx->game_window->content, COLOR_PAIR(COLOR_PAIR_YELLOW));
     mvwprintw(vfx->game_window->content, vfx->y, vfx->x, "%s", vfx->text);
     wattroff(vfx->game_window->content, COLOR_PAIR(COLOR_PAIR_YELLOW));
+
+    if (vfx->frame_timer < 30) {
+        wattroff(vfx->game_window->content, A_DIM);
+    }
 }
 
 void draw_vfx_last_action_tetris(VFX* vfx) {
     if (!vfx) {
         return;
     }
+    mvwprintw(vfx->game_window->content, vfx->y, 0, "%*s", vfx->game_window->content_w, "");
+    
+    if (vfx->frame_timer < 30) {
+        wattron(vfx->game_window->content, A_DIM);
+    }
+
     wattron(vfx->game_window->content, COLOR_PAIR(COLOR_PAIR_CYAN));
     mvwprintw(vfx->game_window->content, vfx->y, vfx->x, "%s", vfx->text);
     wattroff(vfx->game_window->content, COLOR_PAIR(COLOR_PAIR_CYAN));
+
+    if (vfx->frame_timer < 30) {
+        wattroff(vfx->game_window->content, A_DIM);
+    }
 }
 
 void draw_vfx_last_action_t_spin(VFX* vfx) {
     if (!vfx) {
         return;
     }
+
+    mvwprintw(vfx->game_window->content, vfx->y, 0, "%*s", vfx->game_window->content_w, "");
+
+    if (vfx->frame_timer < 30) {
+        wattron(vfx->game_window->content, A_DIM);
+    }
+
     wattron(vfx->game_window->content, COLOR_PAIR(COLOR_PAIR_MAGENTA));
     mvwprintw(vfx->game_window->content, vfx->y, vfx->x, "%s", vfx->text);
     wattroff(vfx->game_window->content, COLOR_PAIR(COLOR_PAIR_MAGENTA));
+
+    if (vfx->frame_timer < 30) {
+        wattroff(vfx->game_window->content, A_DIM);
+    }
 }
 
 void draw_vfx_last_action_perfect_clear(VFX* vfx) {
@@ -442,10 +582,19 @@ void draw_vfx_last_action_perfect_clear(VFX* vfx) {
     } else if ((vfx->frame_timer + 6) % 7 == 0) {
         color_pair = COLOR_PAIR_MAGENTA;
     }
+
+    if (vfx->frame_timer < 30) {
+        wattron(vfx->game_window->content, A_DIM);
+    }
     
+    mvwprintw(vfx->game_window->content, vfx->y, 0, "%*s", vfx->game_window->content_w, "");
     wattron(vfx->game_window->content, COLOR_PAIR(color_pair));
     mvwprintw(vfx->game_window->content, vfx->y, vfx->x, "%s", vfx->text);
     wattroff(vfx->game_window->content, COLOR_PAIR(color_pair));
+
+    if (vfx->frame_timer < 30) {
+        wattroff(vfx->game_window->content, A_DIM);
+    }
 }
 
 void draw_vfx_last_action_combo_reset(VFX* vfx) {
@@ -459,9 +608,19 @@ void draw_vfx_last_action_combo(VFX* vfx) {
     if (!vfx) {
         return;
     }
+
+    if (vfx->frame_timer < 30) {
+        wattron(vfx->game_window->content, A_DIM);
+    }
+
+    mvwprintw(vfx->game_window->content, vfx->y, 0, "%*s", vfx->game_window->content_w, "");
     wattron(vfx->game_window->content, COLOR_PAIR(COLOR_PAIR_RED));
     mvwprintw(vfx->game_window->content, vfx->y, 0, "%s", vfx->text);
     wattroff(vfx->game_window->content, COLOR_PAIR(COLOR_PAIR_RED));
+
+    if (vfx->frame_timer < 30) {
+        wattroff(vfx->game_window->content, A_DIM);
+    }
 }
 
 void draw_vfx_last_action_b2b_reset(VFX* vfx) {
@@ -475,9 +634,19 @@ void draw_vfx_last_action_b2b(VFX* vfx) {
     if (!vfx) {
         return;
     }
+
+    if (vfx->frame_timer < 30) {
+        wattron(vfx->game_window->content, A_DIM);
+    }
+
+    mvwprintw(vfx->game_window->content, vfx->y, 0, "%*s", vfx->game_window->content_w, "");
     wattron(vfx->game_window->content, COLOR_PAIR(COLOR_PAIR_ORANGE));
     mvwprintw(vfx->game_window->content, vfx->y, 0, "%s", vfx->text);
     wattroff(vfx->game_window->content, COLOR_PAIR(COLOR_PAIR_ORANGE));
+    
+    if (vfx->frame_timer < 30) {
+        wattroff(vfx->game_window->content, A_DIM);
+    }
 }
 
 void draw_vfx_last_action_score_reset(VFX* vfx) {
@@ -491,7 +660,17 @@ void draw_vfx_last_action_score(VFX* vfx) {
     if (!vfx) {
         return;
     }
+
+    if (vfx->frame_timer < 30) {
+        wattron(vfx->game_window->content, A_DIM);
+    }
+
+    mvwprintw(vfx->game_window->content, vfx->y, 0, "%*s", vfx->game_window->content_w, "");
     wattron(vfx->game_window->content, COLOR_PAIR(COLOR_PAIR_DEFAULT));
     mvwprintw(vfx->game_window->content, vfx->y, 0, "%s", vfx->text);
     wattroff(vfx->game_window->content, COLOR_PAIR(COLOR_PAIR_DEFAULT));
+
+    if (vfx->frame_timer < 30) {
+        wattroff(vfx->game_window->content, A_DIM);
+    }
 }

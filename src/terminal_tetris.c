@@ -74,13 +74,15 @@ static void start_tetris(
     Stats* stats = stats_init();
     VFX* vfx_line_clear = vfx_init(board_window, draw_vfx_line_clear_reset, 30);
     VFX* vfx_hold_piece = vfx_init(hold_window, draw_vfx_hold_piece_reset, 15);
-    VFX* vfx_last_action_type = vfx_init(stats_window, draw_vfx_last_action_type_reset, 180);
-    VFX* vfx_last_action_combo = vfx_init(stats_window, draw_vfx_last_action_combo_reset, 180);
-    VFX* vfx_last_action_b2b = vfx_init(stats_window, draw_vfx_last_action_b2b_reset, 180);
-    VFX* vfx_last_action_score = vfx_init(stats_window, draw_vfx_last_action_score_reset, 180);
+    VFX* vfx_next_piece = vfx_init(next_window, draw_vfx_next_piece_reset, 15);
+    VFX* vfx_last_action_type = vfx_init(stats_window, draw_vfx_last_action_type_reset, 240);
+    VFX* vfx_last_action_combo = vfx_init(stats_window, draw_vfx_last_action_combo_reset, 240);
+    VFX* vfx_last_action_b2b = vfx_init(stats_window, draw_vfx_last_action_b2b_reset, 240);
+    VFX* vfx_last_action_score = vfx_init(stats_window, draw_vfx_last_action_score_reset, 240);
     VFX* vfx_list[NUM_VFX] = {
         vfx_line_clear,
         vfx_hold_piece,
+        vfx_next_piece,
         vfx_last_action_type,
         vfx_last_action_combo,
         vfx_last_action_b2b,
@@ -205,6 +207,7 @@ static void start_tetris(
 
             vfx_enable_line_clear(vfx_line_clear, game_state);
             vfx_enable_hold_piece(vfx_hold_piece, game_state);
+            vfx_enable_next_piece(vfx_next_piece, game_state);
             vfx_enable_last_action(
                 vfx_last_action_type, 
                 vfx_last_action_combo, 
@@ -228,8 +231,10 @@ static void start_tetris(
             game_state->last_action_t_spin_mini = false;
             game_state->last_action_perfect_clear = false;
             game_state->last_action_hold_piece = false;
+            game_state->last_action_next_piece = false;
             
             wrefresh(hold_window->border);
+            wrefresh(next_window->border);
         } else if (input_state == PAUSED) {
             draw_pause_window(pause_window);
         } else if (input_state == GAME_OVER) {
