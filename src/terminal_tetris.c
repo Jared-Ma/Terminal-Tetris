@@ -60,6 +60,14 @@ static void sleep_ns(uint64_t nanoseconds) {
     }
 }
 
+static void reset_game(GameState* game_state, Stats* stats, VFX* vfx_list[NUM_VFX]) {
+    game_state_reset(game_state);
+    stats_reset(stats);
+    for (size_t i = 0; i < NUM_VFX; ++i) {
+        vfx_disable(vfx_list[i]);
+    }
+}
+
 static void start_tetris(
     GameWindow* board_window,
     GameWindow* hold_window,
@@ -75,18 +83,20 @@ static void start_tetris(
     VFX* vfx_line_clear = vfx_init(board_window, draw_vfx_line_clear_reset, 30);
     VFX* vfx_hold_piece = vfx_init(hold_window, draw_vfx_hold_piece_reset, 15);
     VFX* vfx_next_piece = vfx_init(next_window, draw_vfx_next_piece_reset, 15);
-    VFX* vfx_last_action_type = vfx_init(stats_window, draw_vfx_last_action_type_reset, 240);
-    VFX* vfx_last_action_combo = vfx_init(stats_window, draw_vfx_last_action_combo_reset, 240);
-    VFX* vfx_last_action_b2b = vfx_init(stats_window, draw_vfx_last_action_b2b_reset, 240);
-    VFX* vfx_last_action_score = vfx_init(stats_window, draw_vfx_last_action_score_reset, 240);
+    VFX* vfx_action = vfx_init(stats_window, draw_vfx_action_reset, 240);
+    VFX* vfx_combo = vfx_init(stats_window, draw_vfx_combo_reset, 240);
+    VFX* vfx_b2b = vfx_init(stats_window, draw_vfx_b2b_reset, 240);
+    VFX* vfx_score = vfx_init(stats_window, draw_vfx_score_reset, 240);
+    VFX* vfx_level_up = vfx_init(board_window, draw_vfx_level_up_reset, 180);
     VFX* vfx_list[NUM_VFX] = {
         vfx_line_clear,
         vfx_hold_piece,
         vfx_next_piece,
-        vfx_last_action_type,
-        vfx_last_action_combo,
-        vfx_last_action_b2b,
-        vfx_last_action_score
+        vfx_action,
+        vfx_combo,
+        vfx_b2b,
+        vfx_score,
+        vfx_level_up
     };
 
     srand(time(0));
@@ -106,6 +116,20 @@ static void start_tetris(
     draw_next_piece(next_window, game_state);
     draw_stats(stats_window, game_state, stats);
     draw_debug_variables(debug_window, game_state, stats);
+
+    // refresh windows
+    wrefresh(board_window->border);
+    wrefresh(board_window->content);
+    wrefresh(hold_window->border);
+    wrefresh(hold_window->content);
+    wrefresh(next_window->border);
+    wrefresh(next_window->content);
+    wrefresh(stats_window->border);
+    wrefresh(stats_window->content);
+    wrefresh(controls_window->border);
+    wrefresh(controls_window->content);
+    wrefresh(debug_window->border);
+    wrefresh(debug_window->content);
     
     InputState input_state = PLAYING;
     struct timespec start_time, end_time;
@@ -150,11 +174,7 @@ static void start_tetris(
                 input_state = PLAYING;
                 break;
             case 'r':
-                game_state_reset(game_state);
-                stats_reset(stats);
-                for (size_t i = 0; i < NUM_VFX; ++i) {
-                    vfx_disable(vfx_list[i]);
-                }
+                reset_game(game_state, stats, vfx_list);
                 input_state = PLAYING;
                 break;
             case ESC:
@@ -164,12 +184,7 @@ static void start_tetris(
         } else if (input_state == GAME_OVER) {
             switch (input) {
             case 'r':
-                // restart game function
-                game_state_reset(game_state);
-                stats_reset(stats);
-                for (size_t i = 0; i < NUM_VFX; ++i) {
-                    vfx_disable(vfx_list[i]);
-                } 
+                reset_game(game_state, stats, vfx_list);
                 input_state = PLAYING;
                 break;
             case ESC:
@@ -203,28 +218,24 @@ static void start_tetris(
 
         // Render
         if (input_state == PLAYING) {
-            werase(stats_window->content);
-
             vfx_enable_line_clear(vfx_line_clear, game_state);
             vfx_enable_hold_piece(vfx_hold_piece, game_state);
             vfx_enable_next_piece(vfx_next_piece, game_state);
-            vfx_enable_last_action(
-                vfx_last_action_type, 
-                vfx_last_action_combo, 
-                vfx_last_action_b2b, 
-                vfx_last_action_score, 
-                game_state
-            );
-
-            for (size_t i = 0; i < NUM_VFX; ++i) {
-                draw_vfx_frame(vfx_list[i]);
-            }
+            vfx_enable_last_action(vfx_action, vfx_combo, vfx_b2b, vfx_score, game_state);
+            vfx_enable_level_up(vfx_level_up, game_state);
             
             draw_board_state(board_window, game_state);
             draw_hold_piece(hold_window, game_state);
             draw_next_piece(next_window, game_state);
             draw_stats(stats_window, game_state, stats);
+
+            for (size_t i = 0; i < NUM_VFX; ++i) {
+                draw_vfx_frame(vfx_list[i]);
+            }
             
+            // reset triggers
+            // num_lines_trigger
+            // points_trigger
             game_state->last_action_num_lines = 0;
             game_state->last_action_points = 0;
             game_state->last_action_t_spin = false;
@@ -232,13 +243,30 @@ static void start_tetris(
             game_state->last_action_perfect_clear = false;
             game_state->last_action_hold_piece = false;
             game_state->last_action_next_piece = false;
-            
-            wrefresh(hold_window->border);
+            game_state->last_action_level_up = false;
+
+            wrefresh(board_window->border);
+            wrefresh(board_window->content);
             wrefresh(next_window->border);
+            wrefresh(next_window->content);
+            wrefresh(hold_window->border);
+            wrefresh(hold_window->content);
+            wrefresh(stats_window->border);
+            wrefresh(stats_window->content);
+            wrefresh(debug_window->border);
+            wrefresh(debug_window->content);
         } else if (input_state == PAUSED) {
             draw_pause_window(pause_window);
+            wrefresh(pause_window->border);
+            wrefresh(pause_window->content);
+            wrefresh(debug_window->border);
+            wrefresh(debug_window->content);
         } else if (input_state == GAME_OVER) {
             draw_game_over_window(game_over_window);
+            wrefresh(game_over_window->border);
+            wrefresh(game_over_window->content);
+            wrefresh(debug_window->border);
+            wrefresh(debug_window->content);
         }
 
         clock_gettime(CLOCK_MONOTONIC, &end_time);
@@ -260,10 +288,12 @@ static void start_tetris(
     stats_destroy(stats);
     vfx_destroy(vfx_line_clear);
     vfx_destroy(vfx_hold_piece);
-    vfx_destroy(vfx_last_action_type);
-    vfx_destroy(vfx_last_action_combo);
-    vfx_destroy(vfx_last_action_b2b);
-    vfx_destroy(vfx_last_action_score);
+    vfx_destroy(vfx_next_piece);
+    vfx_destroy(vfx_action);
+    vfx_destroy(vfx_combo);
+    vfx_destroy(vfx_b2b);
+    vfx_destroy(vfx_score);
+    vfx_destroy(vfx_level_up);
 }
 
 int main(int argc, char* argv[argc+1]) {

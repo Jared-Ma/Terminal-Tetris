@@ -91,8 +91,8 @@ void game_window_destroy(GameWindow* game_window) {
     if (!game_window) {
         return;
     }
-    delwin(game_window->border);
     delwin(game_window->content);
+    delwin(game_window->border);
     *game_window = (GameWindow){ 0 };
     free(game_window);
 }
@@ -111,19 +111,16 @@ void draw_window_title(GameWindow* game_window, char* title, int16_t color_pair)
 
 void draw_board_window(GameWindow* board_window) {
     draw_window_border(board_window, COLOR_PAIR_DEFAULT);
-    wrefresh(board_window->border);
 }
 
 void draw_hold_window(GameWindow* hold_window) {
     draw_window_border(hold_window, COLOR_PAIR_DEFAULT);
     draw_window_title(hold_window, "HOLD", COLOR_PAIR_DEFAULT);
-    wrefresh(hold_window->border);
 }
 
 void draw_next_window(GameWindow* next_window) {
     draw_window_border(next_window, COLOR_PAIR_DEFAULT);
     draw_window_title(next_window, "NEXT", COLOR_PAIR_DEFAULT);
-    wrefresh(next_window->border);
 }
 
 void draw_stats_window(GameWindow* stats_window) {
@@ -135,8 +132,6 @@ void draw_stats_window(GameWindow* stats_window) {
         "\nlines:\n"
         "\nlevel:\n"
     );
-    wrefresh(stats_window->border);
-    wrefresh(stats_window->content);
 }
 
 void draw_controls_window(GameWindow* controls_window) {
@@ -166,9 +161,6 @@ void draw_controls_window(GameWindow* controls_window) {
         controls_window->content_w-11, key_bind_hard_drop,
         controls_window->content_w-7, key_bind_pause
     );
-
-    wrefresh(controls_window->border);
-    wrefresh(controls_window->content);
 }
 
 void draw_pause_window(GameWindow* pause_window) {
@@ -181,8 +173,6 @@ void draw_pause_window(GameWindow* pause_window) {
         " restart: r\n"
         " quit:  esc\n"
     );
-    wrefresh(pause_window->border);
-    wrefresh(pause_window->content);
 }
 
 void draw_game_over_window(GameWindow* game_over_window) {
@@ -194,14 +184,11 @@ void draw_game_over_window(GameWindow* game_over_window) {
         " restart: r\n"
         " quit:  esc\n"
     );
-    wrefresh(game_over_window->border);
-    wrefresh(game_over_window->content);
 }
 
 void draw_debug_window(GameWindow* debug_window) {
     draw_window_border(debug_window, COLOR_PAIR_RED);
     draw_window_title(debug_window, "DEBUG", COLOR_PAIR_RED);
-    wrefresh(debug_window->border);
 }
 
 void draw_board_state(GameWindow* board_window, GameState* game_state) {
@@ -211,7 +198,6 @@ void draw_board_state(GameWindow* board_window, GameState* game_state) {
     draw_ghost_piece(board_window, game_state);
     draw_curr_piece(board_window, game_state);
     draw_score(board_window, game_state);
-    wrefresh(board_window->content);
 }
 
 void draw_buffer_zone_line(GameWindow* board_window, GameState* game_state) {
@@ -286,7 +272,6 @@ void draw_score(GameWindow* board_window, GameState* game_state) {
         "%08lu", 
         game_state->score
     );
-    wrefresh(board_window->border);
 }
 
 void draw_hold_piece(GameWindow* hold_window, GameState* game_state) {
@@ -318,8 +303,6 @@ void draw_hold_piece(GameWindow* hold_window, GameState* game_state) {
             wattroff(hold_window->content, A_DIM);
         }
     }
-
-    wrefresh(hold_window->content);
 }
 
 void draw_next_piece(GameWindow* next_window, GameState* game_state) {
@@ -339,11 +322,10 @@ void draw_next_piece(GameWindow* next_window, GameState* game_state) {
     }
     
     wattroff(next_window->content, COLOR_PAIR(game_state->next_piece.shape));
-    wrefresh(next_window->content);
 }
 
 void draw_stats(GameWindow* stats_window, GameState* game_state, Stats* stats) {
-    // werase(stats_window->content);
+    werase(stats_window->content);
 
     size_t h = stats->seconds / 3600;
     size_t m = (stats->seconds - 3600*h) / 60;
@@ -358,8 +340,6 @@ void draw_stats(GameWindow* stats_window, GameState* game_state, Stats* stats) {
         game_state->lines,
         game_state->level
     );
-
-    wrefresh(stats_window->content);
 }
 
 void draw_debug_variables(GameWindow* debug_window, GameState* game_state, Stats* stats) {
@@ -380,5 +360,4 @@ void draw_debug_variables(GameWindow* debug_window, GameState* game_state, Stats
         game_state->last_action_points,
         stats->frame_count
     );
-    wrefresh(debug_window->content);
 }

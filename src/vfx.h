@@ -3,7 +3,7 @@
 #include "game_state.h"
 #include "draw.h"
 
-#define NUM_VFX 7
+#define NUM_VFX 8
 
 
 struct VFX;
@@ -38,13 +38,9 @@ void vfx_enable_hold_piece(VFX* vfx, GameState* game_state);
 
 void vfx_enable_next_piece(VFX* vfx, GameState* game_state);
 
-void vfx_enable_last_action(
-    VFX* vfx_last_action_type, 
-    VFX* vfx_last_action_combo, 
-    VFX* vfx_last_action_b2b, 
-    VFX* vfx_last_action_score, 
-    GameState* game_state
-);
+void vfx_enable_last_action(VFX* vfx_action, VFX* vfx_combo, VFX* vfx_b2b, VFX* vfx_score, GameState* game_state);
+
+void vfx_enable_level_up(VFX* vfx, GameState* game_state);
 
 void vfx_disable(VFX* vfx);
 
@@ -96,30 +92,34 @@ void draw_vfx_next_t_piece(VFX* vfx);
 
 void draw_vfx_next_z_piece(VFX* vfx);
 
-void draw_vfx_last_action_type_reset(VFX* vfx);
+void draw_vfx_action_reset(VFX* vfx);
 
-void draw_vfx_last_action_single(VFX* vfx);
+void draw_vfx_action_single(VFX* vfx);
 
-void draw_vfx_last_action_double(VFX* vfx);
+void draw_vfx_action_double(VFX* vfx);
 
-void draw_vfx_last_action_triple(VFX* vfx);
+void draw_vfx_action_triple(VFX* vfx);
 
-void draw_vfx_last_action_tetris(VFX* vfx);
+void draw_vfx_action_tetris(VFX* vfx);
 
-void draw_vfx_last_action_t_spin(VFX* vfx);
+void draw_vfx_action_t_spin(VFX* vfx);
 
-void draw_vfx_last_action_perfect_clear(VFX* vfx);
+void draw_vfx_action_perfect_clear(VFX* vfx);
 
-void draw_vfx_last_action_combo_reset(VFX* vfx);
+void draw_vfx_combo_reset(VFX* vfx);
 
-void draw_vfx_last_action_combo(VFX* vfx);
+void draw_vfx_combo(VFX* vfx);
 
-void draw_vfx_last_action_b2b_reset(VFX* vfx);
+void draw_vfx_b2b_reset(VFX* vfx);
 
-void draw_vfx_last_action_b2b(VFX* vfx);
+void draw_vfx_b2b(VFX* vfx);
 
-void draw_vfx_last_action_score_reset(VFX* vfx);
+void draw_vfx_score_reset(VFX* vfx);
 
-void draw_vfx_last_action_score(VFX* vfx);
+void draw_vfx_score(VFX* vfx);
+
+void draw_vfx_level_up_reset(VFX* vfx);
+
+void draw_vfx_level_up(VFX* vfx);
 
 #endif

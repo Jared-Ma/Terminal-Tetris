@@ -112,127 +112,130 @@ void vfx_enable_next_piece(VFX* vfx, GameState* game_state) {
     }
 }
 
-void vfx_enable_last_action(
-    VFX* vfx_last_action_type, 
-    VFX* vfx_last_action_combo, 
-    VFX* vfx_last_action_b2b, 
-    VFX* vfx_last_action_score, 
-    GameState* game_state
-) {
-    if (!vfx_last_action_type || !vfx_last_action_combo || !vfx_last_action_b2b || !vfx_last_action_score || !game_state) {
+void vfx_enable_last_action(VFX* vfx_action, VFX* vfx_combo, VFX* vfx_b2b, VFX* vfx_score, GameState* game_state) {
+    if (!vfx_action || !vfx_combo || !vfx_b2b || !vfx_score || !game_state) {
         return;
     }
 
     if (game_state->last_action_t_spin || game_state->last_action_t_spin_mini || game_state->last_action_num_lines > 0) {
-        size_t start_y = vfx_last_action_type->game_window->content_h;
+        size_t start_y = vfx_action->game_window->content_h;
 
         if (game_state->last_action_points > 0) {
-            sprintf(vfx_last_action_score->text, "%*lu", vfx_last_action_score->game_window->content_w, game_state->last_action_points);
+            sprintf(vfx_score->text, "%*lu", vfx_score->game_window->content_w, game_state->last_action_points);
             start_y--;
-            vfx_last_action_score->y = start_y;
-            vfx_enable(vfx_last_action_score, draw_vfx_last_action_score);
+            vfx_score->y = start_y;
+            vfx_enable(vfx_score, draw_vfx_score);
         }
 
         if (game_state->difficult_clear_combo > 0) {
-            sprintf(vfx_last_action_b2b->text, "%li x b2b", game_state->difficult_clear_combo);
+            sprintf(vfx_b2b->text, "%li x b2b", game_state->difficult_clear_combo);
             start_y--;
-            vfx_last_action_b2b->y = start_y;
-            vfx_enable(vfx_last_action_b2b, draw_vfx_last_action_b2b);
+            vfx_b2b->y = start_y;
+            vfx_enable(vfx_b2b, draw_vfx_b2b);
         }
 
         if (game_state->combo > 0) {
-            sprintf(vfx_last_action_combo->text, "%li x combo", game_state->combo);
+            sprintf(vfx_combo->text, "%li x combo", game_state->combo);
             start_y--;
-            vfx_last_action_combo->y = start_y;
-            vfx_enable(vfx_last_action_combo, draw_vfx_last_action_combo);
+            vfx_combo->y = start_y;
+            vfx_enable(vfx_combo, draw_vfx_combo);
         }
 
         if (game_state->last_action_t_spin) {
             if (game_state->last_action_num_lines == 0) {
-                strcpy(vfx_last_action_type->text, "t-spin");
+                strcpy(vfx_action->text, "t-spin");
                 start_y--;
-                vfx_last_action_type->y = start_y;
+                vfx_action->y = start_y;
             } else if (game_state->last_action_num_lines == 1) {
-                strcpy(vfx_last_action_type->text, "t-spin\nsingle");
+                strcpy(vfx_action->text, "t-spin\nsingle");
                 start_y -= 2;
-                vfx_last_action_type->y = start_y;
+                vfx_action->y = start_y;
             } else if (game_state->last_action_num_lines == 2) {
-                strcpy(vfx_last_action_type->text, "t-spin\ndouble");
+                strcpy(vfx_action->text, "t-spin\ndouble");
                 start_y -= 2;
-                vfx_last_action_type->y = start_y;
+                vfx_action->y = start_y;
             } else if (game_state->last_action_num_lines == 3) {
-                strcpy(vfx_last_action_type->text, "t-spin\ntriple");
+                strcpy(vfx_action->text, "t-spin\ntriple");
                 start_y -= 2;
             }
-            vfx_last_action_type->y = start_y;
-            vfx_enable(vfx_last_action_type, draw_vfx_last_action_t_spin);
+            vfx_action->y = start_y;
+            vfx_enable(vfx_action, draw_vfx_action_t_spin);
         } else if (game_state->last_action_t_spin_mini) {
             if (game_state->last_action_num_lines == 0) {
-                strcpy(vfx_last_action_type->text, "t-spin mini");
+                strcpy(vfx_action->text, "t-spin mini");
                 start_y--;
-                vfx_last_action_type->y = start_y;
-                vfx_enable(vfx_last_action_type, draw_vfx_last_action_t_spin);
+                vfx_action->y = start_y;
+                vfx_enable(vfx_action, draw_vfx_action_t_spin);
             } else if (game_state->last_action_num_lines == 1) {
-                strcpy(vfx_last_action_type->text, "t-spin mini\nsingle");
+                strcpy(vfx_action->text, "t-spin mini\nsingle");
                 start_y -= 2;
-                vfx_last_action_type->y = start_y;
-                vfx_enable(vfx_last_action_type, draw_vfx_last_action_t_spin);
+                vfx_action->y = start_y;
+                vfx_enable(vfx_action, draw_vfx_action_t_spin);
             } else if (game_state->last_action_num_lines == 2) {
-                strcpy(vfx_last_action_type->text, "t-spin mini\ndouble");
+                strcpy(vfx_action->text, "t-spin mini\ndouble");
                 start_y -= 2;
-                vfx_last_action_type->y = start_y;
-                vfx_enable(vfx_last_action_type, draw_vfx_last_action_t_spin);
+                vfx_action->y = start_y;
+                vfx_enable(vfx_action, draw_vfx_action_t_spin);
             }
         } else if (game_state->last_action_perfect_clear) {
             if (game_state->last_action_num_lines == 1) {
-                strcpy(vfx_last_action_type->text, "single\nperfect\nclear");
+                strcpy(vfx_action->text, "single\nperfect\nclear");
                 start_y -= 3;
-                vfx_last_action_type->y = start_y;
-                vfx_enable(vfx_last_action_type, draw_vfx_last_action_perfect_clear);
+                vfx_action->y = start_y;
+                vfx_enable(vfx_action, draw_vfx_action_perfect_clear);
             } else if (game_state->last_action_num_lines == 2) {
-                strcpy(vfx_last_action_type->text, "double\nperfect\nclear");
+                strcpy(vfx_action->text, "double\nperfect\nclear");
                 start_y -= 3;
-                vfx_last_action_type->y = start_y;
-                vfx_enable(vfx_last_action_type, draw_vfx_last_action_perfect_clear);
+                vfx_action->y = start_y;
+                vfx_enable(vfx_action, draw_vfx_action_perfect_clear);
             } else if (game_state->last_action_num_lines == 3) {
-                strcpy(vfx_last_action_type->text, "triple\nperfect\nclear");
+                strcpy(vfx_action->text, "triple\nperfect\nclear");
                 start_y -= 3;
-                vfx_last_action_type->y = start_y;
-                vfx_enable(vfx_last_action_type, draw_vfx_last_action_perfect_clear);
+                vfx_action->y = start_y;
+                vfx_enable(vfx_action, draw_vfx_action_perfect_clear);
             } else if (game_state->last_action_num_lines == 4) {
                 if (game_state->tetris_perfect_clear_combo > 0) {
-                    strcpy(vfx_last_action_type->text, "b2b tetris\nperfect\nclear");
+                    strcpy(vfx_action->text, "b2b tetris\nperfect\nclear");
                     start_y -= 3;
-                    vfx_last_action_type->y = start_y;
-                    vfx_enable(vfx_last_action_type, draw_vfx_last_action_perfect_clear);
+                    vfx_action->y = start_y;
+                    vfx_enable(vfx_action, draw_vfx_action_perfect_clear);
                 } else {
-                    strcpy(vfx_last_action_type->text, "tetris\nperfect\nclear");
+                    strcpy(vfx_action->text, "tetris\nperfect\nclear");
                     start_y -= 3;
-                    vfx_last_action_type->y = start_y;
-                    vfx_enable(vfx_last_action_type, draw_vfx_last_action_perfect_clear);
+                    vfx_action->y = start_y;
+                    vfx_enable(vfx_action, draw_vfx_action_perfect_clear);
                 }
             }
         } else if (game_state->last_action_num_lines == 1) {
-            strcpy(vfx_last_action_type->text, "single");
+            strcpy(vfx_action->text, "single");
             start_y--;
-            vfx_last_action_type->y = start_y;
-            vfx_enable(vfx_last_action_type, draw_vfx_last_action_single);
+            vfx_action->y = start_y;
+            vfx_enable(vfx_action, draw_vfx_action_single);
         } else if (game_state->last_action_num_lines == 2) {
-            strcpy(vfx_last_action_type->text, "double");
+            strcpy(vfx_action->text, "double");
             start_y--;
-            vfx_last_action_type->y = start_y;
-            vfx_enable(vfx_last_action_type, draw_vfx_last_action_double);
+            vfx_action->y = start_y;
+            vfx_enable(vfx_action, draw_vfx_action_double);
         } else if (game_state->last_action_num_lines == 3) {
-            strcpy(vfx_last_action_type->text, "triple");
+            strcpy(vfx_action->text, "triple");
             start_y--;
-            vfx_last_action_type->y = start_y;
-            vfx_enable(vfx_last_action_type, draw_vfx_last_action_triple);
+            vfx_action->y = start_y;
+            vfx_enable(vfx_action, draw_vfx_action_triple);
         } else if (game_state->last_action_num_lines == 4) {
-            strcpy(vfx_last_action_type->text, "tetris");
+            strcpy(vfx_action->text, "tetris");
             start_y--;
-            vfx_last_action_type->y = start_y;
-            vfx_enable(vfx_last_action_type, draw_vfx_last_action_tetris);
+            vfx_action->y = start_y;
+            vfx_enable(vfx_action, draw_vfx_action_tetris);
         }
+    }
+}
+
+void vfx_enable_level_up(VFX* vfx, GameState* game_state) {
+    if (game_state->last_action_level_up) {
+        sprintf(vfx->text, "LEVEL%*lu", 3, game_state->level);
+        vfx->y = 6;
+        vfx->x = vfx->game_window->content_w/2 - strlen(vfx->text)/2;
+        vfx_enable(vfx, draw_vfx_level_up);
     }
 }
 
@@ -240,7 +243,7 @@ void vfx_disable(VFX* vfx) {
     if (!vfx) {
         return;
     }
-
+    vfx->reset_function(vfx);
     vfx->draw_function = NULL;
     vfx->frame_timer = 0;
     vfx->enabled = false;
@@ -259,7 +262,6 @@ void draw_vfx_frame(VFX* vfx) {
             vfx->draw_function(vfx);
             vfx->frame_timer--;
         } else {
-            vfx->reset_function(vfx);
             vfx_disable(vfx);
         }
     }
@@ -457,14 +459,20 @@ void draw_vfx_next_z_piece(VFX* vfx) {
     draw_window_title(vfx->game_window, "NEXT", COLOR_PAIR_RED);
 }
 
-void draw_vfx_last_action_type_reset(VFX* vfx) {
+void draw_vfx_action_reset(VFX* vfx) {
     if (!vfx) {
         return;
     }
-    mvwprintw(vfx->game_window->content, vfx->y, 0, "%*s", vfx->game_window->content_w, "");
+    for (size_t i = 0; i < strlen(vfx->text); ++i) {
+        if (vfx->text[i] == '\n') {
+            mvwprintw(vfx->game_window->content, vfx->y, vfx->x, "%*s", vfx->game_window->content_w, "");
+            vfx->y++;
+        }
+    }
+    mvwprintw(vfx->game_window->content, vfx->y, vfx->x, "%*s", vfx->game_window->content_w, "");
 }
 
-void draw_vfx_last_action_single(VFX* vfx) {
+void draw_vfx_action_single(VFX* vfx) {
     if (!vfx) {
         return;
     }
@@ -473,7 +481,7 @@ void draw_vfx_last_action_single(VFX* vfx) {
         wattron(vfx->game_window->content, A_DIM);
     }
 
-    mvwprintw(vfx->game_window->content, vfx->y, 0, "%*s", vfx->game_window->content_w, "");
+    mvwprintw(vfx->game_window->content, vfx->y, vfx->x, "%*s", vfx->game_window->content_w, "");
     wattron(vfx->game_window->content, COLOR_PAIR(COLOR_PAIR_GREEN));
     mvwprintw(vfx->game_window->content, vfx->y, vfx->x, "%s", vfx->text);
     wattroff(vfx->game_window->content, COLOR_PAIR(COLOR_PAIR_GREEN));
@@ -483,7 +491,7 @@ void draw_vfx_last_action_single(VFX* vfx) {
     }
 }
 
-void draw_vfx_last_action_double(VFX* vfx) {
+void draw_vfx_action_double(VFX* vfx) {
     if (!vfx) {
         return;
     }
@@ -492,7 +500,7 @@ void draw_vfx_last_action_double(VFX* vfx) {
         wattron(vfx->game_window->content, A_DIM);
     }
 
-    mvwprintw(vfx->game_window->content, vfx->y, 0, "%*s", vfx->game_window->content_w, "");
+    mvwprintw(vfx->game_window->content, vfx->y, vfx->x, "%*s", vfx->game_window->content_w, "");
     wattron(vfx->game_window->content, COLOR_PAIR(COLOR_PAIR_BLUE));
     mvwprintw(vfx->game_window->content, vfx->y, vfx->x, "%s", vfx->text);
     wattroff(vfx->game_window->content, COLOR_PAIR(COLOR_PAIR_BLUE));
@@ -502,12 +510,12 @@ void draw_vfx_last_action_double(VFX* vfx) {
     }
 }
 
-void draw_vfx_last_action_triple(VFX* vfx) {
+void draw_vfx_action_triple(VFX* vfx) {
     if (!vfx) {
         return;
     }
     
-    mvwprintw(vfx->game_window->content, vfx->y, 0, "%*s", vfx->game_window->content_w, "");
+    mvwprintw(vfx->game_window->content, vfx->y, vfx->x, "%*s", vfx->game_window->content_w, "");
     
     if (vfx->frame_timer < 30) {
         wattron(vfx->game_window->content, A_DIM);
@@ -522,11 +530,11 @@ void draw_vfx_last_action_triple(VFX* vfx) {
     }
 }
 
-void draw_vfx_last_action_tetris(VFX* vfx) {
+void draw_vfx_action_tetris(VFX* vfx) {
     if (!vfx) {
         return;
     }
-    mvwprintw(vfx->game_window->content, vfx->y, 0, "%*s", vfx->game_window->content_w, "");
+    mvwprintw(vfx->game_window->content, vfx->y, vfx->x, "%*s", vfx->game_window->content_w, "");
     
     if (vfx->frame_timer < 30) {
         wattron(vfx->game_window->content, A_DIM);
@@ -541,12 +549,12 @@ void draw_vfx_last_action_tetris(VFX* vfx) {
     }
 }
 
-void draw_vfx_last_action_t_spin(VFX* vfx) {
+void draw_vfx_action_t_spin(VFX* vfx) {
     if (!vfx) {
         return;
     }
 
-    mvwprintw(vfx->game_window->content, vfx->y, 0, "%*s", vfx->game_window->content_w, "");
+    mvwprintw(vfx->game_window->content, vfx->y, vfx->x, "%*s", vfx->game_window->content_w, "");
 
     if (vfx->frame_timer < 30) {
         wattron(vfx->game_window->content, A_DIM);
@@ -561,7 +569,7 @@ void draw_vfx_last_action_t_spin(VFX* vfx) {
     }
 }
 
-void draw_vfx_last_action_perfect_clear(VFX* vfx) {
+void draw_vfx_action_perfect_clear(VFX* vfx) {
     if (!vfx) {
         return;
     }
@@ -587,7 +595,7 @@ void draw_vfx_last_action_perfect_clear(VFX* vfx) {
         wattron(vfx->game_window->content, A_DIM);
     }
     
-    mvwprintw(vfx->game_window->content, vfx->y, 0, "%*s", vfx->game_window->content_w, "");
+    mvwprintw(vfx->game_window->content, vfx->y, vfx->x, "%*s", vfx->game_window->content_w, "");
     wattron(vfx->game_window->content, COLOR_PAIR(color_pair));
     mvwprintw(vfx->game_window->content, vfx->y, vfx->x, "%s", vfx->text);
     wattroff(vfx->game_window->content, COLOR_PAIR(color_pair));
@@ -597,14 +605,14 @@ void draw_vfx_last_action_perfect_clear(VFX* vfx) {
     }
 }
 
-void draw_vfx_last_action_combo_reset(VFX* vfx) {
+void draw_vfx_combo_reset(VFX* vfx) {
     if (!vfx) {
         return;
     }
-    mvwprintw(vfx->game_window->content, vfx->y, 0, "%*s", vfx->game_window->content_w, "");
+    mvwprintw(vfx->game_window->content, vfx->y, vfx->x, "%*s", vfx->game_window->content_w, "");
 }
 
-void draw_vfx_last_action_combo(VFX* vfx) {
+void draw_vfx_combo(VFX* vfx) {
     if (!vfx) {
         return;
     }
@@ -613,9 +621,9 @@ void draw_vfx_last_action_combo(VFX* vfx) {
         wattron(vfx->game_window->content, A_DIM);
     }
 
-    mvwprintw(vfx->game_window->content, vfx->y, 0, "%*s", vfx->game_window->content_w, "");
+    mvwprintw(vfx->game_window->content, vfx->y, vfx->x, "%*s", vfx->game_window->content_w, "");
     wattron(vfx->game_window->content, COLOR_PAIR(COLOR_PAIR_RED));
-    mvwprintw(vfx->game_window->content, vfx->y, 0, "%s", vfx->text);
+    mvwprintw(vfx->game_window->content, vfx->y, vfx->x, "%s", vfx->text);
     wattroff(vfx->game_window->content, COLOR_PAIR(COLOR_PAIR_RED));
 
     if (vfx->frame_timer < 30) {
@@ -623,14 +631,14 @@ void draw_vfx_last_action_combo(VFX* vfx) {
     }
 }
 
-void draw_vfx_last_action_b2b_reset(VFX* vfx) {
+void draw_vfx_b2b_reset(VFX* vfx) {
     if (!vfx) {
         return;
     }
-    mvwprintw(vfx->game_window->content, vfx->y, 0, "%*s", vfx->game_window->content_w, "");
+    mvwprintw(vfx->game_window->content, vfx->y, vfx->x, "%*s", vfx->game_window->content_w, "");
 }
 
-void draw_vfx_last_action_b2b(VFX* vfx) {
+void draw_vfx_b2b(VFX* vfx) {
     if (!vfx) {
         return;
     }
@@ -639,9 +647,9 @@ void draw_vfx_last_action_b2b(VFX* vfx) {
         wattron(vfx->game_window->content, A_DIM);
     }
 
-    mvwprintw(vfx->game_window->content, vfx->y, 0, "%*s", vfx->game_window->content_w, "");
+    mvwprintw(vfx->game_window->content, vfx->y, vfx->x, "%*s", vfx->game_window->content_w, "");
     wattron(vfx->game_window->content, COLOR_PAIR(COLOR_PAIR_ORANGE));
-    mvwprintw(vfx->game_window->content, vfx->y, 0, "%s", vfx->text);
+    mvwprintw(vfx->game_window->content, vfx->y, vfx->x, "%s", vfx->text);
     wattroff(vfx->game_window->content, COLOR_PAIR(COLOR_PAIR_ORANGE));
     
     if (vfx->frame_timer < 30) {
@@ -649,14 +657,14 @@ void draw_vfx_last_action_b2b(VFX* vfx) {
     }
 }
 
-void draw_vfx_last_action_score_reset(VFX* vfx) {
+void draw_vfx_score_reset(VFX* vfx) {
     if (!vfx) {
         return;
     }
-    mvwprintw(vfx->game_window->content, vfx->y, 0, "%*s", vfx->game_window->content_w, "");
+    mvwprintw(vfx->game_window->content, vfx->y, vfx->x, "%*s", vfx->game_window->content_w, "");
 }
 
-void draw_vfx_last_action_score(VFX* vfx) {
+void draw_vfx_score(VFX* vfx) {
     if (!vfx) {
         return;
     }
@@ -665,10 +673,52 @@ void draw_vfx_last_action_score(VFX* vfx) {
         wattron(vfx->game_window->content, A_DIM);
     }
 
-    mvwprintw(vfx->game_window->content, vfx->y, 0, "%*s", vfx->game_window->content_w, "");
+    mvwprintw(vfx->game_window->content, vfx->y, vfx->x, "%*s", vfx->game_window->content_w, "");
     wattron(vfx->game_window->content, COLOR_PAIR(COLOR_PAIR_DEFAULT));
-    mvwprintw(vfx->game_window->content, vfx->y, 0, "%s", vfx->text);
+    mvwprintw(vfx->game_window->content, vfx->y, vfx->x, "%s", vfx->text);
     wattroff(vfx->game_window->content, COLOR_PAIR(COLOR_PAIR_DEFAULT));
+
+    if (vfx->frame_timer < 30) {
+        wattroff(vfx->game_window->content, A_DIM);
+    }
+}
+
+void draw_vfx_level_up_reset(VFX* vfx) {
+    if (!vfx) {
+        return;
+    }
+    mvwprintw(vfx->game_window->content, vfx->y, vfx->x, "%*s", (int)strlen(vfx->text), "");
+}
+
+void draw_vfx_level_up(VFX* vfx) {
+    if (!vfx) {
+        return;
+    }
+
+    uint16_t color_pair;
+    if (vfx->frame_timer % 7 == 0) {
+        color_pair = COLOR_PAIR_RED;
+    } else if ((vfx->frame_timer + 1) % 7 == 0) {
+        color_pair = COLOR_PAIR_ORANGE;
+    } else if ((vfx->frame_timer + 2) % 7 == 0) {
+        color_pair = COLOR_PAIR_YELLOW;
+    } else if ((vfx->frame_timer + 3) % 7 == 0) {
+        color_pair = COLOR_PAIR_GREEN;
+    } else if ((vfx->frame_timer + 4) % 7 == 0) {
+        color_pair = COLOR_PAIR_CYAN;
+    } else if ((vfx->frame_timer + 5) % 7 == 0) {
+        color_pair = COLOR_PAIR_BLUE;
+    } else if ((vfx->frame_timer + 6) % 7 == 0) {
+        color_pair = COLOR_PAIR_MAGENTA;
+    }
+
+    if (vfx->frame_timer < 30) {
+        wattron(vfx->game_window->content, A_DIM);
+    }
+
+    wattron(vfx->game_window->content, COLOR_PAIR(color_pair));
+    mvwprintw(vfx->game_window->content, vfx->y, vfx->x, "%s", vfx->text);
+    wattroff(vfx->game_window->content, COLOR_PAIR(color_pair));
 
     if (vfx->frame_timer < 30) {
         wattroff(vfx->game_window->content, A_DIM);

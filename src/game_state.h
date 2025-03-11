@@ -85,6 +85,7 @@ struct GameState {
     bool last_action_perfect_clear;
     bool last_action_hold_piece;
     bool last_action_next_piece;
+    bool last_action_level_up;
 };
 
 typedef struct GameState GameState;
