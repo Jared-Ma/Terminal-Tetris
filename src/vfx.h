@@ -46,6 +46,8 @@ void vfx_disable(VFX* vfx);
 
 void draw_vfx_frame(VFX* vfx);
 
+void draw_vfx_board_window_border(VFX* vfx, uint16_t color_pair);
+
 void draw_vfx_line_clear_reset(VFX* vfx);
 
 void draw_vfx_line_clear_single(VFX* vfx); 
