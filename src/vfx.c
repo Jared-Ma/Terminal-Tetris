@@ -756,11 +756,42 @@ void draw_vfx_stats_lines_reset(VFX* vfx) {
     if (!vfx) {
         return;
     }
-
     mvwprintw(vfx->game_window->content, vfx->y, vfx->x, "%*s", (int)strlen(vfx->text), "");
 }
 
 void draw_vfx_stats_lines(VFX* vfx) {
+    if (!vfx) {
+        return;
+    }
+    wattron(vfx->game_window->content, A_STANDOUT);
+    mvwprintw(vfx->game_window->content, vfx->y, vfx->x, "%s", vfx->text);
+    wattroff(vfx->game_window->content, A_STANDOUT);
+}
+
+void vfx_enable_stats_level(VFX* vfx, GameState* game_state) {
+    if (!vfx) {
+        return;
+    }
+
+    if (game_state->level_up_event_flag) {
+        sprintf(vfx->text, "level: %lu", game_state->level);
+        vfx->y = 5;
+        vfx->x = 0;
+        vfx_enable(vfx, draw_vfx_stats_level);
+    }
+}
+
+void draw_vfx_stats_level_reset(VFX* vfx) {
+    if (!vfx) {
+        return;
+    }
+    mvwprintw(vfx->game_window->content, vfx->y, vfx->x, "%*s", (int)strlen(vfx->text), "");
+}
+
+void draw_vfx_stats_level(VFX* vfx) {
+    if (!vfx) {
+        return;
+    }
     wattron(vfx->game_window->content, A_STANDOUT);
     mvwprintw(vfx->game_window->content, vfx->y, vfx->x, "%s", vfx->text);
     wattroff(vfx->game_window->content, A_STANDOUT);

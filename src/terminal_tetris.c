@@ -88,7 +88,8 @@ static void start_tetris(
     VFX* vfx_b2b = vfx_init(stats_window, draw_vfx_b2b_reset, 240);
     VFX* vfx_score = vfx_init(stats_window, draw_vfx_score_reset, 240);
     VFX* vfx_level_up = vfx_init(board_window, draw_vfx_level_up_reset, 120);
-    VFX* vfx_stats_lines = vfx_init(stats_window, draw_vfx_stats_lines_reset, 15);
+    VFX* vfx_stats_lines = vfx_init(stats_window, draw_vfx_stats_lines_reset, 10);
+    VFX* vfx_stats_level = vfx_init(stats_window, draw_vfx_stats_level_reset, 10);
     VFX* vfx_list[NUM_VFX] = {
         vfx_line_clear,
         vfx_hold_piece,
@@ -98,7 +99,8 @@ static void start_tetris(
         vfx_b2b,
         vfx_score,
         vfx_level_up,
-        vfx_stats_lines
+        vfx_stats_lines,
+        vfx_stats_level
     };
 
     srand(time(0));
@@ -120,18 +122,12 @@ static void start_tetris(
     draw_debug_variables(debug_window, game_state, stats);
 
     // refresh windows
-    wrefresh(board_window->border);
-    wrefresh(board_window->content);
-    wrefresh(hold_window->border);
-    wrefresh(hold_window->content);
-    wrefresh(next_window->border);
-    wrefresh(next_window->content);
-    wrefresh(stats_window->border);
-    wrefresh(stats_window->content);
-    wrefresh(controls_window->border);
-    wrefresh(controls_window->content);
-    wrefresh(debug_window->border);
-    wrefresh(debug_window->content);
+    game_window_refresh(board_window);
+    game_window_refresh(hold_window);
+    game_window_refresh(next_window);
+    game_window_refresh(stats_window);
+    game_window_refresh(controls_window);
+    game_window_refresh(debug_window);
     
     InputState input_state = PLAYING;
     struct timespec start_time, end_time;
@@ -231,6 +227,7 @@ static void start_tetris(
             vfx_enable_last_action(vfx_action, vfx_combo, vfx_b2b, vfx_score, game_state);
             vfx_enable_level_up(vfx_level_up, game_state);
             vfx_enable_stats_lines(vfx_stats_lines, game_state);
+            vfx_enable_stats_level(vfx_stats_level, game_state);
             for (size_t i = 0; i < NUM_VFX; ++i) {
                 draw_vfx_frame(vfx_list[i]);
             }
@@ -275,6 +272,8 @@ static void start_tetris(
     vfx_destroy(vfx_b2b);
     vfx_destroy(vfx_score);
     vfx_destroy(vfx_level_up);
+    vfx_destroy(vfx_stats_lines);
+    vfx_destroy(vfx_stats_level);
 }
 
 int main(int argc, char* argv[argc+1]) {

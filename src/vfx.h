@@ -3,7 +3,7 @@
 #include "game_state.h"
 #include "draw.h"
 
-#define NUM_VFX 9
+#define NUM_VFX 10
 
 
 struct VFX;
@@ -130,6 +130,10 @@ void draw_vfx_stats_lines_reset(VFX* vfx);
 
 void draw_vfx_stats_lines(VFX* vfx);
 
+void vfx_enable_stats_level(VFX* vfx, GameState* game_state);
 
+void draw_vfx_stats_level_reset(VFX* vfx);
+
+void draw_vfx_stats_level(VFX* vfx);
 
 #endif
