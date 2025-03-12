@@ -83,9 +83,9 @@ struct GameState {
     bool last_action_t_spin;
     bool last_action_t_spin_mini;
     bool last_action_perfect_clear;
-    bool last_action_hold_piece;
-    bool last_action_next_piece;
-    bool last_action_level_up;
+    bool hold_piece_event_flag;
+    bool next_piece_event_flag;
+    bool level_up_event_flag;
 };
 
 typedef struct GameState GameState;
@@ -99,6 +99,8 @@ void game_state_destroy(GameState* game_state);
 void game_state_start(GameState* game_state);
 
 void game_state_reset(GameState* game_state);
+
+void game_state_reset_vfx_vars(GameState* game_state);
 
 void game_state_debug_print(GameState* game_state);
 

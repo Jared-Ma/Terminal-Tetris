@@ -97,7 +97,32 @@ GameState game_state_get(void) {
         .hold_piece = { 0 },
         .next_piece = { 0 },
         .ghost_piece = { 0 },
-        .board = { {0} },
+        // .board = { {0} },
+
+        .board = { 
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {1, 1, 1, 1, 1, 1, 1, 1, 1, 0},
+            {1, 1, 1, 1, 1, 1, 1, 1, 1, 0},
+            {1, 1, 1, 1, 1, 1, 1, 1, 1, 0},
+            {1, 1, 1, 1, 1, 1, 1, 1, 1, 0},
+        },
 
         .holding_piece = false,
         .hold_blocked = false,
@@ -122,9 +147,9 @@ GameState game_state_get(void) {
         .last_action_t_spin = false,
         .last_action_t_spin_mini = false,
         .last_action_perfect_clear = false,
-        .last_action_hold_piece = false,
-        .last_action_next_piece = false,
-        .last_action_level_up = false
+        .hold_piece_event_flag = false,
+        .next_piece_event_flag = false,
+        .level_up_event_flag = false
     };
     return game_state;
 }
@@ -157,6 +182,10 @@ void game_state_start(GameState* game_state) {
     game_state_generate_next_queue(game_state);
     game_state->next_piece = piece_get(game_state->next_queue[game_state->next_index++], 0, 0);
     game_state_load_next_piece(game_state);
+
+    game_state->level = 9;
+    game_state->lines = 89;
+    game_state->curr_piece = piece_get(I, SPAWN_Y, SPAWN_X);
 }
 
 void game_state_reset(GameState* game_state) {
@@ -165,6 +194,17 @@ void game_state_reset(GameState* game_state) {
     }
     *game_state = game_state_get();
     game_state_start(game_state);
+}
+
+void game_state_reset_vfx_vars(GameState* game_state) {
+    game_state->last_action_points = 0;
+    game_state->last_action_num_lines = 0;
+    game_state->last_action_t_spin = false;
+    game_state->last_action_t_spin_mini = false;
+    game_state->last_action_perfect_clear = false;
+    game_state->hold_piece_event_flag = false;
+    game_state->next_piece_event_flag = false;
+    game_state->level_up_event_flag = false;
 }
 
 void game_state_debug_print(GameState* game_state) {
@@ -278,7 +318,7 @@ void game_state_load_next_piece(GameState* game_state) {
         game_state_generate_next_queue(game_state);
     }
     game_state->next_piece = piece_get(game_state->next_queue[game_state->next_index++], 0, 0);
-    game_state->last_action_next_piece = true;
+    game_state->next_piece_event_flag = true;
 }
 
 void game_state_spawn_curr_piece(GameState* game_state) {
@@ -313,7 +353,7 @@ void game_state_hold_piece(GameState* game_state) {
             game_state_load_next_piece(game_state);
         }  
         game_state->hold_blocked = true;
-        game_state->last_action_hold_piece = true;
+        game_state->hold_piece_event_flag = true;
     }
 }
 
@@ -541,7 +581,7 @@ void game_state_clear_lines(GameState* game_state) {
     game_state->lines += num_lines;
     game_state->last_action_num_lines = num_lines;
     if (game_state->lines >= game_state->level * LEVEL_LINE_REQ) {
-        game_state->last_action_level_up = true;
+        game_state->level_up_event_flag = true;
         game_state->level++;
     }
 }

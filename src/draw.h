@@ -76,6 +76,8 @@ GameWindow* game_window_init(int height, int width, int y, int x);
 
 void game_window_destroy(GameWindow* game_window);
 
+void game_window_refresh(GameWindow* game_window);
+
 void draw_window_border(GameWindow* game_window, int16_t color_pair);
 
 void draw_window_title(GameWindow* game_window, char* title, int16_t color_pair);

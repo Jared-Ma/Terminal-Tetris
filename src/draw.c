@@ -97,6 +97,11 @@ void game_window_destroy(GameWindow* game_window) {
     free(game_window);
 }
 
+void game_window_refresh(GameWindow* game_window) {
+    wrefresh(game_window->border);
+    wrefresh(game_window->content);
+}
+
 void draw_window_border(GameWindow* game_window, int16_t color_pair) {
     wattron(game_window->border, COLOR_PAIR(color_pair));
     box(game_window->border, 0, 0);

@@ -69,7 +69,7 @@ void vfx_enable_hold_piece(VFX* vfx, GameState* game_state) {
         return;
     }
 
-    if (game_state->last_action_hold_piece) {
+    if (game_state->hold_piece_event_flag) {
         if (game_state->hold_piece.shape == I) {
             vfx_enable(vfx, draw_vfx_hold_i_piece);
         } else if (game_state->hold_piece.shape == J) {
@@ -93,7 +93,7 @@ void vfx_enable_next_piece(VFX* vfx, GameState* game_state) {
         return;
     }
 
-    if (game_state->last_action_next_piece) {
+    if (game_state->next_piece_event_flag) {
         if (game_state->next_piece.shape == I) {
             vfx_enable(vfx, draw_vfx_next_i_piece);
         } else if (game_state->next_piece.shape == J) {
@@ -231,7 +231,7 @@ void vfx_enable_last_action(VFX* vfx_action, VFX* vfx_combo, VFX* vfx_b2b, VFX* 
 }
 
 void vfx_enable_level_up(VFX* vfx, GameState* game_state) {
-    if (game_state->last_action_level_up) {
+    if (game_state->level_up_event_flag) {
         sprintf(vfx->text, "LEVEL%*lu", 3, game_state->level);
         vfx->y = 5;
         vfx->x = vfx->game_window->content_w/2 - strlen(vfx->text)/2;
