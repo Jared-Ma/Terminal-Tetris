@@ -3,7 +3,7 @@
 #include "game_state.h"
 #include "draw.h"
 
-#define NUM_VFX 8
+#define NUM_VFX 9
 
 
 struct VFX;
@@ -32,21 +32,13 @@ void vfx_destroy(VFX* vfx);
 
 void vfx_enable(VFX* vfx, draw_vfx_function* draw_function);
 
-void vfx_enable_line_clear(VFX* vfx, GameState* game_state);
-
-void vfx_enable_hold_piece(VFX* vfx, GameState* game_state);
-
-void vfx_enable_next_piece(VFX* vfx, GameState* game_state);
-
-void vfx_enable_last_action(VFX* vfx_action, VFX* vfx_combo, VFX* vfx_b2b, VFX* vfx_score, GameState* game_state);
-
-void vfx_enable_level_up(VFX* vfx, GameState* game_state);
-
 void vfx_disable(VFX* vfx);
 
 void draw_vfx_frame(VFX* vfx);
 
 void draw_vfx_board_window_border(VFX* vfx, uint16_t color_pair);
+
+void vfx_enable_line_clear(VFX* vfx, GameState* game_state);
 
 void draw_vfx_line_clear_reset(VFX* vfx);
 
@@ -61,6 +53,8 @@ void draw_vfx_line_clear_tetris(VFX* vfx);
 void draw_vfx_line_clear_t_spin(VFX* vfx); 
 
 void draw_vfx_line_clear_perfect(VFX* vfx); 
+
+void vfx_enable_hold_piece(VFX* vfx, GameState* game_state);
 
 void draw_vfx_hold_piece_reset(VFX* vfx);
 
@@ -78,6 +72,8 @@ void draw_vfx_hold_t_piece(VFX* vfx);
 
 void draw_vfx_hold_z_piece(VFX* vfx);
 
+void vfx_enable_next_piece(VFX* vfx, GameState* game_state);
+
 void draw_vfx_next_piece_reset(VFX* vfx);
 
 void draw_vfx_next_i_piece(VFX* vfx);
@@ -93,6 +89,8 @@ void draw_vfx_next_s_piece(VFX* vfx);
 void draw_vfx_next_t_piece(VFX* vfx);
 
 void draw_vfx_next_z_piece(VFX* vfx);
+
+void vfx_enable_last_action(VFX* vfx_action, VFX* vfx_combo, VFX* vfx_b2b, VFX* vfx_score, GameState* game_state);
 
 void draw_vfx_action_reset(VFX* vfx);
 
@@ -120,8 +118,18 @@ void draw_vfx_score_reset(VFX* vfx);
 
 void draw_vfx_score(VFX* vfx);
 
+void vfx_enable_level_up(VFX* vfx, GameState* game_state);
+
 void draw_vfx_level_up_reset(VFX* vfx);
 
 void draw_vfx_level_up(VFX* vfx);
+
+void vfx_enable_stats_lines(VFX* vfx, GameState* game_state);
+
+void draw_vfx_stats_lines_reset(VFX* vfx);
+
+void draw_vfx_stats_lines(VFX* vfx);
+
+
 
 #endif

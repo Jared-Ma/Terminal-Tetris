@@ -88,6 +88,7 @@ static void start_tetris(
     VFX* vfx_b2b = vfx_init(stats_window, draw_vfx_b2b_reset, 240);
     VFX* vfx_score = vfx_init(stats_window, draw_vfx_score_reset, 240);
     VFX* vfx_level_up = vfx_init(board_window, draw_vfx_level_up_reset, 120);
+    VFX* vfx_stats_lines = vfx_init(stats_window, draw_vfx_stats_lines_reset, 15);
     VFX* vfx_list[NUM_VFX] = {
         vfx_line_clear,
         vfx_hold_piece,
@@ -96,7 +97,8 @@ static void start_tetris(
         vfx_combo,
         vfx_b2b,
         vfx_score,
-        vfx_level_up
+        vfx_level_up,
+        vfx_stats_lines
     };
 
     srand(time(0));
@@ -228,6 +230,7 @@ static void start_tetris(
             vfx_enable_next_piece(vfx_next_piece, game_state);
             vfx_enable_last_action(vfx_action, vfx_combo, vfx_b2b, vfx_score, game_state);
             vfx_enable_level_up(vfx_level_up, game_state);
+            vfx_enable_stats_lines(vfx_stats_lines, game_state);
             for (size_t i = 0; i < NUM_VFX; ++i) {
                 draw_vfx_frame(vfx_list[i]);
             }
