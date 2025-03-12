@@ -3,7 +3,7 @@
 #include "game_state.h"
 #include "draw.h"
 
-#define NUM_VFX 10
+#define NUM_VFX 11
 
 
 struct VFX;
@@ -89,6 +89,24 @@ void draw_vfx_next_s_piece(VFX* vfx);
 void draw_vfx_next_t_piece(VFX* vfx);
 
 void draw_vfx_next_z_piece(VFX* vfx);
+
+void vfx_enable_lock_piece(VFX* vfx, GameState* game_state);
+
+void draw_vfx_lock_piece_reset(VFX* vfx);
+
+void draw_vfx_lock_i_piece(VFX* vfx);
+
+void draw_vfx_lock_j_piece(VFX* vfx);
+
+void draw_vfx_lock_l_piece(VFX* vfx);
+
+void draw_vfx_lock_o_piece(VFX* vfx);
+
+void draw_vfx_lock_s_piece(VFX* vfx);
+
+void draw_vfx_lock_t_piece(VFX* vfx);
+
+void draw_vfx_lock_z_piece(VFX* vfx);
 
 void vfx_enable_last_action(VFX* vfx_action, VFX* vfx_combo, VFX* vfx_b2b, VFX* vfx_score, GameState* game_state);
 

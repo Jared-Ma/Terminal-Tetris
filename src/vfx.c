@@ -346,6 +346,86 @@ void draw_vfx_next_z_piece(VFX* vfx) {
     draw_window_title(vfx->game_window, "NEXT", COLOR_PAIR_RED);
 }
 
+void vfx_enable_lock_piece(VFX* vfx, GameState* game_state) {
+    if (!vfx || !game_state) {
+        return;
+    }
+
+    if (game_state->last_locked_piece_shape > 0) {
+        if (game_state->last_locked_piece_shape == I) {
+            vfx_enable(vfx, draw_vfx_lock_i_piece);
+        } else if (game_state->last_locked_piece_shape == J) {
+            vfx_enable(vfx, draw_vfx_lock_j_piece);
+        } else if (game_state->last_locked_piece_shape == L) {
+            vfx_enable(vfx, draw_vfx_lock_l_piece);
+        } else if (game_state->last_locked_piece_shape == O) {
+            vfx_enable(vfx, draw_vfx_lock_o_piece);
+        } else if (game_state->last_locked_piece_shape == S) {
+            vfx_enable(vfx, draw_vfx_lock_s_piece);
+        } else if (game_state->last_locked_piece_shape == T) {
+            vfx_enable(vfx, draw_vfx_lock_t_piece);
+        } else if (game_state->last_locked_piece_shape == Z) {
+            vfx_enable(vfx, draw_vfx_lock_z_piece);
+        }
+    }
+}
+
+void draw_vfx_lock_piece_reset(VFX* vfx) {
+    if (!vfx) {
+        return;
+    }
+    draw_vfx_board_window_border(vfx, COLOR_PAIR_DEFAULT);
+}
+
+void draw_vfx_lock_i_piece(VFX* vfx) {
+    if (!vfx) {
+        return;
+    }
+    draw_vfx_board_window_border(vfx, COLOR_PAIR_CYAN);
+}
+
+void draw_vfx_lock_j_piece(VFX* vfx) {
+    if (!vfx) {
+        return;
+    }
+    draw_vfx_board_window_border(vfx, COLOR_PAIR_BLUE);
+}
+
+void draw_vfx_lock_l_piece(VFX* vfx) {
+    if (!vfx) {
+        return;
+    }
+    draw_vfx_board_window_border(vfx, COLOR_PAIR_ORANGE);
+}
+
+void draw_vfx_lock_o_piece(VFX* vfx) {
+    if (!vfx) {
+        return;
+    }
+    draw_vfx_board_window_border(vfx, COLOR_PAIR_YELLOW);
+}
+
+void draw_vfx_lock_s_piece(VFX* vfx) {
+    if (!vfx) {
+        return;
+    }
+    draw_vfx_board_window_border(vfx, COLOR_PAIR_GREEN);
+}
+
+void draw_vfx_lock_t_piece(VFX* vfx) {
+    if (!vfx) {
+        return;
+    }
+    draw_vfx_board_window_border(vfx, COLOR_PAIR_MAGENTA);
+}
+
+void draw_vfx_lock_z_piece(VFX* vfx) {
+    if (!vfx) {
+        return;
+    }
+    draw_vfx_board_window_border(vfx, COLOR_PAIR_RED);
+}
+
 void vfx_enable_last_action(VFX* vfx_action, VFX* vfx_combo, VFX* vfx_b2b, VFX* vfx_score, GameState* game_state) {
     if (!vfx_action || !vfx_combo || !vfx_b2b || !vfx_score || !game_state) {
         return;

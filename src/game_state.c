@@ -149,7 +149,8 @@ GameState game_state_get(void) {
         .last_action_perfect_clear = false,
         .hold_piece_event_flag = false,
         .next_piece_event_flag = false,
-        .level_up_event_flag = false
+        .level_up_event_flag = false,
+        .last_locked_piece_shape = 0
     };
     return game_state;
 }
@@ -205,6 +206,7 @@ void game_state_reset_vfx_vars(GameState* game_state) {
     game_state->hold_piece_event_flag = false;
     game_state->next_piece_event_flag = false;
     game_state->level_up_event_flag = false;
+    game_state->last_locked_piece_shape = 0;
 }
 
 void game_state_debug_print(GameState* game_state) {
@@ -516,6 +518,7 @@ void game_state_lock_curr_piece(GameState* game_state) {
         }
     }
     game_state->hold_blocked = false;
+    game_state->last_locked_piece_shape = game_state->curr_piece.shape;
 }
 
 void game_state_apply_stack_gravity(GameState* game_state, size_t row) {

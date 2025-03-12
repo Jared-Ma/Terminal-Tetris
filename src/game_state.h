@@ -86,6 +86,7 @@ struct GameState {
     bool hold_piece_event_flag;
     bool next_piece_event_flag;
     bool level_up_event_flag;
+    Shape last_locked_piece_shape; /// TODO
 };
 
 typedef struct GameState GameState;
