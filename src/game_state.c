@@ -97,32 +97,33 @@ GameState game_state_get(void) {
         .hold_piece = { 0 },
         .next_piece = { 0 },
         .ghost_piece = { 0 },
-        // .board = { {0} },
+        .board = {{ 0 }},
 
-        .board = { 
-            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {1, 1, 1, 1, 1, 1, 1, 1, 1, 0},
-            {1, 1, 1, 1, 1, 1, 1, 1, 1, 0},
-            {1, 1, 1, 1, 1, 1, 1, 1, 1, 0},
-            {1, 1, 1, 1, 1, 1, 1, 1, 1, 0},
+        .board = {
+            { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+            { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+            { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+            { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+            { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+            { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+            { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+            { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+            { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+            { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+            { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+            { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+            { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+            { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+            { 1, 1, 1, 1, 1, 1, 1, 1, 1, 0 },
+            { 1, 1, 1, 1, 1, 1, 1, 1, 1, 0 },
+            { 1, 1, 1, 1, 1, 1, 1, 1, 1, 0 },
+            { 1, 1, 1, 1, 1, 1, 1, 1, 1, 0 },
+            { 1, 1, 1, 1, 1, 1, 1, 1, 1, 0 },
+            { 1, 1, 1, 1, 1, 1, 1, 1, 1, 0 },
+            { 1, 1, 1, 1, 1, 1, 1, 1, 1, 0 },
+            { 1, 1, 1, 1, 1, 1, 1, 1, 1, 0 },
         },
+
 
         .holding_piece = false,
         .hold_blocked = false,
@@ -184,9 +185,8 @@ void game_state_start(GameState* game_state) {
     game_state->next_piece = piece_get(game_state->next_queue[game_state->next_index++], 0, 0);
     game_state_load_next_piece(game_state);
 
-    game_state->level = 9;
-    game_state->lines = 89;
     game_state->curr_piece = piece_get(I, SPAWN_Y, SPAWN_X);
+    game_state->next_piece = piece_get(I, SPAWN_Y, SPAWN_X);
 }
 
 void game_state_reset(GameState* game_state) {
@@ -273,7 +273,11 @@ void game_state_debug_print(GameState* game_state) {
         "\tlast_action_num_lines = %u\n"
         "\tlast_action_t_spin = %i\n"
         "\tlast_action_t_spin_mini = %i\n"
-        "\tlast_action_perfect_clear = %i\n",
+        "\tlast_action_perfect_clear = %i\n"
+        "\thold_piece_event_flag = %i\n"
+        "\tnext_piece_event_flag = %i\n"
+        "\tlevel_up_event_flag = %i\n"
+        "\tlast_locked_piece_shape = %u\n",
         game_state->level,
         game_state->lines,
         game_state->score,
@@ -285,7 +289,11 @@ void game_state_debug_print(GameState* game_state) {
         game_state->last_action_num_lines,
         game_state->last_action_t_spin,
         game_state->last_action_t_spin_mini,
-        game_state->last_action_perfect_clear
+        game_state->last_action_perfect_clear,
+        game_state->hold_piece_event_flag,
+        game_state->next_piece_event_flag,
+        game_state->level_up_event_flag,
+        game_state->last_locked_piece_shape
     );
 
     fprintf(debug_log, "}\n");

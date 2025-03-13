@@ -47,14 +47,14 @@ const int GAME_OVER_WINDOW_W = 14;
 const int GAME_OVER_WINDOW_Y = 10;
 const int GAME_OVER_WINDOW_X = 18;
 
-const int16_t COLOR_PAIR_DEFAULT   = 0;
-const int16_t COLOR_PAIR_CYAN      = I;
-const int16_t COLOR_PAIR_BLUE      = J;
-const int16_t COLOR_PAIR_ORANGE    = L;
-const int16_t COLOR_PAIR_YELLOW    = O;
-const int16_t COLOR_PAIR_GREEN     = S;
-const int16_t COLOR_PAIR_MAGENTA   = T;
-const int16_t COLOR_PAIR_RED       = Z;
+const int16_t COLOR_PAIR_DEFAULT = 0;
+const int16_t COLOR_PAIR_CYAN    = I;
+const int16_t COLOR_PAIR_BLUE    = J;
+const int16_t COLOR_PAIR_ORANGE  = L;
+const int16_t COLOR_PAIR_YELLOW  = O;
+const int16_t COLOR_PAIR_GREEN   = S;
+const int16_t COLOR_PAIR_MAGENTA = T;
+const int16_t COLOR_PAIR_RED     = Z;
 
 const char BLOCK_LEFT       = '[';
 const char BLOCK_RIGHT      = ']';
@@ -344,6 +344,48 @@ void draw_stats(GameWindow* stats_window, GameState* game_state, Stats* stats) {
         m, s,
         game_state->lines,
         game_state->level
+    );
+
+    if (stats->score_per_sec > 0 && stats->score_per_sec < 1) {
+        mvwprintw(
+            stats_window->content, 7, 0,
+            "sps: %#.4g\n",
+            stats->score_per_sec
+        );
+    } else {
+        mvwprintw(
+            stats_window->content, 7, 0,
+            "sps: %#.5g\n",
+            stats->score_per_sec
+        );
+    }
+
+    if (stats->piece_per_sec > 0 && stats->piece_per_sec < 1) {
+        mvwprintw(
+            stats_window->content, 8, 0,
+            "pps: %#.4g\n",
+            stats->piece_per_sec
+        );
+    } else {
+        mvwprintw(
+            stats_window->content, 8, 0,
+            "pps: %#.5g\n",
+            stats->piece_per_sec
+        );
+    }
+}
+
+void draw_pause_stats(GameWindow* stats_window, Stats* stats) {
+    mvwprintw(
+        stats_window->content, 10, 0,
+        "single: %lu\n"
+        "double: %lu\n"
+        "triple: %lu\n"
+        "tetris: %lu\n",
+        stats->num_single,
+        stats->num_double,
+        stats->num_triple,
+        stats->num_tetris
     );
 }
 

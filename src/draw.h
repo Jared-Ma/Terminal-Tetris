@@ -118,6 +118,8 @@ void draw_next_piece(GameWindow* next_window, GameState* game_state);
 
 void draw_stats(GameWindow* stats_window, GameState* game_state, Stats* stats);
 
+void draw_pause_stats(GameWindow* stats_window, Stats* stats);
+
 void draw_debug_variables(GameWindow* debug_window, GameState* game_state, Stats* stats);
 
 #endif

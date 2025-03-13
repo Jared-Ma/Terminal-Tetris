@@ -214,6 +214,8 @@ static void start_tetris(
             if (game_state_check_collision(game_state, game_state->curr_piece)) {
                 input_state = GAME_OVER;
             }
+
+            stats_update(stats, game_state);
         }
 
         // Render
@@ -235,20 +237,21 @@ static void start_tetris(
                 draw_vfx_frame(vfx_list[i]);
             }
             game_state_reset_vfx_vars(game_state);
-
-            game_window_refresh(board_window);
-            game_window_refresh(next_window);
-            game_window_refresh(hold_window);
-            game_window_refresh(stats_window);
         } else if (input_state == PAUSED) {
             draw_pause_window(pause_window);
+            draw_pause_stats(stats_window, stats);
             game_window_refresh(pause_window);
         } else if (input_state == GAME_OVER) {
             draw_game_over_window(game_over_window);
+            draw_pause_stats(stats_window, stats);
             game_window_refresh(game_over_window);
         }
-
         draw_debug_variables(debug_window, game_state, stats);
+        
+        game_window_refresh(board_window);
+        game_window_refresh(hold_window);
+        game_window_refresh(next_window);
+        game_window_refresh(stats_window);
         game_window_refresh(debug_window);
 
         clock_gettime(CLOCK_MONOTONIC, &end_time);
