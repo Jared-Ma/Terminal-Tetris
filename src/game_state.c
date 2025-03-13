@@ -29,11 +29,11 @@ const uint16_t T_SPIN_MINI_ZERO_POINTS = 100;
 const uint16_t T_SPIN_MINI_SINGLE_POINTS = 200;
 const uint16_t T_SPIN_MINI_DOUBLE_POINTS = 400;
 
-const uint16_t SINGLE_PERFECT_CLEAR_POINTS = 800;
-const uint16_t DOUBLE_PERFECT_CLEAR_POINTS = 1200;
-const uint16_t TRIPLE_PERFECT_CLEAR_POINTS = 1800;
-const uint16_t TETRIS_PERFECT_CLEAR_POINTS = 2000;
-const uint16_t B2B_TETRIS_PERFECT_CLEAR_POINTS = 3200;
+const uint16_t SINGLE_ALL_CLEAR_POINTS = 800;
+const uint16_t DOUBLE_ALL_CLEAR_POINTS = 1200;
+const uint16_t TRIPLE_ALL_CLEAR_POINTS = 1800;
+const uint16_t TETRIS_ALL_CLEAR_POINTS = 2000;
+const uint16_t B2B_TETRIS_ALL_CLEAR_POINTS = 3200;
 
 const uint16_t COMBO_POINTS = 50;
 const uint16_t SOFT_DROP_POINTS = 1;
@@ -140,14 +140,14 @@ GameState game_state_get(void) {
         .score = 0,
         .combo = 0,
         .difficult_clear_combo = 0,
-        .tetris_perfect_clear_combo = 0,
+        .tetris_all_clear_combo = 0,
         .t_rotation_test_num = 0,
 
         .last_action_points = 0,
         .last_action_num_lines = 0,
         .last_action_t_spin = false,
         .last_action_t_spin_mini = false,
-        .last_action_perfect_clear = false,
+        .last_action_all_clear = false,
         .hold_piece_event_flag = false,
         .next_piece_event_flag = false,
         .level_up_event_flag = false,
@@ -179,8 +179,8 @@ void game_state_start(GameState* game_state) {
     game_state->combo = 0;
     game_state->difficult_clear_combo = -1;
     game_state->difficult_clear_combo = 0;
-    game_state->tetris_perfect_clear_combo = -1;
-    game_state->tetris_perfect_clear_combo = 0;
+    game_state->tetris_all_clear_combo = -1;
+    game_state->tetris_all_clear_combo = 0;
     game_state_generate_next_queue(game_state);
     game_state->next_piece = piece_get(game_state->next_queue[game_state->next_index++], 0, 0);
     game_state_load_next_piece(game_state);
@@ -202,7 +202,7 @@ void game_state_reset_vfx_vars(GameState* game_state) {
     game_state->last_action_num_lines = 0;
     game_state->last_action_t_spin = false;
     game_state->last_action_t_spin_mini = false;
-    game_state->last_action_perfect_clear = false;
+    game_state->last_action_all_clear = false;
     game_state->hold_piece_event_flag = false;
     game_state->next_piece_event_flag = false;
     game_state->level_up_event_flag = false;
@@ -267,13 +267,13 @@ void game_state_debug_print(GameState* game_state) {
         "\tscore = %lu\n"
         "\tcombo = %li\n"
         "\tdifficult_clear_combo = %li\n"
-        "\ttetris_perfect_clear_combo = %li\n"
+        "\ttetris_all_clear_combo = %li\n"
         "\tt_rotation_test_num = %u\n"
         "\tlast_action_points = %lu\n"
         "\tlast_action_num_lines = %u\n"
         "\tlast_action_t_spin = %i\n"
         "\tlast_action_t_spin_mini = %i\n"
-        "\tlast_action_perfect_clear = %i\n"
+        "\tlast_action_all_clear = %i\n"
         "\thold_piece_event_flag = %i\n"
         "\tnext_piece_event_flag = %i\n"
         "\tlevel_up_event_flag = %i\n"
@@ -283,13 +283,13 @@ void game_state_debug_print(GameState* game_state) {
         game_state->score,
         game_state->combo,
         game_state->difficult_clear_combo,
-        game_state->tetris_perfect_clear_combo,
+        game_state->tetris_all_clear_combo,
         game_state->t_rotation_test_num,
         game_state->last_action_points,
         game_state->last_action_num_lines,
         game_state->last_action_t_spin,
         game_state->last_action_t_spin_mini,
-        game_state->last_action_perfect_clear,
+        game_state->last_action_all_clear,
         game_state->hold_piece_event_flag,
         game_state->next_piece_event_flag,
         game_state->level_up_event_flag,
@@ -582,7 +582,7 @@ void game_state_clear_lines(GameState* game_state) {
         game_state_apply_stack_gravity(game_state, rows[i]);
     }
 
-    points += game_state_calc_perfect_clear_points(game_state, num_lines);
+    points += game_state_calc_all_clear_points(game_state, num_lines);
     points += game_state_calc_combo_points(game_state, num_lines);
     points *= game_state_calc_difficult_clear_mult(game_state, num_lines);
     game_state->score += points;
@@ -884,7 +884,7 @@ size_t game_state_calc_line_clear_points(GameState* game_state, size_t num_lines
     return points;
 }
 
-size_t game_state_calc_perfect_clear_points(GameState* game_state, size_t num_lines) {
+size_t game_state_calc_all_clear_points(GameState* game_state, size_t num_lines) {
     if (!game_state) {
         return 0;
     }
@@ -892,23 +892,23 @@ size_t game_state_calc_perfect_clear_points(GameState* game_state, size_t num_li
     size_t points = 0;
     if (game_state_check_empty_board(game_state) && num_lines > 0) {
         if (num_lines == 1) {
-            points += SINGLE_PERFECT_CLEAR_POINTS * game_state->level;
-            game_state->tetris_perfect_clear_combo = -1;
+            points += SINGLE_ALL_CLEAR_POINTS * game_state->level;
+            game_state->tetris_all_clear_combo = -1;
         } else if (num_lines == 2) {
-            points += DOUBLE_PERFECT_CLEAR_POINTS * game_state->level;
-            game_state->tetris_perfect_clear_combo = -1;
+            points += DOUBLE_ALL_CLEAR_POINTS * game_state->level;
+            game_state->tetris_all_clear_combo = -1;
         } else if (num_lines == 3) {
-            points += TRIPLE_PERFECT_CLEAR_POINTS * game_state->level;
-            game_state->tetris_perfect_clear_combo = -1;
+            points += TRIPLE_ALL_CLEAR_POINTS * game_state->level;
+            game_state->tetris_all_clear_combo = -1;
         } else if (num_lines == 4) {
-            if (game_state->tetris_perfect_clear_combo > 0) {
-                points += B2B_TETRIS_PERFECT_CLEAR_POINTS * game_state->level;
+            if (game_state->tetris_all_clear_combo > 0) {
+                points += B2B_TETRIS_ALL_CLEAR_POINTS * game_state->level;
             } else {
-                points += TETRIS_PERFECT_CLEAR_POINTS * game_state->level;
+                points += TETRIS_ALL_CLEAR_POINTS * game_state->level;
             }
-            game_state->tetris_perfect_clear_combo++;
+            game_state->tetris_all_clear_combo++;
         }
-        game_state->last_action_perfect_clear = true;
+        game_state->last_action_all_clear = true;
     } 
     return points;
 }

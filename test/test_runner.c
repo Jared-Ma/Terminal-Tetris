@@ -57,7 +57,7 @@ int main(void) {
         UNIT_TEST(test_game_state_check_empty_board),
         UNIT_TEST(test_game_state_calc_t_spin_points),
         UNIT_TEST(test_game_state_calc_line_clear_points),
-        UNIT_TEST(test_game_state_calc_perfect_clear_points),
+        UNIT_TEST(test_game_state_calc_all_clear_points),
         UNIT_TEST(test_game_state_calc_combo_points),
         UNIT_TEST(test_game_state_calc_difficult_clear_mult),
     };

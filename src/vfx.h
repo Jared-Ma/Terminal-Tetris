@@ -52,7 +52,7 @@ void draw_vfx_line_clear_tetris(VFX* vfx);
 
 void draw_vfx_line_clear_t_spin(VFX* vfx); 
 
-void draw_vfx_line_clear_perfect(VFX* vfx); 
+void draw_vfx_line_clear_all_clear(VFX* vfx); 
 
 void vfx_enable_hold_piece(VFX* vfx, GameState* game_state);
 
@@ -122,7 +122,7 @@ void draw_vfx_action_tetris(VFX* vfx);
 
 void draw_vfx_action_t_spin(VFX* vfx);
 
-void draw_vfx_action_perfect_clear(VFX* vfx);
+void draw_vfx_action_all_clear(VFX* vfx);
 
 void draw_vfx_combo_reset(VFX* vfx);
 

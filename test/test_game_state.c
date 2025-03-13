@@ -49,7 +49,7 @@ bool test_game_state_get(void) {
     ASSERT(game_state.score == 0);
     ASSERT(game_state.combo == 0);
     ASSERT(game_state.difficult_clear_combo == 0);
-    ASSERT(game_state.tetris_perfect_clear_combo == 0);
+    ASSERT(game_state.tetris_all_clear_combo == 0);
     ASSERT(game_state.t_rotation_test_num == 0);
     ASSERT(game_state.last_action_points == 0);
     ASSERT(strlen(game_state.last_action_string) == 0);
@@ -82,7 +82,7 @@ bool test_game_state_init(void) {
     ASSERT(game_state->score == 0);
     ASSERT(game_state->combo == 0);
     ASSERT(game_state->difficult_clear_combo == 0);
-    ASSERT(game_state->tetris_perfect_clear_combo == 0);
+    ASSERT(game_state->tetris_all_clear_combo == 0);
     ASSERT(game_state->t_rotation_test_num == 0);
     ASSERT(game_state->last_action_points == 0);
     ASSERT(strlen(game_state->last_action_string) == 0);
@@ -1545,7 +1545,7 @@ bool test_game_state_calc_line_clear_points(void) {
     return true;
 }
 
-bool test_game_state_calc_perfect_clear_points(void) {
+bool test_game_state_calc_all_clear_points(void) {
     GameState game_state = game_state_get();
     game_state_start(&game_state);
 
@@ -1557,38 +1557,38 @@ bool test_game_state_calc_perfect_clear_points(void) {
     
     game_state.level = 1;
     size_t num_lines = 0;
-    size_t points = game_state_calc_perfect_clear_points(&game_state, num_lines);
+    size_t points = game_state_calc_all_clear_points(&game_state, num_lines);
     ASSERT(points == 0);
 
     game_state.level = 2;
     num_lines = 1;
-    points = game_state_calc_perfect_clear_points(&game_state, num_lines);
-    ASSERT(points == SINGLE_PERFECT_CLEAR_POINTS * game_state.level);
-    ASSERT(game_state.tetris_perfect_clear_combo == -1);
+    points = game_state_calc_all_clear_points(&game_state, num_lines);
+    ASSERT(points == SINGLE_ALL_CLEAR_POINTS * game_state.level);
+    ASSERT(game_state.tetris_all_clear_combo == -1);
 
     game_state.level = 3;
     num_lines = 2;
-    points = game_state_calc_perfect_clear_points(&game_state, num_lines);
-    ASSERT(points == DOUBLE_PERFECT_CLEAR_POINTS * game_state.level);
-    ASSERT(game_state.tetris_perfect_clear_combo == -1);
+    points = game_state_calc_all_clear_points(&game_state, num_lines);
+    ASSERT(points == DOUBLE_ALL_CLEAR_POINTS * game_state.level);
+    ASSERT(game_state.tetris_all_clear_combo == -1);
 
     game_state.level = 4;
     num_lines = 3;
-    points = game_state_calc_perfect_clear_points(&game_state, num_lines);
-    ASSERT(points == TRIPLE_PERFECT_CLEAR_POINTS * game_state.level);
-    ASSERT(game_state.tetris_perfect_clear_combo == -1);
+    points = game_state_calc_all_clear_points(&game_state, num_lines);
+    ASSERT(points == TRIPLE_ALL_CLEAR_POINTS * game_state.level);
+    ASSERT(game_state.tetris_all_clear_combo == -1);
 
     game_state.level = 5;
     num_lines = 4;
-    points = game_state_calc_perfect_clear_points(&game_state, num_lines);
-    ASSERT(points == TETRIS_PERFECT_CLEAR_POINTS * game_state.level);
-    ASSERT(game_state.tetris_perfect_clear_combo == 0);
+    points = game_state_calc_all_clear_points(&game_state, num_lines);
+    ASSERT(points == TETRIS_ALL_CLEAR_POINTS * game_state.level);
+    ASSERT(game_state.tetris_all_clear_combo == 0);
 
     game_state.level = 6;
     num_lines = 4;
-    points = game_state_calc_perfect_clear_points(&game_state, num_lines);
-    ASSERT(points == B2B_TETRIS_PERFECT_CLEAR_POINTS * game_state.level);
-    ASSERT(game_state.tetris_perfect_clear_combo == 1);
+    points = game_state_calc_all_clear_points(&game_state, num_lines);
+    ASSERT(points == B2B_TETRIS_ALL_CLEAR_POINTS * game_state.level);
+    ASSERT(game_state.tetris_all_clear_combo == 1);
 
     return true;
 }

@@ -37,11 +37,11 @@ extern const uint16_t T_SPIN_MINI_ZERO_POINTS;
 extern const uint16_t T_SPIN_MINI_SINGLE_POINTS;
 extern const uint16_t T_SPIN_MINI_DOUBLE_POINTS;
 
-extern const uint16_t SINGLE_PERFECT_CLEAR_POINTS;
-extern const uint16_t DOUBLE_PERFECT_CLEAR_POINTS;
-extern const uint16_t TRIPLE_PERFECT_CLEAR_POINTS;
-extern const uint16_t TETRIS_PERFECT_CLEAR_POINTS;
-extern const uint16_t B2B_TETRIS_PERFECT_CLEAR_POINTS;
+extern const uint16_t SINGLE_ALL_CLEAR_POINTS;
+extern const uint16_t DOUBLE_ALL_CLEAR_POINTS;
+extern const uint16_t TRIPLE_ALL_CLEAR_POINTS;
+extern const uint16_t TETRIS_ALL_CLEAR_POINTS;
+extern const uint16_t B2B_TETRIS_ALL_CLEAR_POINTS;
 
 extern const uint16_t COMBO_POINTS;
 extern const uint16_t SOFT_DROP_POINTS;
@@ -75,14 +75,14 @@ struct GameState {
     uint64_t score;
     int64_t combo;
     int64_t difficult_clear_combo;
-    int64_t tetris_perfect_clear_combo;
+    int64_t tetris_all_clear_combo;
     uint8_t t_rotation_test_num;
 
     uint64_t last_action_points;
     uint8_t last_action_num_lines;
     bool last_action_t_spin;
     bool last_action_t_spin_mini;
-    bool last_action_perfect_clear;
+    bool last_action_all_clear;
     bool hold_piece_event_flag;
     bool next_piece_event_flag;
     bool level_up_event_flag;
@@ -155,7 +155,7 @@ size_t game_state_calc_line_clear_points(GameState* game_state, size_t num_lines
 
 size_t game_state_calc_t_spin_points(GameState* game_state, size_t num_lines);
 
-size_t game_state_calc_perfect_clear_points(GameState* game_state, size_t num_lines);
+size_t game_state_calc_all_clear_points(GameState* game_state, size_t num_lines);
 
 size_t game_state_calc_combo_points(GameState* game_state, size_t num_lines);
 

@@ -71,7 +71,7 @@ bool test_game_state_calc_t_spin_points(void);
 
 bool test_game_state_calc_line_clear_points(void);
 
-bool test_game_state_calc_perfect_clear_points(void);
+bool test_game_state_calc_all_clear_points(void);
 
 bool test_game_state_calc_combo_points(void);
 
