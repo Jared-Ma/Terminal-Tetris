@@ -89,8 +89,8 @@ static void start_tetris(
     VFX* vfx_b2b = vfx_init(stats_window, draw_vfx_b2b_reset, 240);
     VFX* vfx_score = vfx_init(stats_window, draw_vfx_score_reset, 240);
     VFX* vfx_level_up = vfx_init(board_window, draw_vfx_level_up_reset, 120);
-    VFX* vfx_stats_lines = vfx_init(stats_window, draw_vfx_stats_lines_reset, 10);
-    VFX* vfx_stats_level = vfx_init(stats_window, draw_vfx_stats_level_reset, 10);
+    VFX* vfx_stats_lines = vfx_init(stats_window, draw_vfx_stats_lines_reset, 5);
+    VFX* vfx_stats_level = vfx_init(stats_window, draw_vfx_stats_level_reset, 5);
     VFX* vfx_list[NUM_VFX] = {
         vfx_hold_piece,
         vfx_next_piece,

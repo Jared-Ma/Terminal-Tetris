@@ -840,7 +840,7 @@ void draw_vfx_stats_lines_reset(VFX* vfx) {
     if (!vfx) {
         return;
     }
-    mvwprintw(vfx->game_window->content, vfx->y, vfx->x, "%*s", (int)strlen(vfx->text), "");
+    mvwprintw(vfx->game_window->content, vfx->y, vfx->x, "%s", vfx->text);
 }
 
 void draw_vfx_stats_lines(VFX* vfx) {
@@ -869,7 +869,7 @@ void draw_vfx_stats_level_reset(VFX* vfx) {
     if (!vfx) {
         return;
     }
-    mvwprintw(vfx->game_window->content, vfx->y, vfx->x, "%*s", (int)strlen(vfx->text), "");
+    mvwprintw(vfx->game_window->content, vfx->y, vfx->x, "%s", vfx->text);
 }
 
 void draw_vfx_stats_level(VFX* vfx) {
