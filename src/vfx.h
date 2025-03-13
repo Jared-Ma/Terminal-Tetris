@@ -36,7 +36,7 @@ void vfx_disable(VFX* vfx);
 
 void draw_vfx_frame(VFX* vfx);
 
-void draw_vfx_board_window_border(VFX* vfx, uint16_t color_pair);
+void draw_vfx_board_window_border(VFX* vfx, int16_t color_pair);
 
 void vfx_enable_line_clear(VFX* vfx, GameState* game_state);
 

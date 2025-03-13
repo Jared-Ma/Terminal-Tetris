@@ -72,7 +72,7 @@ void draw_vfx_frame(VFX* vfx) {
     }
 }
 
-void draw_vfx_board_window_border(VFX* vfx, uint16_t color_pair) {
+void draw_vfx_board_window_border(VFX* vfx, int16_t color_pair) {
     wattron(vfx->game_window->border, COLOR_PAIR(color_pair));
     mvwaddch(vfx->game_window->border, 0, 0, ACS_ULCORNER);
     mvwaddch(vfx->game_window->border, 0, vfx->game_window->border_w - 1, ACS_URCORNER);
@@ -432,6 +432,10 @@ void vfx_enable_last_action(VFX* vfx_action, VFX* vfx_combo, VFX* vfx_b2b, VFX* 
     }
 
     if (game_state->last_action_t_spin || game_state->last_action_t_spin_mini || game_state->last_action_num_lines > 0) {
+        vfx_disable(vfx_action);
+        vfx_disable(vfx_combo);
+        vfx_disable(vfx_b2b);
+        vfx_disable(vfx_score);
         size_t start_y = vfx_action->game_window->content_h;
 
         if (game_state->last_action_points > 0) {
@@ -659,7 +663,7 @@ void draw_vfx_action_perfect_clear(VFX* vfx) {
         return;
     }
 
-    uint16_t color_pair;
+    int16_t color_pair;
     if (vfx->frame_timer % 7 == 0) {
         color_pair = COLOR_PAIR_RED;
     } else if ((vfx->frame_timer + 1) % 7 == 0) {
@@ -789,7 +793,7 @@ void draw_vfx_level_up(VFX* vfx) {
         return;
     }
 
-    uint16_t color_pair;
+    int16_t color_pair;
     if (vfx->frame_timer % 7 == 0) {
         color_pair = COLOR_PAIR_RED;
     } else if ((vfx->frame_timer + 1) % 7 == 0) {
