@@ -273,6 +273,7 @@ static void start_tetris(
     vfx_destroy(vfx_line_clear);
     vfx_destroy(vfx_hold_piece);
     vfx_destroy(vfx_next_piece);
+    vfx_destroy(vfx_lock_piece);
     vfx_destroy(vfx_action);
     vfx_destroy(vfx_combo);
     vfx_destroy(vfx_b2b);
