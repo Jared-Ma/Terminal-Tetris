@@ -1,7 +1,8 @@
+#include "unit_test.h"
+
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>
-#include "unit_test.h"
 
 
 bool run_unit_test(size_t test_num, UnitTest unit_test) {

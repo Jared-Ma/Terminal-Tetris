@@ -1,7 +1,7 @@
 #ifndef UNIT_TEST_H
 #define UNIT_TEST_H
-#include <stdlib.h>
 #include <stdbool.h>
+#include <stdlib.h>
 
 #define UNIT_TEST(test) {test, #test}
 

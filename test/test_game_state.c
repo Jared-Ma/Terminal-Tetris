@@ -1,9 +1,13 @@
-#include <stdio.h>
-#include <stdbool.h>
-#include <math.h>
-#include <string.h>
-#include "utils/assert_trace.h"
+#include "test_game_state.h"
 #include "game_state.h"
+#include "piece.h"
+
+#include "utils/assert_trace.h"
+
+#include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 
 bool check_piece_equals_zero(Piece piece) {
@@ -52,7 +56,6 @@ bool test_game_state_get(void) {
     ASSERT(game_state.tetris_all_clear_combo == 0);
     ASSERT(game_state.t_rotation_test_num == 0);
     ASSERT(game_state.last_action_points == 0);
-    ASSERT(strlen(game_state.last_action_string) == 0);
     return true;
 }
 
@@ -85,7 +88,6 @@ bool test_game_state_init(void) {
     ASSERT(game_state->tetris_all_clear_combo == 0);
     ASSERT(game_state->t_rotation_test_num == 0);
     ASSERT(game_state->last_action_points == 0);
-    ASSERT(strlen(game_state->last_action_string) == 0);
     game_state_destroy(game_state);
     return true;
 }
@@ -107,7 +109,7 @@ bool test_game_state_restart(void) {
     game_state_start(&game_state);
     piece_move(&game_state.curr_piece, 5, 10);
 
-    game_state_restart(&game_state);
+    game_state_reset(&game_state);
 
     Shape next_shape = game_state.next_queue[game_state.next_index-1];
     ASSERT(game_state.level == 1);
@@ -1040,9 +1042,9 @@ bool test_game_state_clear_lines(void) {
         game_state.lines = LEVEL_LINE_REQ - num_lines; 
         game_state.score = 0; 
         game_state.combo = -1; 
-        size_t prev_level = game_state.level;
-        size_t prev_lines = game_state.lines;
-        size_t prev_score = game_state.score;
+        uint64_t prev_level = game_state.level;
+        uint64_t prev_lines = game_state.lines;
+        uint64_t prev_score = game_state.score;
 
         game_state_clear_lines(&game_state);
         
@@ -1189,9 +1191,9 @@ bool test_game_state_check_t_spin(void) {
     // cases when there should be a t-spin:
     // each corner is specified by a bit in order from top-left, top-right, 
     // bottom-left, bottom-right, from least to most significant bit
-    size_t true_case_1 = 0b0111;
-    size_t true_case_2 = 0b1011;
-    size_t true_case_3 = 0b1111;
+    uint8_t true_case_1 = 0b0111;
+    uint8_t true_case_2 = 0b1011;
+    uint8_t true_case_3 = 0b1111;
 
     // enumerate and test every possible combination of corners 
     for (size_t i = 0; i < 16; ++i) {
@@ -1303,9 +1305,9 @@ bool test_game_state_check_t_spin_mini(void) {
     // cases when there should be a mini t-spin:
     // each corner is specified by a bit in order from top-left, top-right, 
     // bottom-left, bottom-right, from least to most significant bit
-    size_t true_case_1 = 0b1101;
-    size_t true_case_2 = 0b1110;
-    size_t true_case_3 = 0b1111;
+    uint8_t true_case_1 = 0b1101;
+    uint8_t true_case_2 = 0b1110;
+    uint8_t true_case_3 = 0b1111;
 
     // enumerate and test every possible combination of corners 
     for (size_t i = 0; i < 16; ++i) {
@@ -1416,8 +1418,8 @@ bool test_game_state_calc_t_spin_points(void) {
     game_state.board[top_left_y + 2][top_left_x + 2] = 0;
 
     game_state.level = 1;
-    size_t num_lines = 0;
-    size_t points = game_state_calc_t_spin_points(&game_state, num_lines);
+    uint64_t num_lines = 0;
+    uint64_t points = game_state_calc_t_spin_points(&game_state, num_lines);
     ASSERT(points == T_SPIN_ZERO_POINTS * game_state.level);
     ASSERT(game_state.difficult_clear_combo == -1);
 
@@ -1486,8 +1488,8 @@ bool test_game_state_calc_line_clear_points(void) {
     game_state_start(&game_state);
 
     game_state.level = 1;
-    size_t num_lines = 0;
-    size_t points = game_state_calc_line_clear_points(&game_state, num_lines);
+    uint64_t num_lines = 0;
+    uint64_t points = game_state_calc_line_clear_points(&game_state, num_lines);
     ASSERT(points == 0);
 
     game_state.level = 2;
@@ -1556,8 +1558,8 @@ bool test_game_state_calc_all_clear_points(void) {
     }
     
     game_state.level = 1;
-    size_t num_lines = 0;
-    size_t points = game_state_calc_all_clear_points(&game_state, num_lines);
+    uint64_t num_lines = 0;
+    uint64_t points = game_state_calc_all_clear_points(&game_state, num_lines);
     ASSERT(points == 0);
 
     game_state.level = 2;
@@ -1598,8 +1600,8 @@ bool test_game_state_calc_combo_points(void) {
     game_state_start(&game_state);
 
     game_state.level = 1;
-    size_t num_lines = 1;
-    size_t points = game_state_calc_combo_points(&game_state, num_lines);
+    uint64_t num_lines = 1;
+    uint64_t points = game_state_calc_combo_points(&game_state, num_lines);
     ASSERT(points == COMBO_POINTS * game_state.combo * game_state.level);
     ASSERT(game_state.combo == 0);
 
@@ -1634,7 +1636,7 @@ bool test_game_state_calc_difficult_clear_mult(void) {
     GameState game_state = game_state_get();
     game_state_start(&game_state);
 
-    size_t num_lines = 0;
+    uint64_t num_lines = 0;
     float mult = game_state_calc_difficult_clear_mult(&game_state, num_lines);
     ASSERT(mult == 1.0);
 

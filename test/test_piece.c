@@ -1,7 +1,10 @@
-#include <stdio.h>
-#include <stdbool.h>
-#include "utils/assert_trace.h"
+#include "test_piece.h"
 #include "piece.h"
+
+#include "utils/assert_trace.h"
+
+#include <stdbool.h>
+#include <stdio.h>
 
 
 bool test_piece_get(void) {

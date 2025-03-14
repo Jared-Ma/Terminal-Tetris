@@ -1,12 +1,15 @@
-#include <stdio.h>
-#include <stdbool.h>
-#include "utils/assert_trace.h"
+#include "test_stats.h"
 #include "stats.h"
+
+#include "utils/assert_trace.h"
+
+#include <stdbool.h>
+#include <stdio.h>
 
 
 bool test_stats_get(void) {
     Stats stats = stats_get();
-    ASSERT(stats.time == 0);
+    ASSERT(stats.seconds == 0.0);
     ASSERT(stats.frame_count == 0);
     ASSERT(stats.fps == 0.0);
     return true;
@@ -14,7 +17,7 @@ bool test_stats_get(void) {
 
 bool test_stats_init(void) {
     Stats* stats = stats_init();
-    ASSERT(stats->time == 0);
+    ASSERT(stats->seconds == 0.0);
     ASSERT(stats->frame_count == 0);
     ASSERT(stats->fps == 0.0);
     stats_destroy(stats);
@@ -23,10 +26,10 @@ bool test_stats_init(void) {
 
 bool test_stats_reset(void) {
     Stats stats = stats_get();
-    stats.time = 1;
+    stats.seconds = 1;
     stats.frame_count = 1;
     stats_reset(&stats);
-    ASSERT(stats.time == 0);
+    ASSERT(stats.seconds == 0.0);
     ASSERT(stats.frame_count == 0);
     return true;
 }

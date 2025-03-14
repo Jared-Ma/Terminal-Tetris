@@ -1,9 +1,12 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include "utils/unit_test.h"
+#include "test_game_state.h"
 #include "test_piece.h"
 #include "test_stats.h"
-#include "test_game_state.h"
+
+#include "utils/unit_test.h"
+
+#include <stdbool.h>
+#include <stdlib.h>
+#include <stdio.h>
 
 #define NUM_TESTS 48
 
