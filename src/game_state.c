@@ -1,6 +1,6 @@
 #include <stdlib.h>
+#include <stdint.h>
 #include <stdbool.h>
-#include <math.h>
 #include <string.h>
 #include "game_state.h"
 #include "piece.h"
@@ -40,7 +40,7 @@ const uint16_t SOFT_DROP_POINTS = 1;
 const uint16_t HARD_DROP_POINTS = 2;
 const float B2B_DIFFICULT_CLEAR_MULT = 1.5;
 
-const int SRS_TABLE[SRS_NUM_ROTATIONS][SRS_NUM_TESTS][SRS_NUM_COORDS] = {
+const int8_t SRS_TABLE[SRS_NUM_ROTATIONS][SRS_NUM_TESTS][SRS_NUM_COORDS] = {
     {{0, 0}, {-1, 0}, {-1, +1}, {0, -2}, {-1, -2}},
     {{0, 0}, {+1, 0}, {+1, -1}, {0, +2}, {+1, +2}},
     {{0, 0}, {+1, 0}, {+1, -1}, {0, +2}, {+1, +2}},
@@ -51,7 +51,7 @@ const int SRS_TABLE[SRS_NUM_ROTATIONS][SRS_NUM_TESTS][SRS_NUM_COORDS] = {
     {{0, 0}, {+1, 0}, {+1, +1}, {0, -2}, {+1, -2}}
 };
 
-const int SRS_TABLE_I[SRS_NUM_ROTATIONS][SRS_NUM_TESTS][SRS_NUM_COORDS] = {
+const int8_t SRS_TABLE_I[SRS_NUM_ROTATIONS][SRS_NUM_TESTS][SRS_NUM_COORDS] = {
     {{0, 0}, {-2, 0}, {+1, 0}, {-2, -1}, {+1, +2}},
     {{0, 0}, {+2, 0}, {-1, 0}, {+2, +1}, {-1, -2}},
     {{0, 0}, {-1, 0}, {+2, 0}, {-1, +2}, {+2, -1}},
@@ -62,7 +62,7 @@ const int SRS_TABLE_I[SRS_NUM_ROTATIONS][SRS_NUM_TESTS][SRS_NUM_COORDS] = {
     {{0, 0}, {-1, 0}, {+2, 0}, {-1, +2}, {+2, -1}}
 };
 
-const int SRS_TABLE_O[SRS_NUM_ROTATIONS][SRS_NUM_TESTS][SRS_NUM_COORDS] = {
+const int8_t SRS_TABLE_O[SRS_NUM_ROTATIONS][SRS_NUM_TESTS][SRS_NUM_COORDS] = {
     {{0, +1}, {0, 0}, {0, 0}, {0, 0}, {0, 0}},
     {{0, -1}, {0, 0}, {0, 0}, {0, 0}, {0, 0}},
     {{+1, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}},
@@ -98,32 +98,6 @@ GameState game_state_get(void) {
         .next_piece = { 0 },
         .ghost_piece = { 0 },
         .board = {{ 0 }},
-
-        .board = {
-            { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-            { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-            { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-            { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-            { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-            { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-            { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-            { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-            { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-            { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-            { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-            { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-            { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-            { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-            { 1, 1, 1, 1, 1, 1, 1, 1, 1, 0 },
-            { 1, 1, 1, 1, 1, 1, 1, 1, 1, 0 },
-            { 1, 1, 1, 1, 1, 1, 1, 1, 1, 0 },
-            { 1, 1, 1, 1, 1, 1, 1, 1, 1, 0 },
-            { 1, 1, 1, 1, 1, 1, 1, 1, 1, 0 },
-            { 1, 1, 1, 1, 1, 1, 1, 1, 1, 0 },
-            { 1, 1, 1, 1, 1, 1, 1, 1, 1, 0 },
-            { 1, 1, 1, 1, 1, 1, 1, 1, 1, 0 },
-        },
-
 
         .holding_piece = false,
         .hold_blocked = false,
@@ -184,9 +158,6 @@ void game_state_start(GameState* game_state) {
     game_state_generate_next_queue(game_state);
     game_state->next_piece = piece_get(game_state->next_queue[game_state->next_index++], 0, 0);
     game_state_load_next_piece(game_state);
-
-    game_state->curr_piece = piece_get(I, SPAWN_Y, SPAWN_X);
-    game_state->next_piece = piece_get(I, SPAWN_Y, SPAWN_X);
 }
 
 void game_state_reset(GameState* game_state) {
@@ -215,7 +186,6 @@ void game_state_debug_print(GameState* game_state) {
     }
 
     fprintf(debug_log, "%p = {\n", game_state);
-
     fprintf(debug_log, "\tcurr_piece = ");
     piece_debug_print(&game_state->curr_piece);
     fprintf(debug_log, "\thold_piece = ");
@@ -232,7 +202,6 @@ void game_state_debug_print(GameState* game_state) {
         }
         fprintf(debug_log, "]\n");
     }
-
     fprintf(
         debug_log,
         "\tholding_piece = %i\n"
@@ -247,7 +216,6 @@ void game_state_debug_print(GameState* game_state) {
         fprintf(debug_log, "%c ", shape_to_char(game_state->next_queue[i]));
     }
     fprintf(debug_log, "]\n");
-
     fprintf(
         debug_log,
         "\tsoft_drop = %i\n"
@@ -259,7 +227,6 @@ void game_state_debug_print(GameState* game_state) {
         game_state->lock_delay_timer,
         game_state->move_reset_count
     );
-
     fprintf(
         debug_log,
         "\tlevel = %lu\n"
@@ -295,7 +262,6 @@ void game_state_debug_print(GameState* game_state) {
         game_state->level_up_event_flag,
         game_state->last_locked_piece_shape
     );
-
     fprintf(debug_log, "}\n");
 }
 

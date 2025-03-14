@@ -21,9 +21,6 @@ extern const uint16_t LEVEL_UP_VFX_FRAMES;
 extern const uint16_t STATS_LINES_VFX_FRAMES;
 extern const uint16_t STATS_LEVEL_VFX_FRAMES;
 
-extern const uint16_t LAST_ACTION_VFX_DIM_FRAMES;
-extern const uint16_t LEVEL_UP_VFX_DIM_FRAMES;
-
 struct VFX;
 
 typedef struct VFX VFX;

@@ -23,6 +23,9 @@ const uint16_t STATS_LEVEL_VFX_FRAMES = 5;
 const uint16_t LAST_ACTION_VFX_DIM_FRAMES = 30;
 const uint16_t LEVEL_UP_VFX_DIM_FRAMES    = 30;
 
+const int8_t LEVEL_UP_VFX_Y = 5;
+const int8_t LEVEL_UP_VFX_W = 8;
+
 VFX vfx_get(GameWindow* game_window, draw_vfx_function* reset_function, uint16_t frame_duration) {
     VFX visual_effect = {
         .game_window = game_window,
@@ -307,7 +310,7 @@ void draw_vfx_hold_piece_reset(VFX* vfx) {
         return;
     }
     draw_window_border(vfx->game_window, COLOR_PAIR_DEFAULT);
-    draw_window_title(vfx->game_window, "HOLD", COLOR_PAIR_DEFAULT);
+    draw_window_title(vfx->game_window, HOLD_TITLE, COLOR_PAIR_DEFAULT);
 }
 
 void draw_vfx_hold_i_piece(VFX* vfx) {
@@ -315,7 +318,7 @@ void draw_vfx_hold_i_piece(VFX* vfx) {
         return;
     }
     draw_window_border(vfx->game_window, COLOR_PAIR_CYAN);
-    draw_window_title(vfx->game_window, "HOLD", COLOR_PAIR_CYAN);
+    draw_window_title(vfx->game_window, HOLD_TITLE, COLOR_PAIR_CYAN);
 }
 
 void draw_vfx_hold_j_piece(VFX* vfx) {
@@ -323,7 +326,7 @@ void draw_vfx_hold_j_piece(VFX* vfx) {
         return;
     }
     draw_window_border(vfx->game_window, COLOR_PAIR_BLUE);
-    draw_window_title(vfx->game_window, "HOLD", COLOR_PAIR_BLUE);
+    draw_window_title(vfx->game_window, HOLD_TITLE, COLOR_PAIR_BLUE);
 }
 
 void draw_vfx_hold_l_piece(VFX* vfx) {
@@ -331,7 +334,7 @@ void draw_vfx_hold_l_piece(VFX* vfx) {
         return;
     }
     draw_window_border(vfx->game_window, COLOR_PAIR_ORANGE);
-    draw_window_title(vfx->game_window, "HOLD", COLOR_PAIR_ORANGE);
+    draw_window_title(vfx->game_window, HOLD_TITLE, COLOR_PAIR_ORANGE);
 }
 
 void draw_vfx_hold_o_piece(VFX* vfx) {
@@ -339,7 +342,7 @@ void draw_vfx_hold_o_piece(VFX* vfx) {
         return;
     }
     draw_window_border(vfx->game_window, COLOR_PAIR_YELLOW);
-    draw_window_title(vfx->game_window, "HOLD", COLOR_PAIR_YELLOW);
+    draw_window_title(vfx->game_window, HOLD_TITLE, COLOR_PAIR_YELLOW);
 }
 
 void draw_vfx_hold_s_piece(VFX* vfx) {
@@ -347,7 +350,7 @@ void draw_vfx_hold_s_piece(VFX* vfx) {
         return;
     }
     draw_window_border(vfx->game_window, COLOR_PAIR_GREEN);
-    draw_window_title(vfx->game_window, "HOLD", COLOR_PAIR_GREEN);
+    draw_window_title(vfx->game_window, HOLD_TITLE, COLOR_PAIR_GREEN);
 }
 
 void draw_vfx_hold_t_piece(VFX* vfx) {
@@ -355,7 +358,7 @@ void draw_vfx_hold_t_piece(VFX* vfx) {
         return;
     }
     draw_window_border(vfx->game_window, COLOR_PAIR_MAGENTA);
-    draw_window_title(vfx->game_window, "HOLD", COLOR_PAIR_MAGENTA);
+    draw_window_title(vfx->game_window, HOLD_TITLE, COLOR_PAIR_MAGENTA);
 }
 
 void draw_vfx_hold_z_piece(VFX* vfx) {
@@ -363,7 +366,7 @@ void draw_vfx_hold_z_piece(VFX* vfx) {
         return;
     }
     draw_window_border(vfx->game_window, COLOR_PAIR_RED);
-    draw_window_title(vfx->game_window, "HOLD", COLOR_PAIR_RED);
+    draw_window_title(vfx->game_window, HOLD_TITLE, COLOR_PAIR_RED);
 }
 
 void vfx_enable_next_piece(VFX* vfx, GameState* game_state) {
@@ -395,7 +398,7 @@ void draw_vfx_next_piece_reset(VFX* vfx) {
         return;
     }
     draw_window_border(vfx->game_window, COLOR_PAIR_DEFAULT);
-    draw_window_title(vfx->game_window, "NEXT", COLOR_PAIR_DEFAULT);
+    draw_window_title(vfx->game_window, NEXT_TITLE, COLOR_PAIR_DEFAULT);
 }
 
 void draw_vfx_next_i_piece(VFX* vfx) {
@@ -403,7 +406,7 @@ void draw_vfx_next_i_piece(VFX* vfx) {
         return;
     }
     draw_window_border(vfx->game_window, COLOR_PAIR_CYAN);
-    draw_window_title(vfx->game_window, "NEXT", COLOR_PAIR_CYAN);
+    draw_window_title(vfx->game_window, NEXT_TITLE, COLOR_PAIR_CYAN);
 }
 
 void draw_vfx_next_j_piece(VFX* vfx) {
@@ -411,7 +414,7 @@ void draw_vfx_next_j_piece(VFX* vfx) {
         return;
     }
     draw_window_border(vfx->game_window, COLOR_PAIR_BLUE);
-    draw_window_title(vfx->game_window, "NEXT", COLOR_PAIR_BLUE);
+    draw_window_title(vfx->game_window, NEXT_TITLE, COLOR_PAIR_BLUE);
 }
 
 void draw_vfx_next_l_piece(VFX* vfx) {
@@ -419,7 +422,7 @@ void draw_vfx_next_l_piece(VFX* vfx) {
         return;
     }
     draw_window_border(vfx->game_window, COLOR_PAIR_ORANGE);
-    draw_window_title(vfx->game_window, "NEXT", COLOR_PAIR_ORANGE);
+    draw_window_title(vfx->game_window, NEXT_TITLE, COLOR_PAIR_ORANGE);
 }
 
 void draw_vfx_next_o_piece(VFX* vfx) {
@@ -427,7 +430,7 @@ void draw_vfx_next_o_piece(VFX* vfx) {
         return;
     }
     draw_window_border(vfx->game_window, COLOR_PAIR_YELLOW);
-    draw_window_title(vfx->game_window, "NEXT", COLOR_PAIR_YELLOW);
+    draw_window_title(vfx->game_window, NEXT_TITLE, COLOR_PAIR_YELLOW);
 }
 
 void draw_vfx_next_s_piece(VFX* vfx) {
@@ -435,7 +438,7 @@ void draw_vfx_next_s_piece(VFX* vfx) {
         return;
     }
     draw_window_border(vfx->game_window, COLOR_PAIR_GREEN);
-    draw_window_title(vfx->game_window, "NEXT", COLOR_PAIR_GREEN);
+    draw_window_title(vfx->game_window, NEXT_TITLE, COLOR_PAIR_GREEN);
 }
 
 void draw_vfx_next_t_piece(VFX* vfx) {
@@ -443,7 +446,7 @@ void draw_vfx_next_t_piece(VFX* vfx) {
         return;
     }
     draw_window_border(vfx->game_window, COLOR_PAIR_MAGENTA);
-    draw_window_title(vfx->game_window, "NEXT", COLOR_PAIR_MAGENTA);
+    draw_window_title(vfx->game_window, NEXT_TITLE, COLOR_PAIR_MAGENTA);
 }
 
 void draw_vfx_next_z_piece(VFX* vfx) {
@@ -451,7 +454,7 @@ void draw_vfx_next_z_piece(VFX* vfx) {
         return;
     }
     draw_window_border(vfx->game_window, COLOR_PAIR_RED);
-    draw_window_title(vfx->game_window, "NEXT", COLOR_PAIR_RED);
+    draw_window_title(vfx->game_window, NEXT_TITLE, COLOR_PAIR_RED);
 }
 
 void vfx_enable_last_action(VFX* vfx_action, VFX* vfx_combo, VFX* vfx_b2b, VFX* vfx_score, GameState* game_state) {
@@ -802,8 +805,8 @@ void draw_vfx_score(VFX* vfx) {
 
 void vfx_enable_level_up(VFX* vfx, GameState* game_state) {
     if (game_state->level_up_event_flag) {
-        sprintf(vfx->text, "LEVEL%*lu", 3, game_state->level);
-        vfx->y = 5;
+        sprintf(vfx->text, "LEVEL%*lu", (int)(LEVEL_UP_VFX_W - strlen("LEVEL")), game_state->level);
+        vfx->y = LEVEL_UP_VFX_Y;
         vfx->x = vfx->game_window->content_w/2 - strlen(vfx->text)/2;
         vfx_enable(vfx, draw_vfx_level_up);
     }
@@ -858,8 +861,8 @@ void vfx_enable_stats_lines(VFX* vfx, GameState* game_state) {
 
     if (game_state->last_action_num_lines > 0) {
         sprintf(vfx->text, "lines: %lu", game_state->lines);
-        vfx->y = 3;
-        vfx->x = 0;
+        vfx->y = STATS_LINES_Y;
+        vfx->x = STATS_LINES_X;
         vfx_enable(vfx, draw_vfx_stats_lines);
     }
 }
@@ -887,8 +890,8 @@ void vfx_enable_stats_level(VFX* vfx, GameState* game_state) {
 
     if (game_state->level_up_event_flag) {
         sprintf(vfx->text, "level: %lu", game_state->level);
-        vfx->y = 5;
-        vfx->x = 0;
+        vfx->y = STATS_LEVEL_Y;
+        vfx->x = STATS_LEVEL_X;
         vfx_enable(vfx, draw_vfx_stats_level);
     }
 }

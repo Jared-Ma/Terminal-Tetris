@@ -1,50 +1,68 @@
 #ifndef DRAW_H
 #define DRAW_H
 #include <ncurses.h>
+#include <stdint.h>
 #include "game_state.h"
 #include "stats.h"
-#include "piece.h"
 
 
-extern const int BOARD_WINDOW_H;
-extern const int BOARD_WINDOW_W;
-extern const int BOARD_WINDOW_Y;
-extern const int BOARD_WINDOW_X;
+extern const int8_t BOARD_WINDOW_H;
+extern const int8_t BOARD_WINDOW_W;
+extern const int8_t BOARD_WINDOW_Y;
+extern const int8_t BOARD_WINDOW_X;
 
-extern const int HOLD_WINDOW_H;
-extern const int HOLD_WINDOW_W;
-extern const int HOLD_WINDOW_Y;
-extern const int HOLD_WINDOW_X;
+extern const int8_t HOLD_WINDOW_H;
+extern const int8_t HOLD_WINDOW_W;
+extern const int8_t HOLD_WINDOW_Y;
+extern const int8_t HOLD_WINDOW_X;
 
-extern const int NEXT_WINDOW_H;
-extern const int NEXT_WINDOW_W;
-extern const int NEXT_WINDOW_Y;
-extern const int NEXT_WINDOW_X;
+extern const int8_t NEXT_WINDOW_H;
+extern const int8_t NEXT_WINDOW_W;
+extern const int8_t NEXT_WINDOW_Y;
+extern const int8_t NEXT_WINDOW_X;
 
-extern const int STATS_WINDOW_H;
-extern const int STATS_WINDOW_W;
-extern const int STATS_WINDOW_Y;
-extern const int STATS_WINDOW_X;
+extern const int8_t STATS_WINDOW_H;
+extern const int8_t STATS_WINDOW_W;
+extern const int8_t STATS_WINDOW_Y;
+extern const int8_t STATS_WINDOW_X;
 
-extern const int CONTROLS_WINDOW_H;
-extern const int CONTROLS_WINDOW_W;
-extern const int CONTROLS_WINDOW_Y;
-extern const int CONTROLS_WINDOW_X;
+extern const int8_t CONTROLS_WINDOW_H;
+extern const int8_t CONTROLS_WINDOW_W;
+extern const int8_t CONTROLS_WINDOW_Y;
+extern const int8_t CONTROLS_WINDOW_X;
 
-extern const int PAUSE_WINDOW_H;
-extern const int PAUSE_WINDOW_W;
-extern const int PAUSE_WINDOW_Y;
-extern const int PAUSE_WINDOW_X;
+extern const int8_t PAUSE_WINDOW_H;
+extern const int8_t PAUSE_WINDOW_W;
+extern const int8_t PAUSE_WINDOW_Y;
+extern const int8_t PAUSE_WINDOW_X;
 
-extern const int GAME_OVER_WINDOW_H;
-extern const int GAME_OVER_WINDOW_W;
-extern const int GAME_OVER_WINDOW_Y;
-extern const int GAME_OVER_WINDOW_X;
+extern const int8_t GAME_OVER_WINDOW_H;
+extern const int8_t GAME_OVER_WINDOW_W;
+extern const int8_t GAME_OVER_WINDOW_Y;
+extern const int8_t GAME_OVER_WINDOW_X;
 
-extern const int DEBUG_WINDOW_H;
-extern const int DEBUG_WINDOW_W;
-extern const int DEBUG_WINDOW_Y;
-extern const int DEBUG_WINDOW_X;
+extern const int8_t PAUSE_WINDOW_H;
+extern const int8_t PAUSE_WINDOW_W;
+extern const int8_t PAUSE_WINDOW_Y;
+extern const int8_t PAUSE_WINDOW_X;
+
+extern const int8_t GAME_OVER_WINDOW_H;
+extern const int8_t GAME_OVER_WINDOW_W;
+extern const int8_t GAME_OVER_WINDOW_Y;
+extern const int8_t GAME_OVER_WINDOW_X;
+
+extern const int8_t DEBUG_WINDOW_H;
+extern const int8_t DEBUG_WINDOW_W;
+extern const int8_t DEBUG_WINDOW_Y;
+extern const int8_t DEBUG_WINDOW_X;
+
+extern const int8_t STATS_LINES_Y;
+extern const int8_t STATS_LINES_X;
+extern const int8_t STATS_LEVEL_Y;
+extern const int8_t STATS_LEVEL_X;
+
+extern const char* HOLD_TITLE;
+extern const char* NEXT_TITLE;
 
 extern const int16_t COLOR_PAIR_DEFAULT;
 extern const int16_t COLOR_PAIR_CYAN;
@@ -80,7 +98,7 @@ void game_window_refresh(GameWindow* game_window);
 
 void draw_window_border(GameWindow* game_window, int16_t color_pair);
 
-void draw_window_title(GameWindow* game_window, char* title, int16_t color_pair);
+void draw_window_title(GameWindow* game_window, const char* title, int16_t color_pair);
 
 void draw_board_window(GameWindow* board_window);
 

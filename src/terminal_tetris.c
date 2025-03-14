@@ -9,10 +9,19 @@
 #include "stats.h"
 #include "logger.h"
 
-#define TARGET_FPS 60
-#define TARGET_FRAME_TIME_NS (1e9 / TARGET_FPS)
-#define ESC '\e'
+#define INPUT_MOVE_LEFT    KEY_LEFT
+#define INPUT_MOVE_RIGHT   KEY_RIGHT
+#define INPUT_ROTATE_LEFT  'z'
+#define INPUT_ROTATE_RIGHT 'x'
+#define INPUT_HOLD         'c'
+#define INPUT_SOFT_DROP    KEY_DOWN
+#define INPUT_HARD_DROP    ' '
+#define INPUT_RESTART      'r'
+#define INPUT_PAUSE        '\e'
 
+
+const uint16_t TARGET_FPS = 60;
+const uint32_t TARGET_FRAME_TIME_NS = 1e9 / TARGET_FPS;
 
 enum InputState {
     PLAYING,
@@ -145,51 +154,51 @@ static void start_tetris(
         int input = getch();
         if (input_state == PLAYING) {
             switch (input) {
-            case 'z':
+            case INPUT_ROTATE_LEFT:
                 game_state_rotate_curr_piece_srs(game_state, LEFT);
                 break;
-            case 'x':
+            case INPUT_ROTATE_RIGHT:
                 game_state_rotate_curr_piece_srs(game_state, RIGHT);
                 break;
-            case KEY_LEFT:
+            case INPUT_MOVE_LEFT:
                 game_state_move_curr_piece(game_state, game_state->curr_piece.y, game_state->curr_piece.x - 1);
                 break;
-            case KEY_RIGHT:
+            case INPUT_MOVE_RIGHT:
                 game_state_move_curr_piece(game_state, game_state->curr_piece.y, game_state->curr_piece.x + 1);
                 break;
-            case KEY_DOWN:
-                game_state_soft_drop_curr_piece(game_state);
-                break;
-            case 'c':
+            case INPUT_HOLD:
                 game_state_hold_piece(game_state);
                 break;
-            case ' ':
+            case INPUT_SOFT_DROP:
+                game_state_soft_drop_curr_piece(game_state);
+                break;
+            case INPUT_HARD_DROP:
                 game_state_hard_drop_curr_piece(game_state);
                 break;
-            case ESC:
+            case INPUT_PAUSE:
                 input_state = PAUSED;
                 break;
             }
         } else if (input_state == PAUSED) {
             switch (input) {
-            case ' ':
+            case INPUT_HARD_DROP:
                 input_state = PLAYING;
                 break;
-            case 'r':
+            case INPUT_RESTART:
                 reset_game(game_state, stats, vfx_list);
                 input_state = PLAYING;
                 break;
-            case ESC:
+            case INPUT_PAUSE:
                 running = false;
                 break;
             }
         } else if (input_state == GAME_OVER) {
             switch (input) {
-            case 'r':
+            case INPUT_RESTART:
                 reset_game(game_state, stats, vfx_list);
                 input_state = PLAYING;
                 break;
-            case ESC:
+            case INPUT_PAUSE:
                 running = false;
                 break;
             }

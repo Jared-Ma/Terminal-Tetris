@@ -1,5 +1,4 @@
-#include <stdbool.h>
-#include <time.h>
+#include <stdlib.h>
 #include "stats.h"
 #include "logger.h"
 

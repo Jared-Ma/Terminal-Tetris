@@ -1,51 +1,113 @@
 #include <ncurses.h>
+#include <stdint.h>
 #include <string.h>
-#include "game_state.h"
 #include "draw.h"
-#include "piece.h"
+#include "game_state.h"
 #include "stats.h"
 #include "logger.h"
 
 
-const int HOLD_WINDOW_H = 6;
-const int HOLD_WINDOW_W = 14;
-const int HOLD_WINDOW_Y = 2;
-const int HOLD_WINDOW_X = 0;
+const int8_t BOARD_WINDOW_H = 24;
+const int8_t BOARD_WINDOW_W = 22;
+const int8_t BOARD_WINDOW_Y = 0;
+const int8_t BOARD_WINDOW_X = 14;
 
-const int STATS_WINDOW_H = 16;
-const int STATS_WINDOW_W = 14;
-const int STATS_WINDOW_Y = 8;
-const int STATS_WINDOW_X = 0;
+const int8_t HOLD_WINDOW_H = 6;
+const int8_t HOLD_WINDOW_W = 14;
+const int8_t HOLD_WINDOW_Y = 2;
+const int8_t HOLD_WINDOW_X = 0;
 
-const int BOARD_WINDOW_H = 24;
-const int BOARD_WINDOW_W = 22;
-const int BOARD_WINDOW_Y = 0;
-const int BOARD_WINDOW_X = 14;
+const int8_t NEXT_WINDOW_H = 6;
+const int8_t NEXT_WINDOW_W = 14;
+const int8_t NEXT_WINDOW_Y = 2;
+const int8_t NEXT_WINDOW_X = 36;
 
-const int NEXT_WINDOW_H = 6;
-const int NEXT_WINDOW_W = 14;
-const int NEXT_WINDOW_Y = 2;
-const int NEXT_WINDOW_X = 36;
+const int8_t STATS_WINDOW_H = 16;
+const int8_t STATS_WINDOW_W = 14;
+const int8_t STATS_WINDOW_Y = 8;
+const int8_t STATS_WINDOW_X = 0;
 
-const int CONTROLS_WINDOW_H = 16;
-const int CONTROLS_WINDOW_W = 14;
-const int CONTROLS_WINDOW_Y = 8;
-const int CONTROLS_WINDOW_X = 36;
+const int8_t CONTROLS_WINDOW_H = 16;
+const int8_t CONTROLS_WINDOW_W = 14;
+const int8_t CONTROLS_WINDOW_Y = 8;
+const int8_t CONTROLS_WINDOW_X = 36;
 
-const int DEBUG_WINDOW_H = 24;
-const int DEBUG_WINDOW_W = 36;
-const int DEBUG_WINDOW_Y = 0;
-const int DEBUG_WINDOW_X = 50;
+const int8_t PAUSE_WINDOW_H = 5;
+const int8_t PAUSE_WINDOW_W = 14;
+const int8_t PAUSE_WINDOW_Y = 9;
+const int8_t PAUSE_WINDOW_X = 18;
 
-const int PAUSE_WINDOW_H = 5;
-const int PAUSE_WINDOW_W = 14;
-const int PAUSE_WINDOW_Y = 9;
-const int PAUSE_WINDOW_X = 18;
+const int8_t GAME_OVER_WINDOW_H = 4;
+const int8_t GAME_OVER_WINDOW_W = 14;
+const int8_t GAME_OVER_WINDOW_Y = 10;
+const int8_t GAME_OVER_WINDOW_X = 18;
 
-const int GAME_OVER_WINDOW_H = 4;
-const int GAME_OVER_WINDOW_W = 14;
-const int GAME_OVER_WINDOW_Y = 10;
-const int GAME_OVER_WINDOW_X = 18;
+const int8_t DEBUG_WINDOW_H = 24;
+const int8_t DEBUG_WINDOW_W = 36;
+const int8_t DEBUG_WINDOW_Y = 0;
+const int8_t DEBUG_WINDOW_X = 50;
+
+const int8_t BOARD_SCORE_W = 8;
+
+const int8_t STATS_TIME_Y  = 1;
+const int8_t STATS_TIME_X  = 0;
+const int8_t STATS_LINES_Y = 3;
+const int8_t STATS_LINES_X = 0;
+const int8_t STATS_LEVEL_Y = 5;
+const int8_t STATS_LEVEL_X = 0;
+const int8_t STATS_SPS_Y   = 7;
+const int8_t STATS_SPS_X   = 0;
+const int8_t STATS_PPS_Y   = 8;
+const int8_t STATS_PPS_X   = 0;
+
+const int8_t CONTROLS_MOVE_Y      = 1;
+const int8_t CONTROLS_MOVE_X      = 0;
+const int8_t CONTROLS_ROTATE_Y    = 3;
+const int8_t CONTROLS_ROTATE_X    = 0;
+const int8_t CONTROLS_HOLD_Y      = 5;
+const int8_t CONTROLS_HOLD_X      = 0;
+const int8_t CONTROLS_SOFT_DROP_Y = 7;
+const int8_t CONTROLS_SOFT_DROP_X = 0;
+const int8_t CONTROLS_HARD_DROP_Y = 9;
+const int8_t CONTROLS_HARD_DROP_X = 0;
+const int8_t CONTROLS_PAUSE_Y     = 11;
+const int8_t CONTROLS_PAUSE_X     = 0;
+
+const int8_t PAUSE_RESUME_Y  = 0;
+const int8_t PAUSE_RESUME_X  = 1;
+const int8_t PAUSE_RESTART_Y = 1;
+const int8_t PAUSE_RESTART_X = 1;
+const int8_t PAUSE_QUIT_Y    = 2;
+const int8_t PAUSE_QUIT_X    = 1;
+
+const int8_t PAUSE_STATS_SINGLE_Y = 10;
+const int8_t PAUSE_STATS_SINGLE_X = 0;
+const int8_t PAUSE_STATS_DOUBLE_Y = 11;
+const int8_t PAUSE_STATS_DOUBLE_X = 0;
+const int8_t PAUSE_STATS_TRIPLE_Y = 12;
+const int8_t PAUSE_STATS_TRIPLE_X = 0;
+const int8_t PAUSE_STATS_TETRIS_Y = 13;
+const int8_t PAUSE_STATS_TETRIS_X = 0;
+
+const int8_t GAME_OVER_RESTART_Y = 0;
+const int8_t GAME_OVER_RESTART_X = 1;
+const int8_t GAME_OVER_QUIT_Y    = 1;
+const int8_t GAME_OVER_QUIT_X    = 1;
+
+const char BLOCK_LEFT       = '[';
+const char BLOCK_RIGHT      = ']';
+const char GHOST_LEFT       = '[';
+const char GHOST_RIGHT      = ']';
+const char BOARD_SPACE      = ' ';
+const char BUFFER_ZONE_LINE = '_';
+
+const char* HOLD_TITLE      = "HOLD";
+const char* NEXT_TITLE      = "NEXT";
+const char* STATS_TITLE     = "STATS";
+const char* CONTROLS_TITLE  = "CONTROLS";
+const char* PAUSE_TITLE     = "PAUSE";
+const char* GAME_OVER_TITLE = "GAME-OVER";
+const char* DEBUG_TITLE     = "DEBUG";
 
 const int16_t COLOR_PAIR_DEFAULT = 0;
 const int16_t COLOR_PAIR_CYAN    = I;
@@ -56,12 +118,10 @@ const int16_t COLOR_PAIR_GREEN   = S;
 const int16_t COLOR_PAIR_MAGENTA = T;
 const int16_t COLOR_PAIR_RED     = Z;
 
-const char BLOCK_LEFT       = '[';
-const char BLOCK_RIGHT      = ']';
-const char GHOST_LEFT       = '[';
-const char GHOST_RIGHT      = ']';
-const char BOARD_SPACE      = ' ';
-const char BUFFER_ZONE_LINE = '_';
+const uint16_t LOCK_DELAY_DIM_MAX      = 20;
+const uint16_t LOCK_DELAY_DIM_MIN      = 5;
+const uint16_t LOCK_DELAY_STANDOUT_MAX = 4;
+const uint16_t LOCK_DELAY_STANDOUT_MIN = 0;
 
 GameWindow game_window_get(int height, int width, int y, int x) {
     WINDOW* border = newwin(height, width, y, x);
@@ -108,7 +168,7 @@ void draw_window_border(GameWindow* game_window, int16_t color_pair) {
     wattroff(game_window->border, COLOR_PAIR(color_pair));
 }
 
-void draw_window_title(GameWindow* game_window, char* title, int16_t color_pair) {
+void draw_window_title(GameWindow* game_window, const char* title, int16_t color_pair) {
     wattron(game_window->border, COLOR_PAIR(color_pair));
     mvwprintw(game_window->border, 0, 1, "%s", title);
     wattroff(game_window->border, COLOR_PAIR(color_pair));
@@ -120,80 +180,114 @@ void draw_board_window(GameWindow* board_window) {
 
 void draw_hold_window(GameWindow* hold_window) {
     draw_window_border(hold_window, COLOR_PAIR_DEFAULT);
-    draw_window_title(hold_window, "HOLD", COLOR_PAIR_DEFAULT);
+    draw_window_title(hold_window, HOLD_TITLE, COLOR_PAIR_DEFAULT);
 }
 
 void draw_next_window(GameWindow* next_window) {
     draw_window_border(next_window, COLOR_PAIR_DEFAULT);
-    draw_window_title(next_window, "NEXT", COLOR_PAIR_DEFAULT);
+    draw_window_title(next_window, NEXT_TITLE, COLOR_PAIR_DEFAULT);
 }
 
 void draw_stats_window(GameWindow* stats_window) {
     draw_window_border(stats_window, COLOR_PAIR_DEFAULT);
-    draw_window_title(stats_window, "STATS", COLOR_PAIR_DEFAULT);
-    mvwprintw(
-        stats_window->content, 0, 0,
-        "\ntime:\n"
-        "\nlines:\n"
-        "\nlevel:\n"
-    );
+    draw_window_title(stats_window, STATS_TITLE, COLOR_PAIR_DEFAULT);
+    mvwprintw(stats_window->content, STATS_TIME_Y, STATS_TIME_X, "time:");
+    mvwprintw(stats_window->content, STATS_LEVEL_Y, STATS_LEVEL_X, "level:");
+    mvwprintw(stats_window->content, STATS_LINES_Y, STATS_LINES_X, "lines:");
 }
 
 void draw_controls_window(GameWindow* controls_window) {
     draw_window_border(controls_window, COLOR_PAIR_DEFAULT);
-    draw_window_title(controls_window, "CONTROLS", COLOR_PAIR_DEFAULT);
+    draw_window_title(controls_window, CONTROLS_TITLE, COLOR_PAIR_DEFAULT);
 
-    char* key_bind_move    = "< >";
-    char* key_bind_rotate  = "z x";
-    char* key_bind_hold      = "c";
-    char* key_bind_soft_drop = "v";
-    char* key_bind_hard_drop = "_";
-    char* key_bind_pause   = "esc";
+    char* move_label      = "move: ";
+    char* rotate_label    = "rotate: ";
+    char* hold_label      = "hold: ";
+    char* soft_drop_label = "soft drop: ";
+    char* hard_drop_label = "hard drop: ";
+    char* pause_label     = "pause: ";
+
+    char* move_key      = "< >";
+    char* rotate_key    = "z x";
+    char* hold_key      = "c";
+    char* soft_drop_key = "v";
+    char* hard_drop_key = "_";
+    char* pause_key     = "esc";
 
     mvwprintw(
-        controls_window->content, 0, 0, 
-        "\n"
-        "move: %*s\n"
-        "rotate: %*s\n"
-        "hold: %*s\n"
-        "soft drop: %*s\n"
-        "hard drop: %*s\n"
-        "pause: %*s\n",
-        controls_window->content_w-6, key_bind_move,
-        controls_window->content_w-8, key_bind_rotate,
-        controls_window->content_w-6, key_bind_hold,
-        controls_window->content_w-11, key_bind_soft_drop,
-        controls_window->content_w-11, key_bind_hard_drop,
-        controls_window->content_w-7, key_bind_pause
+        controls_window->content, 
+        CONTROLS_MOVE_Y, 
+        CONTROLS_MOVE_X, 
+        "%s%*s", 
+        move_label,
+        (int)(controls_window->content_w - strlen(move_label)), 
+        move_key
+    );
+    mvwprintw(
+        controls_window->content, 
+        CONTROLS_ROTATE_Y, 
+        CONTROLS_ROTATE_X, 
+        "%s%*s", 
+        rotate_label, 
+        (int)(controls_window->content_w - strlen(rotate_label)),  
+        rotate_key
+    );
+    mvwprintw(
+        controls_window->content, 
+        CONTROLS_HOLD_Y, 
+        CONTROLS_HOLD_X, 
+        "%s%*s", 
+        hold_label,
+        (int)(controls_window->content_w - strlen(hold_label)), 
+        hold_key
+    );
+    mvwprintw(
+        controls_window->content, 
+        CONTROLS_SOFT_DROP_Y, 
+        CONTROLS_SOFT_DROP_X, 
+        "%s%*s",
+        soft_drop_label, 
+        (int)(controls_window->content_w - strlen(soft_drop_label)), 
+        soft_drop_key
+    );
+    mvwprintw(
+        controls_window->content, 
+        CONTROLS_HARD_DROP_Y, 
+        CONTROLS_HARD_DROP_X, 
+        "%s%*s", 
+        hard_drop_label, 
+        (int)(controls_window->content_w - strlen(hard_drop_label)), 
+        hard_drop_key
+    );
+    mvwprintw(
+        controls_window->content, 
+        CONTROLS_PAUSE_Y, 
+        CONTROLS_PAUSE_X, 
+        "%s%*s", 
+        pause_label, 
+        (int)(controls_window->content_w - strlen(pause_label)), 
+        pause_key
     );
 }
 
 void draw_pause_window(GameWindow* pause_window) {
     draw_window_border(pause_window, COLOR_PAIR_CYAN);
-    draw_window_title(pause_window, "PAUSE", COLOR_PAIR_CYAN);
-    mvwprintw(
-        pause_window->content,
-        0, 0,
-        " resume:  _\n"
-        " restart: r\n"
-        " quit:  esc\n"
-    );
+    draw_window_title(pause_window, PAUSE_TITLE, COLOR_PAIR_CYAN);
+    mvwprintw(pause_window->content, PAUSE_RESUME_Y, PAUSE_RESUME_X, "resume:  _");
+    mvwprintw(pause_window->content, PAUSE_RESTART_Y, PAUSE_RESTART_X, "restart: r");
+    mvwprintw(pause_window->content, PAUSE_QUIT_Y, PAUSE_QUIT_X, "quit:  esc");
 }
 
 void draw_game_over_window(GameWindow* game_over_window) {
     draw_window_border(game_over_window, COLOR_PAIR_RED);
-    draw_window_title(game_over_window, "GAME-OVER", COLOR_PAIR_RED);
-    mvwprintw(
-        game_over_window->content,
-        0, 0,
-        " restart: r\n"
-        " quit:  esc\n"
-    );
+    draw_window_title(game_over_window, GAME_OVER_TITLE, COLOR_PAIR_RED);
+    mvwprintw(game_over_window->content, GAME_OVER_RESTART_Y, GAME_OVER_RESTART_X, "restart: r");
+    mvwprintw(game_over_window->content, GAME_OVER_QUIT_Y, GAME_OVER_QUIT_X, "quit:  esc");
 }
 
 void draw_debug_window(GameWindow* debug_window) {
     draw_window_border(debug_window, COLOR_PAIR_RED);
-    draw_window_title(debug_window, "DEBUG", COLOR_PAIR_RED);
+    draw_window_title(debug_window, DEBUG_TITLE, COLOR_PAIR_RED);
 }
 
 void draw_board_state(GameWindow* board_window, GameState* game_state) {
@@ -228,10 +322,17 @@ void draw_board_stack(GameWindow* board_window, GameState* game_state) {
 void draw_curr_piece(GameWindow* board_window, GameState* game_state) {
     int start_y = game_state->curr_piece.y - game_state->curr_piece.n/2;
     int start_x = 2*(game_state->curr_piece.x - game_state->curr_piece.n/2);
+
     wattron(board_window->content, COLOR_PAIR(game_state->curr_piece.shape));
-    if (game_state->lock_delay_timer >= 5 && game_state->lock_delay_timer <= 20) {
+    if (
+        game_state->lock_delay_timer >= LOCK_DELAY_DIM_MIN && 
+        game_state->lock_delay_timer <= LOCK_DELAY_DIM_MAX
+    ) {
         wattron(board_window->content, A_DIM);
-    } else if (game_state->lock_delay_timer < 5) {
+    } else if (
+        game_state->lock_delay_timer >= LOCK_DELAY_STANDOUT_MIN && 
+        game_state->lock_delay_timer <= LOCK_DELAY_STANDOUT_MAX
+    ) {
         wattron(board_window->content, A_STANDOUT);
     }
 
@@ -244,9 +345,15 @@ void draw_curr_piece(GameWindow* board_window, GameState* game_state) {
     }
     
     wattroff(board_window->content, COLOR_PAIR(game_state->curr_piece.shape));
-    if (game_state->lock_delay_timer >= 5 && game_state->lock_delay_timer <= 20) {
+    if (
+        game_state->lock_delay_timer >= LOCK_DELAY_DIM_MIN && 
+        game_state->lock_delay_timer <= LOCK_DELAY_DIM_MAX
+    ) {
         wattroff(board_window->content, A_DIM);
-    } else if (game_state->lock_delay_timer < 5) {
+    } else if (
+        game_state->lock_delay_timer >= LOCK_DELAY_STANDOUT_MIN && 
+        game_state->lock_delay_timer <= LOCK_DELAY_STANDOUT_MAX
+    ) {
         wattroff(board_window->content, A_STANDOUT);
     }
 }
@@ -272,9 +379,10 @@ void draw_ghost_piece(GameWindow* board_window, GameState* game_state) {
 void draw_score(GameWindow* board_window, GameState* game_state) {
     mvwprintw(
         board_window->border, 
-        board_window->border_h-1, 
-        board_window->border_w/2-4, 
-        "%08lu", 
+        board_window->border_h - 1, 
+        board_window->border_w / 2 - BOARD_SCORE_W / 2, 
+        "%0*lu",
+        BOARD_SCORE_W, 
         game_state->score
     );
 }
@@ -284,8 +392,9 @@ void draw_hold_piece(GameWindow* hold_window, GameState* game_state) {
     
     if (game_state->holding_piece) {
         size_t horizontal_padding = 2*(game_state->hold_piece.n - game_state->hold_piece.l);
-        size_t start_y = hold_window->content_h / 2 - game_state->hold_piece.n/2;
+        size_t start_y = hold_window->content_h / 2 - game_state->hold_piece.n / 2;
         size_t start_x = hold_window->content_w / 2 - game_state->hold_piece.l - horizontal_padding;
+        
         wattron(hold_window->content, COLOR_PAIR(game_state->hold_piece.shape));
         if (game_state->hold_blocked) {
             wattron(hold_window->content, A_DIM);
@@ -314,7 +423,7 @@ void draw_next_piece(GameWindow* next_window, GameState* game_state) {
     werase(next_window->content);
 
     size_t horizontal_padding = 2*(game_state->next_piece.n - game_state->next_piece.l);
-    size_t start_y = next_window->content_h / 2 - game_state->next_piece.n/2;
+    size_t start_y = next_window->content_h / 2 - game_state->next_piece.n / 2;
     size_t start_x = next_window->content_w / 2 - game_state->next_piece.l - horizontal_padding;
     wattron(next_window->content, COLOR_PAIR(game_state->next_piece.shape));
 
@@ -336,57 +445,28 @@ void draw_stats(GameWindow* stats_window, GameState* game_state, Stats* stats) {
     size_t m = (stats->seconds - 3600*h) / 60;
     size_t s = stats->seconds - 3600*h - 60*m;
 
-    mvwprintw(
-        stats_window->content, 0, 0,
-        "\ntime: %02lu:%02lu\n"
-        "\nlines: %lu\n"
-        "\nlevel: %lu\n",
-        m, s,
-        game_state->lines,
-        game_state->level
-    );
+    mvwprintw(stats_window->content, STATS_TIME_Y, STATS_TIME_X, "time: %02lu:%02lu", m, s);
+    mvwprintw(stats_window->content, STATS_LINES_Y, STATS_LINES_X, "lines: %lu", game_state->lines);
+    mvwprintw(stats_window->content, STATS_LEVEL_Y, STATS_LEVEL_X, "level: %lu", game_state->level);
 
     if (stats->score_per_sec > 0 && stats->score_per_sec < 1) {
-        mvwprintw(
-            stats_window->content, 7, 0,
-            "sps: %#.4g\n",
-            stats->score_per_sec
-        );
+        mvwprintw(stats_window->content, STATS_SPS_Y, STATS_SPS_X, "sps: %#.4g\n", stats->score_per_sec);
     } else {
-        mvwprintw(
-            stats_window->content, 7, 0,
-            "sps: %#.5g\n",
-            stats->score_per_sec
-        );
+        mvwprintw(stats_window->content, STATS_SPS_Y, STATS_SPS_X, "sps: %#.5g\n", stats->score_per_sec);
     }
 
     if (stats->piece_per_sec > 0 && stats->piece_per_sec < 1) {
-        mvwprintw(
-            stats_window->content, 8, 0,
-            "pps: %#.4g\n",
-            stats->piece_per_sec
-        );
+        mvwprintw(stats_window->content, STATS_PPS_Y, STATS_PPS_X, "pps: %#.4g\n", stats->piece_per_sec);
     } else {
-        mvwprintw(
-            stats_window->content, 8, 0,
-            "pps: %#.5g\n",
-            stats->piece_per_sec
-        );
+        mvwprintw(stats_window->content, STATS_PPS_Y, STATS_PPS_X, "pps: %#.5g\n", stats->piece_per_sec);
     }
 }
 
 void draw_pause_stats(GameWindow* stats_window, Stats* stats) {
-    mvwprintw(
-        stats_window->content, 10, 0,
-        "single: %lu\n"
-        "double: %lu\n"
-        "triple: %lu\n"
-        "tetris: %lu\n",
-        stats->num_single,
-        stats->num_double,
-        stats->num_triple,
-        stats->num_tetris
-    );
+    mvwprintw(stats_window->content, PAUSE_STATS_SINGLE_Y, PAUSE_STATS_SINGLE_X, "single: %lu", stats->num_single);
+    mvwprintw(stats_window->content, PAUSE_STATS_DOUBLE_Y, PAUSE_STATS_DOUBLE_X, "double: %lu", stats->num_double);
+    mvwprintw(stats_window->content, PAUSE_STATS_TRIPLE_Y, PAUSE_STATS_TRIPLE_X, "triple: %lu", stats->num_triple);
+    mvwprintw(stats_window->content, PAUSE_STATS_TETRIS_Y, PAUSE_STATS_TETRIS_X, "tetris: %lu", stats->num_tetris);
 }
 
 void draw_debug_variables(GameWindow* debug_window, GameState* game_state, Stats* stats) {
