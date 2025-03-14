@@ -790,12 +790,12 @@ bool game_state_check_empty_board(GameState* game_state) {
     return true;
 }
 
-size_t game_state_calc_t_spin_points(GameState* game_state, size_t num_lines) {
+uint64_t game_state_calc_t_spin_points(GameState* game_state, uint64_t num_lines) {
     if (!game_state) {
         return 0;
     }
 
-    size_t points = 0;
+    uint64_t points = 0;
     if (game_state_check_t_spin(game_state)) {
         if (num_lines == 0) {
             points += T_SPIN_ZERO_POINTS * game_state->level;
@@ -825,12 +825,12 @@ size_t game_state_calc_t_spin_points(GameState* game_state, size_t num_lines) {
     return points;
 }
 
-size_t game_state_calc_line_clear_points(GameState* game_state, size_t num_lines) {
+uint64_t game_state_calc_line_clear_points(GameState* game_state, uint64_t num_lines) {
     if (!game_state) {
         return 0;
     }
 
-    size_t points = 0;
+    uint64_t points = 0;
     if (!game_state_check_t_spin(game_state) && !game_state_check_t_spin_mini(game_state)) {
         if (num_lines == 1) {
             points += SINGLE_POINTS * game_state->level;
@@ -849,12 +849,12 @@ size_t game_state_calc_line_clear_points(GameState* game_state, size_t num_lines
     return points;
 }
 
-size_t game_state_calc_all_clear_points(GameState* game_state, size_t num_lines) {
+uint64_t game_state_calc_all_clear_points(GameState* game_state, uint64_t num_lines) {
     if (!game_state) {
         return 0;
     }
 
-    size_t points = 0;
+    uint64_t points = 0;
     if (game_state_check_empty_board(game_state) && num_lines > 0) {
         if (num_lines == 1) {
             points += SINGLE_ALL_CLEAR_POINTS * game_state->level;
@@ -866,24 +866,24 @@ size_t game_state_calc_all_clear_points(GameState* game_state, size_t num_lines)
             points += TRIPLE_ALL_CLEAR_POINTS * game_state->level;
             game_state->tetris_all_clear_combo = -1;
         } else if (num_lines == 4) {
+            game_state->tetris_all_clear_combo++;
             if (game_state->tetris_all_clear_combo > 0) {
                 points += B2B_TETRIS_ALL_CLEAR_POINTS * game_state->level;
             } else {
                 points += TETRIS_ALL_CLEAR_POINTS * game_state->level;
             }
-            game_state->tetris_all_clear_combo++;
         }
         game_state->last_action_all_clear = true;
     } 
     return points;
 }
 
-size_t game_state_calc_combo_points(GameState* game_state, size_t num_lines) {
+uint64_t game_state_calc_combo_points(GameState* game_state, uint64_t num_lines) {
     if (!game_state) {
         return 0;
     }
 
-    size_t points = 0;
+    uint64_t points = 0;
     if (num_lines > 0) {
         game_state->combo++;
         points += COMBO_POINTS * game_state->combo * game_state->level;
@@ -893,7 +893,7 @@ size_t game_state_calc_combo_points(GameState* game_state, size_t num_lines) {
     return points;
 }
 
-float game_state_calc_difficult_clear_mult(GameState* game_state, size_t num_lines) {
+float game_state_calc_difficult_clear_mult(GameState* game_state, uint64_t num_lines) {
     if (!game_state) {
         return 0.0;
     }
