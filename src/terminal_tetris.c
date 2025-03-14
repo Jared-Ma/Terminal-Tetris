@@ -1,13 +1,16 @@
+#include "draw.h"
+#include "game_state.h"
+#include "logger.h"
+#include "piece.h"
+#include "stats.h"
+#include "vfx.h"
+
 #include <ncurses.h>
+#include <stdbool.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#include "game_state.h"
-#include "draw.h"
-#include "vfx.h"
-#include "piece.h"
-#include "stats.h"
-#include "logger.h"
 
 #define INPUT_MOVE_LEFT    KEY_LEFT
 #define INPUT_MOVE_RIGHT   KEY_RIGHT

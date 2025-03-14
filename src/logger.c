@@ -1,6 +1,7 @@
-#include <stdio.h>
-#include <stdbool.h>
 #include "logger.h"
+
+#include <stdbool.h>
+#include <stdio.h>
 
 
 FILE* debug_log = NULL;

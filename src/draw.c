@@ -1,10 +1,11 @@
+#include "draw.h"
+#include "game_state.h"
+#include "logger.h"
+#include "stats.h"
+
 #include <ncurses.h>
 #include <stdint.h>
 #include <string.h>
-#include "draw.h"
-#include "game_state.h"
-#include "stats.h"
-#include "logger.h"
 
 
 const int8_t BOARD_WINDOW_H = 24;
@@ -391,9 +392,9 @@ void draw_hold_piece(GameWindow* hold_window, GameState* game_state) {
     werase(hold_window->content);
     
     if (game_state->holding_piece) {
-        size_t horizontal_padding = 2*(game_state->hold_piece.n - game_state->hold_piece.l);
-        size_t start_y = hold_window->content_h / 2 - game_state->hold_piece.n / 2;
-        size_t start_x = hold_window->content_w / 2 - game_state->hold_piece.l - horizontal_padding;
+        int horizontal_padding = 2*(game_state->hold_piece.n - game_state->hold_piece.l);
+        int start_y = hold_window->content_h / 2 - game_state->hold_piece.n / 2;
+        int start_x = hold_window->content_w / 2 - game_state->hold_piece.l - horizontal_padding;
         
         wattron(hold_window->content, COLOR_PAIR(game_state->hold_piece.shape));
         if (game_state->hold_blocked) {
@@ -422,9 +423,9 @@ void draw_hold_piece(GameWindow* hold_window, GameState* game_state) {
 void draw_next_piece(GameWindow* next_window, GameState* game_state) {
     werase(next_window->content);
 
-    size_t horizontal_padding = 2*(game_state->next_piece.n - game_state->next_piece.l);
-    size_t start_y = next_window->content_h / 2 - game_state->next_piece.n / 2;
-    size_t start_x = next_window->content_w / 2 - game_state->next_piece.l - horizontal_padding;
+    int horizontal_padding = 2*(game_state->next_piece.n - game_state->next_piece.l);
+    int start_y = next_window->content_h / 2 - game_state->next_piece.n / 2;
+    int start_x = next_window->content_w / 2 - game_state->next_piece.l - horizontal_padding;
     wattron(next_window->content, COLOR_PAIR(game_state->next_piece.shape));
 
     for (size_t i = 0; i < game_state->next_piece.n; ++i) {
@@ -441,9 +442,9 @@ void draw_next_piece(GameWindow* next_window, GameState* game_state) {
 void draw_stats(GameWindow* stats_window, GameState* game_state, Stats* stats) {
     werase(stats_window->content);
 
-    size_t h = stats->seconds / 3600;
-    size_t m = (stats->seconds - 3600*h) / 60;
-    size_t s = stats->seconds - 3600*h - 60*m;
+    uint64_t h = stats->seconds / 3600;
+    uint64_t m = (stats->seconds - 3600*h) / 60;
+    uint64_t s = stats->seconds - 3600*h - 60*m;
 
     mvwprintw(stats_window->content, STATS_TIME_Y, STATS_TIME_X, "time: %02lu:%02lu", m, s);
     mvwprintw(stats_window->content, STATS_LINES_Y, STATS_LINES_X, "lines: %lu", game_state->lines);
@@ -463,6 +464,11 @@ void draw_stats(GameWindow* stats_window, GameState* game_state, Stats* stats) {
 }
 
 void draw_pause_stats(GameWindow* stats_window, Stats* stats) {
+    mvwprintw(stats_window->content, PAUSE_STATS_SINGLE_Y, PAUSE_STATS_SINGLE_X, "%*s", stats_window->content_w, "");
+    mvwprintw(stats_window->content, PAUSE_STATS_DOUBLE_Y, PAUSE_STATS_DOUBLE_X, "%*s", stats_window->content_w, "");
+    mvwprintw(stats_window->content, PAUSE_STATS_TRIPLE_Y, PAUSE_STATS_TRIPLE_X, "%*s", stats_window->content_w, "");
+    mvwprintw(stats_window->content, PAUSE_STATS_TETRIS_Y, PAUSE_STATS_TETRIS_X, "%*s", stats_window->content_w, "");
+    
     mvwprintw(stats_window->content, PAUSE_STATS_SINGLE_Y, PAUSE_STATS_SINGLE_X, "single: %lu", stats->num_single);
     mvwprintw(stats_window->content, PAUSE_STATS_DOUBLE_Y, PAUSE_STATS_DOUBLE_X, "double: %lu", stats->num_double);
     mvwprintw(stats_window->content, PAUSE_STATS_TRIPLE_Y, PAUSE_STATS_TRIPLE_X, "triple: %lu", stats->num_triple);

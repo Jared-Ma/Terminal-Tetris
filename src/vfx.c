@@ -1,9 +1,13 @@
-#include <ncurses.h>
-#include <string.h>
-#include "game_state.h"
-#include "draw.h"
 #include "vfx.h"
+#include "draw.h"
+#include "game_state.h"
 #include "logger.h"
+
+#include <ncurses.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 
 const uint16_t HOLD_PIECE_VFX_FRAMES = 10;

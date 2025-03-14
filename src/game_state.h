@@ -1,9 +1,10 @@
 #ifndef GAME_STATE_H
 #define GAME_STATE_H
-#include <stdlib.h>
-#include <stdint.h>
-#include <stdbool.h>
 #include "piece.h"
+
+#include <stdbool.h>
+#include <stdint.h>
+#include <stdlib.h>
 
 #define BUFFER_ZONE_H 2
 #define BOARD_H 22
@@ -149,16 +150,16 @@ bool game_state_check_t_spin_mini(GameState* game_state);
 
 bool game_state_check_empty_board(GameState* game_state);
 
-size_t game_state_calc_t_spin_points(GameState* game_state, size_t num_lines);
+uint64_t game_state_calc_t_spin_points(GameState* game_state, uint64_t num_lines);
 
-size_t game_state_calc_line_clear_points(GameState* game_state, size_t num_lines);
+uint64_t game_state_calc_line_clear_points(GameState* game_state, uint64_t num_lines);
 
-size_t game_state_calc_t_spin_points(GameState* game_state, size_t num_lines);
+uint64_t game_state_calc_t_spin_points(GameState* game_state, uint64_t num_lines);
 
-size_t game_state_calc_all_clear_points(GameState* game_state, size_t num_lines);
+uint64_t game_state_calc_all_clear_points(GameState* game_state, uint64_t num_lines);
 
-size_t game_state_calc_combo_points(GameState* game_state, size_t num_lines);
+uint64_t game_state_calc_combo_points(GameState* game_state, uint64_t num_lines);
 
-float game_state_calc_difficult_clear_mult(GameState* game_state, size_t num_lines);
+float game_state_calc_difficult_clear_mult(GameState* game_state, uint64_t num_lines);
 
 #endif

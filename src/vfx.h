@@ -1,7 +1,10 @@
 #ifndef VFX_H
 #define VFX_H
-#include "game_state.h"
 #include "draw.h"
+#include "game_state.h"
+
+#include <stdbool.h>
+#include <stdint.h>
 
 #define NUM_VFX 11
 #define VFX_TEXT_MAX 64

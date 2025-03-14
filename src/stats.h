@@ -1,8 +1,8 @@
 #ifndef STATS_H
 #define STATS_H
-#include <stdlib.h>
-#include <stdint.h>
 #include "game_state.h"
+
+#include <stdint.h>
 
 
 struct Stats {

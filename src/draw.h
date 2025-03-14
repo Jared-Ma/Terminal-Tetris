@@ -1,9 +1,10 @@
 #ifndef DRAW_H
 #define DRAW_H
-#include <ncurses.h>
-#include <stdint.h>
 #include "game_state.h"
 #include "stats.h"
+
+#include <ncurses.h>
+#include <stdint.h>
 
 
 extern const int8_t BOARD_WINDOW_H;
@@ -76,14 +77,14 @@ extern const int16_t COLOR_PAIR_RED;
 struct GameWindow {
     WINDOW* border;
     WINDOW* content;
-    int border_h;
-    int border_w;
-    int border_y;
-    int border_x;
-    int content_h;
-    int content_w;
-    int content_y;
-    int content_x;
+    int8_t border_h;
+    int8_t border_w;
+    int8_t border_y;
+    int8_t border_x;
+    int8_t content_h;
+    int8_t content_w;
+    int8_t content_y;
+    int8_t content_x;
 };
 
 typedef struct GameWindow GameWindow;

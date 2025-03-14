@@ -1,7 +1,9 @@
-#include <stdlib.h>
-#include <stdint.h>
 #include "piece.h"
 #include "logger.h"
+
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 
 Piece piece_get(Shape shape, int8_t y, int8_t x) {

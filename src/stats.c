@@ -1,6 +1,9 @@
-#include <stdlib.h>
 #include "stats.h"
+#include "game_state.h"
 #include "logger.h"
+
+#include <stdlib.h>
+#include <stdio.h>
 
 
 Stats stats_get(void) {

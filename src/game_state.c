@@ -1,10 +1,12 @@
-#include <stdlib.h>
-#include <stdint.h>
-#include <stdbool.h>
-#include <string.h>
 #include "game_state.h"
 #include "piece.h"
 #include "logger.h"
+
+#include <stdbool.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 
 const int8_t SPAWN_Y = 1;
@@ -150,11 +152,8 @@ void game_state_start(GameState* game_state) {
     }
     game_state->level = 1;
     game_state->combo = -1;
-    game_state->combo = 0;
     game_state->difficult_clear_combo = -1;
-    game_state->difficult_clear_combo = 0;
     game_state->tetris_all_clear_combo = -1;
-    game_state->tetris_all_clear_combo = 0;
     game_state_generate_next_queue(game_state);
     game_state->next_piece = piece_get(game_state->next_queue[game_state->next_index++], 0, 0);
     game_state_load_next_piece(game_state);
