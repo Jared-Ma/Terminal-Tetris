@@ -7,7 +7,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#define NUM_TESTS 49
+#define NUM_TESTS 50
 
 
 int main(void) {
@@ -29,7 +29,8 @@ int main(void) {
         UNIT_TEST(test_game_state_get),
         UNIT_TEST(test_game_state_init),
         UNIT_TEST(test_game_state_start),
-        UNIT_TEST(test_game_state_restart),
+        UNIT_TEST(test_game_state_reset),
+        UNIT_TEST(test_game_state_reset_vfx_vars),
         UNIT_TEST(test_game_state_generate_next_queue),
         UNIT_TEST(test_game_state_load_next_piece),
         UNIT_TEST(test_game_state_spawn_curr_piece),

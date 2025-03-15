@@ -56,6 +56,12 @@ bool test_game_state_get(void) {
     ASSERT(game_state.tetris_all_clear_combo == 0);
     ASSERT(game_state.t_rotation_test_num == 0);
     ASSERT(game_state.last_action_points == 0);
+    ASSERT(game_state.last_action_num_lines == 0);
+    ASSERT(game_state.last_action_t_spin == false);
+    ASSERT(game_state.last_action_t_spin_mini == false);
+    ASSERT(game_state.hold_piece_event_flag == false);
+    ASSERT(game_state.next_piece_event_flag == false);
+    ASSERT(game_state.last_locked_piece_shape == 0);
     return true;
 }
 
@@ -88,6 +94,12 @@ bool test_game_state_init(void) {
     ASSERT(game_state->tetris_all_clear_combo == 0);
     ASSERT(game_state->t_rotation_test_num == 0);
     ASSERT(game_state->last_action_points == 0);
+    ASSERT(game_state->last_action_num_lines == 0);
+    ASSERT(game_state->last_action_t_spin == false);
+    ASSERT(game_state->last_action_t_spin_mini == false);
+    ASSERT(game_state->hold_piece_event_flag == false);
+    ASSERT(game_state->next_piece_event_flag == false);
+    ASSERT(game_state->last_locked_piece_shape == 0);
     game_state_destroy(game_state);
     return true;
 }
@@ -99,22 +111,55 @@ bool test_game_state_start(void) {
     Shape next_shape = game_state.next_queue[game_state.next_index-1];
     ASSERT(game_state.level == 1);
     ASSERT(game_state.combo == -1);
+    ASSERT(game_state.difficult_clear_combo == -1);
+    ASSERT(game_state.tetris_all_clear_combo == -1);
     ASSERT(game_state.next_piece.shape = next_shape);
     
     return true;
 }
 
-bool test_game_state_restart(void) {
+bool test_game_state_reset(void) {
     GameState game_state = game_state_get();
     game_state_start(&game_state);
     piece_move(&game_state.curr_piece, 5, 10);
 
     game_state_reset(&game_state);
-
     Shape next_shape = game_state.next_queue[game_state.next_index-1];
     ASSERT(game_state.level == 1);
     ASSERT(game_state.combo == -1);
-    ASSERT(game_state.next_piece.shape == next_shape);
+    ASSERT(game_state.difficult_clear_combo == -1);
+    ASSERT(game_state.tetris_all_clear_combo == -1);
+    ASSERT(game_state.next_piece.shape = next_shape);
+
+    return true;
+}
+
+bool test_game_state_reset_vfx_vars(void) {
+    GameState game_state = game_state_get();
+    game_state_start(&game_state);
+    
+    game_state.last_action_points = 1;
+    game_state.last_action_num_lines = 1;
+    game_state.last_action_t_spin = true;
+    game_state.last_action_t_spin_mini = true;
+    game_state.last_action_all_clear = true;
+    game_state.hold_piece_event_flag = true;
+    game_state.next_piece_event_flag = true;
+    game_state.level_up_event_flag = true;
+    game_state.last_locked_piece_shape = I;
+
+    game_state_reset_vfx_vars(&game_state);
+    
+    ASSERT(game_state.last_action_points == 0);
+    ASSERT(game_state.last_action_num_lines == 0);
+    ASSERT(game_state.last_action_t_spin == false);
+    ASSERT(game_state.last_action_t_spin_mini == false);
+    ASSERT(game_state.last_action_all_clear == false);
+    ASSERT(game_state.hold_piece_event_flag == false);
+    ASSERT(game_state.next_piece_event_flag == false);
+    ASSERT(game_state.level_up_event_flag == false);
+    ASSERT(game_state.last_locked_piece_shape == 0);
+
     return true;
 }
 
@@ -161,6 +206,7 @@ bool test_game_state_load_next_piece(void) {
         Shape next_shape = game_state.next_piece.shape;
         game_state_load_next_piece(&game_state);
         ASSERT(game_state.curr_piece.shape == next_shape);
+        ASSERT(game_state.next_piece_event_flag == true);
     }
 
     return true;
@@ -190,11 +236,14 @@ bool test_game_state_hold_piece(void) {
     ASSERT(game_state.hold_piece.shape == curr_shape);
     ASSERT(game_state.holding_piece == true);
     ASSERT(game_state.hold_blocked == true);
+    ASSERT(game_state.hold_piece_event_flag == true);
 
     // check that holding piece is blocked afterwards
     Shape hold_shape = game_state.hold_piece.shape;
+    game_state.hold_piece_event_flag = false;
     game_state_hold_piece(&game_state);
     ASSERT(game_state.hold_piece.shape == hold_shape);
+    ASSERT(game_state.hold_piece_event_flag == false);
 
     // check that holding is no longer blocked after locking a piece
     game_state_lock_curr_piece(&game_state);
@@ -206,6 +255,7 @@ bool test_game_state_hold_piece(void) {
     game_state_hold_piece(&game_state);
     ASSERT(game_state.curr_piece.shape == hold_shape);
     ASSERT(game_state.hold_piece.shape == curr_shape);
+    ASSERT(game_state.hold_piece_event_flag == true);
 
     return true;
 }
@@ -931,11 +981,15 @@ bool test_game_state_hard_drop_curr_piece(void) {
     game_state_hard_drop_curr_piece(&game_state);
     ASSERT(game_state.curr_piece.y == (BOARD_H-1)/2 - 1);
     ASSERT(game_state_check_curr_piece_grounded(&game_state));
+    ASSERT(game_state.score == HARD_DROP_POINTS * ((BOARD_H-1)/2 - 1 - SPAWN_Y));
+    ASSERT(game_state.lock_delay_timer == 0);
 
     game_state.board[(BOARD_H-1)/2][(BOARD_W-1)/2] = 0;
     game_state_hard_drop_curr_piece(&game_state);
     ASSERT(game_state.curr_piece.y == BOARD_H - 1);
     ASSERT(game_state_check_curr_piece_grounded(&game_state));
+    ASSERT(game_state.score == HARD_DROP_POINTS * (BOARD_H - 1 - SPAWN_Y));
+    ASSERT(game_state.lock_delay_timer == 0);
 
     return true;
 }
@@ -964,6 +1018,7 @@ bool test_game_state_lock_curr_piece(void) {
         }
     }
     ASSERT(game_state.hold_blocked == false);
+    ASSERT(game_state.last_locked_piece_shape == game_state.curr_piece.shape);
 
     return true;
 }
@@ -1050,16 +1105,22 @@ bool test_game_state_clear_lines(void) {
         
         ASSERT(game_state.level == prev_level + 1);
         ASSERT(game_state.lines == prev_lines + num_lines);
+        ASSERT(game_state.level_up_event_flag == true);
         if (num_lines == 0) {
             ASSERT(game_state.score == 0);
+            ASSERT(game_state.last_action_points == 0);
         } else if (num_lines == 1) {
             ASSERT(game_state.score == prev_score + SINGLE_POINTS);
+            ASSERT(game_state.last_action_points == SINGLE_POINTS);
         } else if (num_lines == 2) {
             ASSERT(game_state.score == prev_score + DOUBLE_POINTS);
+            ASSERT(game_state.last_action_points == DOUBLE_POINTS);
         } else if (num_lines == 3) {
             ASSERT(game_state.score == prev_score + TRIPLE_POINTS);
+            ASSERT(game_state.last_action_points == TRIPLE_POINTS);
         } else if (num_lines == 4) {
             ASSERT(game_state.score == prev_score + TETRIS_POINTS);
+            ASSERT(game_state.last_action_points == TETRIS_POINTS);
         }
     
         for (size_t i = 0; i < num_lines; ++i) {
@@ -1419,32 +1480,42 @@ bool test_game_state_calc_t_spin_points(void) {
 
     game_state.level = 1;
     uint64_t num_lines = 0;
+    game_state.last_action_t_spin = false;
     uint64_t points = game_state_calc_t_spin_points(&game_state, num_lines);
     ASSERT(points == T_SPIN_ZERO_POINTS * game_state.level);
     ASSERT(game_state.difficult_clear_combo == -1);
+    ASSERT(game_state.last_action_t_spin == true);
 
     game_state.level = 2;
     num_lines = 1;
+    game_state.last_action_t_spin = false;
     points = game_state_calc_t_spin_points(&game_state, num_lines);
     ASSERT(points == T_SPIN_SINGLE_POINTS * game_state.level);
     ASSERT(game_state.difficult_clear_combo == 0);
+    ASSERT(game_state.last_action_t_spin == true);
 
     game_state.level = 3;
     num_lines = 2;
+    game_state.last_action_t_spin = false;
     points = game_state_calc_t_spin_points(&game_state, num_lines);
     ASSERT(points == T_SPIN_DOUBLE_POINTS * game_state.level);
     ASSERT(game_state.difficult_clear_combo == 1);
+    ASSERT(game_state.last_action_t_spin == true);
 
     game_state.level = 4;
     num_lines = 3;
+    game_state.last_action_t_spin = false;
     points = game_state_calc_t_spin_points(&game_state, num_lines);
     ASSERT(points == T_SPIN_TRIPLE_POINTS * game_state.level);
     ASSERT(game_state.difficult_clear_combo == 2);
+    ASSERT(game_state.last_action_t_spin == true);
 
     game_state.level = 5;
     num_lines = 4;
+    game_state.last_action_t_spin = false;
     points = game_state_calc_t_spin_points(&game_state, num_lines);
     ASSERT(points == 0);
+    ASSERT(game_state.last_action_t_spin == false);
 
     // force a t-spin mini
     game_state.board[top_left_y][top_left_x] = 1;
@@ -1454,31 +1525,41 @@ bool test_game_state_calc_t_spin_points(void) {
 
     game_state.level = 6;
     num_lines = 0;
+    game_state.last_action_t_spin_mini = false;
     points = game_state_calc_t_spin_points(&game_state, num_lines);
     ASSERT(points == T_SPIN_MINI_ZERO_POINTS * game_state.level);
     ASSERT(game_state.difficult_clear_combo == 2);
+    ASSERT(game_state.last_action_t_spin_mini == true);
 
     game_state.level = 7;
     num_lines = 1;
+    game_state.last_action_t_spin_mini = false;
     points = game_state_calc_t_spin_points(&game_state, num_lines);
     ASSERT(points == T_SPIN_MINI_SINGLE_POINTS * game_state.level);
     ASSERT(game_state.difficult_clear_combo == 3);
+    ASSERT(game_state.last_action_t_spin_mini == true);
 
     game_state.level = 8;
     num_lines = 2;
+    game_state.last_action_t_spin_mini = false;
     points = game_state_calc_t_spin_points(&game_state, num_lines);
     ASSERT(points == T_SPIN_MINI_DOUBLE_POINTS * game_state.level);
     ASSERT(game_state.difficult_clear_combo == 4);
+    ASSERT(game_state.last_action_t_spin_mini == true);
 
     game_state.level = 9;
     num_lines = 3;
+    game_state.last_action_t_spin_mini = false;
     points = game_state_calc_t_spin_points(&game_state, num_lines);
     ASSERT(points == 0);
+    ASSERT(game_state.last_action_t_spin_mini == false);
 
     game_state.level = 10;
     num_lines = 4;
+    game_state.last_action_t_spin_mini = false;
     points = game_state_calc_t_spin_points(&game_state, num_lines);
     ASSERT(points == 0);
+    ASSERT(game_state.last_action_t_spin_mini == false);
 
     return true;
 }
@@ -1559,38 +1640,50 @@ bool test_game_state_calc_all_clear_points(void) {
     
     game_state.level = 1;
     uint64_t num_lines = 0;
+    game_state.last_action_all_clear = false;
     uint64_t points = game_state_calc_all_clear_points(&game_state, num_lines);
     ASSERT(points == 0);
+    ASSERT(game_state.last_action_all_clear == false);
 
     game_state.level = 2;
     num_lines = 1;
+    game_state.last_action_all_clear = false;
     points = game_state_calc_all_clear_points(&game_state, num_lines);
     ASSERT(points == SINGLE_ALL_CLEAR_POINTS * game_state.level);
     ASSERT(game_state.tetris_all_clear_combo == -1);
+    ASSERT(game_state.last_action_all_clear == true);
 
     game_state.level = 3;
     num_lines = 2;
+    game_state.last_action_all_clear = false;
     points = game_state_calc_all_clear_points(&game_state, num_lines);
     ASSERT(points == DOUBLE_ALL_CLEAR_POINTS * game_state.level);
     ASSERT(game_state.tetris_all_clear_combo == -1);
+    ASSERT(game_state.last_action_all_clear == true);
 
     game_state.level = 4;
     num_lines = 3;
+    game_state.last_action_all_clear = false;
     points = game_state_calc_all_clear_points(&game_state, num_lines);
     ASSERT(points == TRIPLE_ALL_CLEAR_POINTS * game_state.level);
     ASSERT(game_state.tetris_all_clear_combo == -1);
+    ASSERT(game_state.last_action_all_clear == true);
 
     game_state.level = 5;
     num_lines = 4;
+    game_state.last_action_all_clear = false;
     points = game_state_calc_all_clear_points(&game_state, num_lines);
     ASSERT(points == TETRIS_ALL_CLEAR_POINTS * game_state.level);
     ASSERT(game_state.tetris_all_clear_combo == 0);
+    ASSERT(game_state.last_action_all_clear == true);
 
     game_state.level = 6;
     num_lines = 4;
+    game_state.last_action_all_clear = false;
     points = game_state_calc_all_clear_points(&game_state, num_lines);
     ASSERT(points == B2B_TETRIS_ALL_CLEAR_POINTS * game_state.level);
     ASSERT(game_state.tetris_all_clear_combo == 1);
+    ASSERT(game_state.last_action_all_clear == true);
 
     return true;
 }

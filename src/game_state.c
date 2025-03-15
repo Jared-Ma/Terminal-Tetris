@@ -557,8 +557,8 @@ void game_state_clear_lines(GameState* game_state) {
     game_state->lines += num_lines;
     game_state->last_action_num_lines = num_lines;
     if (game_state->lines >= game_state->level * LEVEL_LINE_REQ) {
-        game_state->level_up_event_flag = true;
         game_state->level++;
+        game_state->level_up_event_flag = true;
     }
 }
 
@@ -799,28 +799,33 @@ uint64_t game_state_calc_t_spin_points(GameState* game_state, uint64_t num_lines
     if (game_state_check_t_spin(game_state)) {
         if (num_lines == 0) {
             points += T_SPIN_ZERO_POINTS * game_state->level;
+            game_state->last_action_t_spin = true;
         } else if (num_lines == 1) {
             points += T_SPIN_SINGLE_POINTS * game_state->level;
             game_state->difficult_clear_combo++;
+            game_state->last_action_t_spin = true;
         } else if (num_lines == 2) {
             points += T_SPIN_DOUBLE_POINTS * game_state->level;
             game_state->difficult_clear_combo++;
+            game_state->last_action_t_spin = true;
         } else if (num_lines == 3) {
             points += T_SPIN_TRIPLE_POINTS * game_state->level;
             game_state->difficult_clear_combo++;
+            game_state->last_action_t_spin = true;
         }
-        game_state->last_action_t_spin = true;
     } else if (game_state_check_t_spin_mini(game_state)) {
         if (num_lines == 0) {
             points += T_SPIN_MINI_ZERO_POINTS * game_state->level;
+            game_state->last_action_t_spin_mini = true;
         } else if (num_lines == 1) {
             points += T_SPIN_MINI_SINGLE_POINTS * game_state->level;
             game_state->difficult_clear_combo++;
+            game_state->last_action_t_spin_mini = true;
         } else if (num_lines == 2) {
             points += T_SPIN_MINI_DOUBLE_POINTS * game_state->level;
             game_state->difficult_clear_combo++;
+            game_state->last_action_t_spin_mini = true;
         }
-        game_state->last_action_t_spin_mini = true;
     }
     return points;
 }

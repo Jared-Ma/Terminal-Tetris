@@ -83,4 +83,5 @@ bool test_stats_update(void) {
     ASSERT(stats.fps == 30.0);
     ASSERT(stats.num_pieces == 7);
     ASSERT(stats.num_single == 1);
+    return true;
 }

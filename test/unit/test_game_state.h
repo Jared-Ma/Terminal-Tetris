@@ -9,7 +9,9 @@ bool test_game_state_init(void);
 
 bool test_game_state_start(void);
 
-bool test_game_state_restart(void);
+bool test_game_state_reset(void);
+
+bool test_game_state_reset_vfx_vars(void);
 
 bool test_game_state_generate_next_queue(void);
 
