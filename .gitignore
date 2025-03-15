@@ -1,5 +1,5 @@
 terminal_tetris
-test_runner
+unit_test_runner
 ui_test_runner
 /logs
 /obj

@@ -2,7 +2,7 @@
 #include "game_state.h"
 #include "piece.h"
 
-#include "utils/assert_trace.h"
+#include "assert_trace.h"
 
 #include <stdbool.h>
 #include <stdio.h>

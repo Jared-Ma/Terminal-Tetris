@@ -1,8 +1,7 @@
 #include "test_game_state.h"
 #include "test_piece.h"
 #include "test_stats.h"
-
-#include "utils/unit_test.h"
+#include "unit_test.h"
 
 #include <stdbool.h>
 #include <stdlib.h>
