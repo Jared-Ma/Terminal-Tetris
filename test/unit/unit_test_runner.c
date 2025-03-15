@@ -7,7 +7,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#define NUM_TESTS 48
+#define NUM_TESTS 49
 
 
 int main(void) {
@@ -24,6 +24,7 @@ int main(void) {
         UNIT_TEST(test_stats_get),
         UNIT_TEST(test_stats_init),
         UNIT_TEST(test_stats_reset),
+        UNIT_TEST(test_stats_update),
 
         UNIT_TEST(test_game_state_get),
         UNIT_TEST(test_game_state_init),

@@ -9,4 +9,6 @@ bool test_stats_init(void);
 
 bool test_stats_reset(void);
 
+bool test_stats_update(void);
+
 #endif

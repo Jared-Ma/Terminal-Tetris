@@ -80,14 +80,14 @@ void stats_update(Stats* stats, GameState* game_state) {
         return;
     }
 
+    if (game_state->last_locked_piece_shape > 0) {
+        stats->num_pieces++;
+    }
+
     if (stats->seconds > 0) {
         stats->score_per_sec = game_state->score / stats->seconds;
         stats->piece_per_sec = stats->num_pieces / stats->seconds;
         stats->fps = stats->frame_count / stats->seconds;
-    }
-
-    if (game_state->last_locked_piece_shape > 0) {
-        stats->num_pieces++;
     }
 
     if (game_state->last_action_num_lines == 1) {
