@@ -76,6 +76,7 @@ static void reset_game(GameState* game_state, Stats* stats, VFX* vfx_list[NUM_VF
     game_state_reset(game_state);
     stats_reset(stats);
     for (size_t i = 0; i < NUM_VFX; ++i) {
+        vfx_list[i]->reset_function(vfx_list[i]);
         vfx_disable(vfx_list[i]);
     }
 }
