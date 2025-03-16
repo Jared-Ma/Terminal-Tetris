@@ -1,17 +1,22 @@
+#include "test_draw.h"
 #include "test_game_state.h"
 #include "test_piece.h"
 #include "test_stats.h"
+#include "test_vfx.h"
 #include "unit_test.h"
 
 #include <stdbool.h>
 #include <stdlib.h>
 #include <stdio.h>
 
-#define NUM_TESTS 50
+#define NUM_TESTS 70
 
 
 int main(void) {
     UnitTest unit_tests[NUM_TESTS] = {
+        UNIT_TEST(test_game_window_get),
+        UNIT_TEST(test_game_window_init),
+
         UNIT_TEST(test_piece_get),
         UNIT_TEST(test_piece_init),
         UNIT_TEST(test_piece_move),
@@ -64,6 +69,25 @@ int main(void) {
         UNIT_TEST(test_game_state_calc_all_clear_points),
         UNIT_TEST(test_game_state_calc_combo_points),
         UNIT_TEST(test_game_state_calc_difficult_clear_mult),
+
+        UNIT_TEST(test_vfx_get),
+        UNIT_TEST(test_vfx_init),
+        UNIT_TEST(test_vfx_enable),
+        UNIT_TEST(test_vfx_disable),
+        UNIT_TEST(test_vfx_enable_lock_piece),
+        UNIT_TEST(test_vfx_enable_line_clear),
+        UNIT_TEST(test_vfx_enable_hold_piece),
+        UNIT_TEST(test_vfx_enable_next_piece),
+        UNIT_TEST(test_vfx_enable_last_action_line_clear),
+        UNIT_TEST(test_vfx_enable_last_action_t_spin),
+        UNIT_TEST(test_vfx_enable_last_action_t_spin_mini),
+        UNIT_TEST(test_vfx_enable_last_action_all_clear),
+        UNIT_TEST(test_vfx_enable_last_action_combo),
+        UNIT_TEST(test_vfx_enable_last_action_b2b),
+        UNIT_TEST(test_vfx_enable_last_action_score),
+        UNIT_TEST(test_vfx_enable_level_up),
+        UNIT_TEST(test_vfx_enable_stats_lines),
+        UNIT_TEST(test_vfx_enable_stats_level)
     };
 
     size_t failed_unit_tests[NUM_TESTS] = { 0 };
