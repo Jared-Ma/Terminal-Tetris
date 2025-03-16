@@ -89,7 +89,7 @@ struct GameWindow {
 
 typedef struct GameWindow GameWindow;
 
-GameWindow get_game_window(int height, int width, int y, int x);
+GameWindow game_window_get(int height, int width, int y, int x);
 
 GameWindow* game_window_init(int height, int width, int y, int x);
 
