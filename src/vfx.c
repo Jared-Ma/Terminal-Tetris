@@ -72,7 +72,6 @@ void vfx_disable(VFX* vfx) {
     if (!vfx) {
         return;
     }
-    vfx->reset_function(vfx);
     vfx->draw_function = NULL;
     vfx->frame_timer = 0;
     vfx->enabled = false;
@@ -91,6 +90,7 @@ void draw_vfx_frame(VFX* vfx) {
             vfx->draw_function(vfx);
             vfx->frame_timer--;
         } else {
+            vfx->reset_function(vfx);
             vfx_disable(vfx);
         }
     }
@@ -126,22 +126,20 @@ void vfx_enable_lock_piece(VFX* vfx, GameState* game_state) {
         return;
     }
 
-    if (game_state->last_locked_piece_shape > 0) {
-        if (game_state->last_locked_piece_shape == I) {
-            vfx_enable(vfx, draw_vfx_lock_i_piece);
-        } else if (game_state->last_locked_piece_shape == J) {
-            vfx_enable(vfx, draw_vfx_lock_j_piece);
-        } else if (game_state->last_locked_piece_shape == L) {
-            vfx_enable(vfx, draw_vfx_lock_l_piece);
-        } else if (game_state->last_locked_piece_shape == O) {
-            vfx_enable(vfx, draw_vfx_lock_o_piece);
-        } else if (game_state->last_locked_piece_shape == S) {
-            vfx_enable(vfx, draw_vfx_lock_s_piece);
-        } else if (game_state->last_locked_piece_shape == T) {
-            vfx_enable(vfx, draw_vfx_lock_t_piece);
-        } else if (game_state->last_locked_piece_shape == Z) {
-            vfx_enable(vfx, draw_vfx_lock_z_piece);
-        }
+    if (game_state->last_locked_piece_shape == I) {
+        vfx_enable(vfx, draw_vfx_lock_i_piece);
+    } else if (game_state->last_locked_piece_shape == J) {
+        vfx_enable(vfx, draw_vfx_lock_j_piece);
+    } else if (game_state->last_locked_piece_shape == L) {
+        vfx_enable(vfx, draw_vfx_lock_l_piece);
+    } else if (game_state->last_locked_piece_shape == O) {
+        vfx_enable(vfx, draw_vfx_lock_o_piece);
+    } else if (game_state->last_locked_piece_shape == S) {
+        vfx_enable(vfx, draw_vfx_lock_s_piece);
+    } else if (game_state->last_locked_piece_shape == T) {
+        vfx_enable(vfx, draw_vfx_lock_t_piece);
+    } else if (game_state->last_locked_piece_shape == Z) {
+        vfx_enable(vfx, draw_vfx_lock_z_piece);
     }
 }
 
@@ -467,10 +465,19 @@ void vfx_enable_last_action(VFX* vfx_action, VFX* vfx_combo, VFX* vfx_b2b, VFX* 
     }
 
     if (game_state->last_action_t_spin || game_state->last_action_t_spin_mini || game_state->last_action_num_lines > 0) {
-        vfx_disable(vfx_action);
-        vfx_disable(vfx_combo);
-        vfx_disable(vfx_b2b);
-        vfx_disable(vfx_score);
+        if (vfx_action->reset_function) {
+            vfx_action->reset_function(vfx_action);
+        }
+        if (vfx_combo->reset_function) {
+            vfx_combo->reset_function(vfx_combo);
+        }
+        if (vfx_b2b->reset_function) {
+            vfx_b2b->reset_function(vfx_b2b);
+        }
+        if (vfx_score->reset_function) {
+            vfx_score->reset_function(vfx_score);
+        }
+            
         size_t start_y = vfx_action->game_window->content_h;
 
         if (game_state->last_action_points > 0) {
