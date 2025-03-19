@@ -7,6 +7,9 @@
 #include <stdint.h>
 
 
+extern const int8_t GAME_H;
+extern const int8_t GAME_W;
+
 extern const int8_t BOARD_WINDOW_H;
 extern const int8_t BOARD_WINDOW_W;
 extern const int8_t BOARD_WINDOW_Y;
@@ -74,6 +77,11 @@ extern const int16_t COLOR_PAIR_GREEN;
 extern const int16_t COLOR_PAIR_MAGENTA;
 extern const int16_t COLOR_PAIR_RED;
 
+extern const uint16_t LOCK_DELAY_DIM_MAX;
+extern const uint16_t LOCK_DELAY_DIM_MIN;
+extern const uint16_t LOCK_DELAY_STANDOUT_MAX;
+extern const uint16_t LOCK_DELAY_STANDOUT_MIN;
+
 struct GameWindow {
     WINDOW* border;
     WINDOW* content;
@@ -117,11 +125,9 @@ void draw_game_over_window(GameWindow* game_over_window);
 
 void draw_debug_window(GameWindow* debug_window);
 
-void draw_game_over_text(GameWindow* board_window, GameState* game_state);
-
 void draw_board_state(GameWindow* board_window, GameState* game_state);
 
-void draw_buffer_zone_line(GameWindow* board_window, GameState* game_state);
+void draw_buffer_zone_line(GameWindow* board_window);
 
 void draw_board_stack(GameWindow* board_window, GameState* game_state);
 

@@ -29,8 +29,10 @@ UNIT_TEST_CASE_OBJ = $(addprefix $(OBJ_DIR), $(addsuffix .o, $(notdir $(basename
 UI_TEST_DIR      = $(TEST_DIR)ui/
 UI_TEST_EXE      = ui_test_runner
 UI_TEST_MAIN_SRC = $(addprefix $(UI_TEST_DIR), ui_test_runner.c)
+UI_TEST_UTIL_SRC = $(addprefix $(UI_TEST_DIR), ui_test.c)
 UI_TEST_CASE_SRC = $(addprefix $(UI_TEST_DIR), $(wildcard $(UI_TEST_DIR)test*.c))
 UI_TEST_MAIN_OBJ = $(addprefix $(OBJ_DIR), $(addsuffix .o, $(notdir $(basename $(UI_TEST_MAIN_SRC)))))
+UI_TEST_UTIL_OBJ = $(addprefix $(OBJ_DIR), $(addsuffix .o, $(notdir $(basename $(UI_TEST_UTIL_SRC)))))
 UI_TEST_CASE_OBJ = $(addprefix $(OBJ_DIR), $(addsuffix .o, $(notdir $(basename $(UI_TEST_CASE_SRC)))))
 
 
@@ -60,10 +62,13 @@ $(OBJ_DIR)test%.o: $(UNIT_TEST_DIR)test%.c
 
 ui_test: $(UI_TEST_EXE)
 
-$(UI_TEST_EXE): $(UI_TEST_MAIN_OBJ) $(UI_TEST_CASE_OBJ) $(OBJ)
-	$(CC) $(UI_TEST_MAIN_OBJ) $(UI_TEST_CASE_OBJ) $(OBJ) $(LIBS) -o $(EXE_DIR)$(UI_TEST_EXE)	
+$(UI_TEST_EXE): $(UI_TEST_MAIN_OBJ) $(UI_TEST_UTIL_OBJ) $(UI_TEST_CASE_OBJ) $(OBJ)
+	$(CC) $(UI_TEST_MAIN_OBJ) $(UI_TEST_UTIL_OBJ) $(UI_TEST_CASE_OBJ) $(OBJ) $(LIBS) -o $(EXE_DIR)$(UI_TEST_EXE)	
 
 $(OBJ_DIR)ui_test_runner.o: $(UI_TEST_DIR)ui_test_runner.c
+	$(CC) $(CFLAGS) $(INCLUDE_SRC) $< -o $@
+
+$(OBJ_DIR)ui_test.o: $(UI_TEST_DIR)ui_test.c
 	$(CC) $(CFLAGS) $< -o $@
 
 $(OBJ_DIR)test%.o: $(UI_TEST_DIR)test%.c

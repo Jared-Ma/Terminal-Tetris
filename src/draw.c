@@ -8,6 +8,9 @@
 #include <string.h>
 
 
+const int8_t GAME_H = 24;
+const int8_t GAME_W = 50;
+
 const int8_t BOARD_WINDOW_H = 24;
 const int8_t BOARD_WINDOW_W = 22;
 const int8_t BOARD_WINDOW_Y = 0;
@@ -40,7 +43,7 @@ const int8_t PAUSE_WINDOW_X = 18;
 
 const int8_t GAME_OVER_WINDOW_H = 4;
 const int8_t GAME_OVER_WINDOW_W = 14;
-const int8_t GAME_OVER_WINDOW_Y = 10;
+const int8_t GAME_OVER_WINDOW_Y = 9;
 const int8_t GAME_OVER_WINDOW_X = 18;
 
 const int8_t DEBUG_WINDOW_H = 24;
@@ -293,14 +296,14 @@ void draw_debug_window(GameWindow* debug_window) {
 
 void draw_board_state(GameWindow* board_window, GameState* game_state) {
     werase(board_window->content);
-    draw_buffer_zone_line(board_window, game_state);
+    draw_buffer_zone_line(board_window);
     draw_board_stack(board_window, game_state);
     draw_ghost_piece(board_window, game_state);
     draw_curr_piece(board_window, game_state);
     draw_score(board_window, game_state);
 }
 
-void draw_buffer_zone_line(GameWindow* board_window, GameState* game_state) {
+void draw_buffer_zone_line(GameWindow* board_window) {
     wattron(board_window->content, COLOR_PAIR(COLOR_PAIR_RED) | A_DIM);
     for (size_t i = 0; i < board_window->content_w; ++i) {
         mvwprintw(board_window->content, BUFFER_ZONE_H-1, i, "%c", BUFFER_ZONE_LINE);
