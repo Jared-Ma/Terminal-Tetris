@@ -66,7 +66,12 @@ static void end_curses(void) {
 
 static void sleep_ns(uint64_t nanoseconds) {
     struct timespec duration, remainder;
+    duration.tv_sec = 0;
     duration.tv_nsec = nanoseconds;
+    while (duration.tv_nsec >= 1e9) {
+        duration.tv_nsec -= 1e9;
+        duration.tv_sec++;
+    }
     while (clock_nanosleep(CLOCK_MONOTONIC, 0, &duration, &remainder) == -1) {
         duration = remainder;
     }
