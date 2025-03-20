@@ -1,5 +1,4 @@
 #include "test_draw_game_ui.h"
-#include "test_draw_game_vfx.h"
 #include "ui_test.h"
 #include "draw.h"
 #include "piece.h"
@@ -130,8 +129,8 @@ int main(void) {
     mvwprintw(test_info_window, TEST_INFO_WINDOW_H - 1, TEST_INFO_WINDOW_W / 2 - strlen(controls_string) / 2, "%s", controls_string);
     wrefresh(test_info_window);
 
-    bool running = true;
     size_t test_index = 0;
+    bool running = true;
     
     while (running) {
         if (ui_tests[test_index].test_result == PENDING) {

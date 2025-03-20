@@ -1,8 +1,6 @@
 #ifndef UI_TEST_H
 #define UI_TEST_H
-#include <stdbool.h>
 #include <stdint.h>
-#include <stdlib.h>
 
 #define UI_TEST(test) {test, #test, PENDING}
 
