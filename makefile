@@ -35,6 +35,15 @@ UI_TEST_MAIN_OBJ = $(addprefix $(OBJ_DIR), $(addsuffix .o, $(notdir $(basename $
 UI_TEST_UTIL_OBJ = $(addprefix $(OBJ_DIR), $(addsuffix .o, $(notdir $(basename $(UI_TEST_UTIL_SRC)))))
 UI_TEST_CASE_OBJ = $(addprefix $(OBJ_DIR), $(addsuffix .o, $(notdir $(basename $(UI_TEST_CASE_SRC)))))
 
+VFX_TEST_DIR      = $(TEST_DIR)vfx/
+VFX_TEST_EXE      = vfx_test_runner
+VFX_TEST_MAIN_SRC = $(addprefix $(VFX_TEST_DIR), vfx_test_runner.c)
+VFX_TEST_UTIL_SRC = $(addprefix $(VFX_TEST_DIR), vfx_test.c)
+VFX_TEST_CASE_SRC = $(addprefix $(VFX_TEST_DIR), $(wildcard $(VFX_TEST_DIR)test*.c))
+VFX_TEST_MAIN_OBJ = $(addprefix $(OBJ_DIR), $(addsuffix .o, $(notdir $(basename $(VFX_TEST_MAIN_SRC)))))
+VFX_TEST_UTIL_OBJ = $(addprefix $(OBJ_DIR), $(addsuffix .o, $(notdir $(basename $(VFX_TEST_UTIL_SRC)))))
+VFX_TEST_CASE_OBJ = $(addprefix $(OBJ_DIR), $(addsuffix .o, $(notdir $(basename $(VFX_TEST_CASE_SRC)))))
+
 
 all: $(EXE)
 
@@ -75,5 +84,20 @@ $(OBJ_DIR)test%.o: $(UI_TEST_DIR)test%.c
 	$(CC) $(CFLAGS) $(INCLUDE_SRC) $(INCLUDE_TEST_UTIL) $< -o $@
 
 
+vfx_test: $(VFX_TEST_EXE)
+
+$(VFX_TEST_EXE): $(VFX_TEST_MAIN_OBJ) $(VFX_TEST_UTIL_OBJ) $(VFX_TEST_CASE_OBJ) $(OBJ)
+	$(CC) $(VFX_TEST_MAIN_OBJ) $(VFX_TEST_UTIL_OBJ) $(VFX_TEST_CASE_OBJ) $(OBJ) $(LIBS) -o $(EXE_DIR)$(VFX_TEST_EXE)	
+
+$(OBJ_DIR)vfx_test_runner.o: $(VFX_TEST_DIR)vfx_test_runner.c
+	$(CC) $(CFLAGS) $(INCLUDE_SRC) $< -o $@
+
+$(OBJ_DIR)vfx_test.o: $(VFX_TEST_DIR)vfx_test.c
+	$(CC) $(CFLAGS) $(INCLUDE_SRC) $< -o $@
+
+$(OBJ_DIR)test%.o: $(VFX_TEST_DIR)test%.c
+	$(CC) $(CFLAGS) $(INCLUDE_SRC) $(INCLUDE_TEST_UTIL) $< -o $@
+
+
 clean:
-	rm $(OBJ_DIR)*.o $(EXE_DIR)$(EXE) $(EXE_DIR)$(UNIT_TEST_EXE) $(EXE_DIR)$(UI_TEST_EXE)
+	rm $(OBJ_DIR)*.o $(EXE_DIR)$(EXE) $(EXE_DIR)$(UNIT_TEST_EXE) $(EXE_DIR)$(UI_TEST_EXE) $(EXE_DIR)$(VFX_TEST_EXE)
