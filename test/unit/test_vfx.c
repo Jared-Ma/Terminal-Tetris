@@ -59,7 +59,7 @@ bool test_vfx_disable(void) {
 }
 
 bool test_vfx_enable_lock_piece(void) {
-    VFX vfx_lock_piece = vfx_get(NULL, NULL, 60);
+    VFX vfx_lock_piece = vfx_get(NULL, draw_vfx_lock_piece_reset, LOCK_PIECE_VFX_FRAMES);
     GameState game_state = game_state_get();
     
     vfx_enable_lock_piece(&vfx_lock_piece, &game_state);
@@ -70,50 +70,50 @@ bool test_vfx_enable_lock_piece(void) {
     game_state.last_locked_piece_shape = I;
     vfx_enable_lock_piece(&vfx_lock_piece, &game_state);
     ASSERT(vfx_lock_piece.draw_function == draw_vfx_lock_i_piece);
-    ASSERT(vfx_lock_piece.frame_timer == 60);
+    ASSERT(vfx_lock_piece.frame_timer == LOCK_PIECE_VFX_FRAMES);
     ASSERT(vfx_lock_piece.enabled == true);
 
     game_state.last_locked_piece_shape = J;
     vfx_enable_lock_piece(&vfx_lock_piece, &game_state);
     ASSERT(vfx_lock_piece.draw_function == draw_vfx_lock_j_piece);
-    ASSERT(vfx_lock_piece.frame_timer == 60);
+    ASSERT(vfx_lock_piece.frame_timer == LOCK_PIECE_VFX_FRAMES);
     ASSERT(vfx_lock_piece.enabled == true);
 
     game_state.last_locked_piece_shape = L;
     vfx_enable_lock_piece(&vfx_lock_piece, &game_state);
     ASSERT(vfx_lock_piece.draw_function == draw_vfx_lock_l_piece);
-    ASSERT(vfx_lock_piece.frame_timer == 60);
+    ASSERT(vfx_lock_piece.frame_timer == LOCK_PIECE_VFX_FRAMES);
     ASSERT(vfx_lock_piece.enabled == true);
 
     game_state.last_locked_piece_shape = O;
     vfx_enable_lock_piece(&vfx_lock_piece, &game_state);
     ASSERT(vfx_lock_piece.draw_function == draw_vfx_lock_o_piece);
-    ASSERT(vfx_lock_piece.frame_timer == 60);
+    ASSERT(vfx_lock_piece.frame_timer == LOCK_PIECE_VFX_FRAMES);
     ASSERT(vfx_lock_piece.enabled == true);
 
     game_state.last_locked_piece_shape = S;
     vfx_enable_lock_piece(&vfx_lock_piece, &game_state);
     ASSERT(vfx_lock_piece.draw_function == draw_vfx_lock_s_piece);
-    ASSERT(vfx_lock_piece.frame_timer == 60);
+    ASSERT(vfx_lock_piece.frame_timer == LOCK_PIECE_VFX_FRAMES);
     ASSERT(vfx_lock_piece.enabled == true);
 
     game_state.last_locked_piece_shape = T;
     vfx_enable_lock_piece(&vfx_lock_piece, &game_state);
     ASSERT(vfx_lock_piece.draw_function == draw_vfx_lock_t_piece);
-    ASSERT(vfx_lock_piece.frame_timer == 60);
+    ASSERT(vfx_lock_piece.frame_timer == LOCK_PIECE_VFX_FRAMES);
     ASSERT(vfx_lock_piece.enabled == true);
 
     game_state.last_locked_piece_shape = Z;
     vfx_enable_lock_piece(&vfx_lock_piece, &game_state);
     ASSERT(vfx_lock_piece.draw_function == draw_vfx_lock_z_piece);
-    ASSERT(vfx_lock_piece.frame_timer == 60);
+    ASSERT(vfx_lock_piece.frame_timer == LOCK_PIECE_VFX_FRAMES);
     ASSERT(vfx_lock_piece.enabled == true);
 
     return true;
 }
 
 bool test_vfx_enable_line_clear(void) {
-    VFX vfx_line_clear = vfx_get(NULL, NULL, 60);
+    VFX vfx_line_clear = vfx_get(NULL, draw_vfx_line_clear_reset, LINE_CLEAR_VFX_FRAMES);
     GameState game_state = game_state_get();
 
     vfx_enable_line_clear(&vfx_line_clear, &game_state);
@@ -126,14 +126,14 @@ bool test_vfx_enable_line_clear(void) {
     game_state.last_action_num_lines = 1;
     vfx_enable_line_clear(&vfx_line_clear, &game_state);
     ASSERT(vfx_line_clear.draw_function == draw_vfx_line_clear_t_spin);
-    ASSERT(vfx_line_clear.frame_timer == 60);
+    ASSERT(vfx_line_clear.frame_timer == LINE_CLEAR_VFX_FRAMES);
     ASSERT(vfx_line_clear.enabled == true);
 
     game_state.last_action_t_spin = false;
     game_state.last_action_t_spin_mini = true;
     vfx_enable_line_clear(&vfx_line_clear, &game_state);
     ASSERT(vfx_line_clear.draw_function == draw_vfx_line_clear_t_spin);
-    ASSERT(vfx_line_clear.frame_timer == 60);
+    ASSERT(vfx_line_clear.frame_timer == LINE_CLEAR_VFX_FRAMES);
     ASSERT(vfx_line_clear.enabled == true);
 
     game_state.last_action_t_spin = false;
@@ -141,38 +141,38 @@ bool test_vfx_enable_line_clear(void) {
     game_state.last_action_all_clear = true;
     vfx_enable_line_clear(&vfx_line_clear, &game_state);
     ASSERT(vfx_line_clear.draw_function == draw_vfx_line_clear_all_clear);
-    ASSERT(vfx_line_clear.frame_timer == 60);
+    ASSERT(vfx_line_clear.frame_timer == LINE_CLEAR_VFX_FRAMES);
     ASSERT(vfx_line_clear.enabled == true);
 
     game_state.last_action_all_clear = false;
     vfx_enable_line_clear(&vfx_line_clear, &game_state);
     ASSERT(vfx_line_clear.draw_function == draw_vfx_line_clear_single);
-    ASSERT(vfx_line_clear.frame_timer == 60);
+    ASSERT(vfx_line_clear.frame_timer == LINE_CLEAR_VFX_FRAMES);
     ASSERT(vfx_line_clear.enabled == true);
 
     game_state.last_action_num_lines = 2;
     vfx_enable_line_clear(&vfx_line_clear, &game_state);
     ASSERT(vfx_line_clear.draw_function == draw_vfx_line_clear_double);
-    ASSERT(vfx_line_clear.frame_timer == 60);
+    ASSERT(vfx_line_clear.frame_timer == LINE_CLEAR_VFX_FRAMES);
     ASSERT(vfx_line_clear.enabled == true);
 
     game_state.last_action_num_lines = 3;
     vfx_enable_line_clear(&vfx_line_clear, &game_state);
     ASSERT(vfx_line_clear.draw_function == draw_vfx_line_clear_triple);
-    ASSERT(vfx_line_clear.frame_timer == 60);
+    ASSERT(vfx_line_clear.frame_timer == LINE_CLEAR_VFX_FRAMES);
     ASSERT(vfx_line_clear.enabled == true);
 
     game_state.last_action_num_lines = 4;
     vfx_enable_line_clear(&vfx_line_clear, &game_state);
     ASSERT(vfx_line_clear.draw_function == draw_vfx_line_clear_tetris);
-    ASSERT(vfx_line_clear.frame_timer == 60);
+    ASSERT(vfx_line_clear.frame_timer == LINE_CLEAR_VFX_FRAMES);
     ASSERT(vfx_line_clear.enabled == true);
 
     return true;
 }
 
 bool test_vfx_enable_hold_piece(void) {
-    VFX vfx_hold_piece = vfx_get(NULL, NULL, 60);
+    VFX vfx_hold_piece = vfx_get(NULL, draw_vfx_hold_piece_reset, HOLD_PIECE_VFX_FRAMES);
     GameState game_state = game_state_get();
 
     vfx_enable_hold_piece(&vfx_hold_piece, &game_state);
@@ -184,50 +184,50 @@ bool test_vfx_enable_hold_piece(void) {
     game_state.hold_piece.shape = I;
     vfx_enable_hold_piece(&vfx_hold_piece, &game_state);
     ASSERT(vfx_hold_piece.draw_function == draw_vfx_hold_i_piece);
-    ASSERT(vfx_hold_piece.frame_timer == 60);
+    ASSERT(vfx_hold_piece.frame_timer == HOLD_PIECE_VFX_FRAMES);
     ASSERT(vfx_hold_piece.enabled == true);
 
     game_state.hold_piece.shape = J;
     vfx_enable_hold_piece(&vfx_hold_piece, &game_state);
     ASSERT(vfx_hold_piece.draw_function == draw_vfx_hold_j_piece);
-    ASSERT(vfx_hold_piece.frame_timer == 60);
+    ASSERT(vfx_hold_piece.frame_timer == HOLD_PIECE_VFX_FRAMES);
     ASSERT(vfx_hold_piece.enabled == true);
 
     game_state.hold_piece.shape = L;
     vfx_enable_hold_piece(&vfx_hold_piece, &game_state);
     ASSERT(vfx_hold_piece.draw_function == draw_vfx_hold_l_piece);
-    ASSERT(vfx_hold_piece.frame_timer == 60);
+    ASSERT(vfx_hold_piece.frame_timer == HOLD_PIECE_VFX_FRAMES);
     ASSERT(vfx_hold_piece.enabled == true);
 
     game_state.hold_piece.shape = O;
     vfx_enable_hold_piece(&vfx_hold_piece, &game_state);
     ASSERT(vfx_hold_piece.draw_function == draw_vfx_hold_o_piece);
-    ASSERT(vfx_hold_piece.frame_timer == 60);
+    ASSERT(vfx_hold_piece.frame_timer == HOLD_PIECE_VFX_FRAMES);
     ASSERT(vfx_hold_piece.enabled == true);
 
     game_state.hold_piece.shape = S;
     vfx_enable_hold_piece(&vfx_hold_piece, &game_state);
     ASSERT(vfx_hold_piece.draw_function == draw_vfx_hold_s_piece);
-    ASSERT(vfx_hold_piece.frame_timer == 60);
+    ASSERT(vfx_hold_piece.frame_timer == HOLD_PIECE_VFX_FRAMES);
     ASSERT(vfx_hold_piece.enabled == true);
 
     game_state.hold_piece.shape = T;
     vfx_enable_hold_piece(&vfx_hold_piece, &game_state);
     ASSERT(vfx_hold_piece.draw_function == draw_vfx_hold_t_piece);
-    ASSERT(vfx_hold_piece.frame_timer == 60);
+    ASSERT(vfx_hold_piece.frame_timer == HOLD_PIECE_VFX_FRAMES);
     ASSERT(vfx_hold_piece.enabled == true);
 
     game_state.hold_piece.shape = Z;
     vfx_enable_hold_piece(&vfx_hold_piece, &game_state);
     ASSERT(vfx_hold_piece.draw_function == draw_vfx_hold_z_piece);
-    ASSERT(vfx_hold_piece.frame_timer == 60);
+    ASSERT(vfx_hold_piece.frame_timer == HOLD_PIECE_VFX_FRAMES);
     ASSERT(vfx_hold_piece.enabled == true);
 
     return true;
 }
 
 bool test_vfx_enable_next_piece(void) {
-    VFX vfx_next_piece = vfx_get(NULL, NULL, 60);
+    VFX vfx_next_piece = vfx_get(NULL, draw_vfx_next_piece_reset, NEXT_PIECE_VFX_FRAMES);
     GameState game_state = game_state_get();
     
     vfx_enable_next_piece(&vfx_next_piece, &game_state);
@@ -239,43 +239,43 @@ bool test_vfx_enable_next_piece(void) {
     game_state.next_piece.shape = I;
     vfx_enable_next_piece(&vfx_next_piece, &game_state);
     ASSERT(vfx_next_piece.draw_function == draw_vfx_next_i_piece);
-    ASSERT(vfx_next_piece.frame_timer == 60);
+    ASSERT(vfx_next_piece.frame_timer == NEXT_PIECE_VFX_FRAMES);
     ASSERT(vfx_next_piece.enabled == true);
 
     game_state.next_piece.shape = J;
     vfx_enable_next_piece(&vfx_next_piece, &game_state);
     ASSERT(vfx_next_piece.draw_function == draw_vfx_next_j_piece);
-    ASSERT(vfx_next_piece.frame_timer == 60);
+    ASSERT(vfx_next_piece.frame_timer == NEXT_PIECE_VFX_FRAMES);
     ASSERT(vfx_next_piece.enabled == true);
 
     game_state.next_piece.shape = L;
     vfx_enable_next_piece(&vfx_next_piece, &game_state);
     ASSERT(vfx_next_piece.draw_function == draw_vfx_next_l_piece);
-    ASSERT(vfx_next_piece.frame_timer == 60);
+    ASSERT(vfx_next_piece.frame_timer == NEXT_PIECE_VFX_FRAMES);
     ASSERT(vfx_next_piece.enabled == true);
 
     game_state.next_piece.shape = O;
     vfx_enable_next_piece(&vfx_next_piece, &game_state);
     ASSERT(vfx_next_piece.draw_function == draw_vfx_next_o_piece);
-    ASSERT(vfx_next_piece.frame_timer == 60);
+    ASSERT(vfx_next_piece.frame_timer == NEXT_PIECE_VFX_FRAMES);
     ASSERT(vfx_next_piece.enabled == true);
 
     game_state.next_piece.shape = S;
     vfx_enable_next_piece(&vfx_next_piece, &game_state);
     ASSERT(vfx_next_piece.draw_function == draw_vfx_next_s_piece);
-    ASSERT(vfx_next_piece.frame_timer == 60);
+    ASSERT(vfx_next_piece.frame_timer == NEXT_PIECE_VFX_FRAMES);
     ASSERT(vfx_next_piece.enabled == true);
 
     game_state.next_piece.shape = T;
     vfx_enable_next_piece(&vfx_next_piece, &game_state);
     ASSERT(vfx_next_piece.draw_function == draw_vfx_next_t_piece);
-    ASSERT(vfx_next_piece.frame_timer == 60);
+    ASSERT(vfx_next_piece.frame_timer == NEXT_PIECE_VFX_FRAMES);
     ASSERT(vfx_next_piece.enabled == true);
 
     game_state.next_piece.shape = Z;
     vfx_enable_next_piece(&vfx_next_piece, &game_state);
     ASSERT(vfx_next_piece.draw_function == draw_vfx_next_z_piece);
-    ASSERT(vfx_next_piece.frame_timer == 60);
+    ASSERT(vfx_next_piece.frame_timer == NEXT_PIECE_VFX_FRAMES);
     ASSERT(vfx_next_piece.enabled == true);
 
     return true;
@@ -575,7 +575,7 @@ bool test_vfx_enable_score(void) {
 
 bool test_vfx_enable_level_up(void) {
     GameWindow board_window = game_window_get(BOARD_WINDOW_H, BOARD_WINDOW_W, BOARD_WINDOW_Y, BOARD_WINDOW_X);
-    VFX vfx_level_up = vfx_get(&board_window, NULL, 60);
+    VFX vfx_level_up = vfx_get(&board_window, draw_vfx_level_up_reset, LEVEL_UP_VFX_FRAMES);
     GameState game_state = game_state_get();
 
     vfx_enable_level_up(&vfx_level_up, &game_state);
@@ -595,7 +595,7 @@ bool test_vfx_enable_level_up(void) {
     ASSERT(vfx_level_up.y == LEVEL_UP_VFX_Y);
     ASSERT(vfx_level_up.x == vfx_level_up.game_window->content_w/2 - strlen(vfx_level_up.text)/2);
     ASSERT(vfx_level_up.draw_function == draw_vfx_level_up);
-    ASSERT(vfx_level_up.frame_timer == 60);
+    ASSERT(vfx_level_up.frame_timer == LEVEL_UP_VFX_FRAMES);
     ASSERT(vfx_level_up.enabled == true);
 
     game_state.level = 10;
@@ -605,7 +605,7 @@ bool test_vfx_enable_level_up(void) {
     ASSERT(vfx_level_up.y == LEVEL_UP_VFX_Y);
     ASSERT(vfx_level_up.x == vfx_level_up.game_window->content_w/2 - strlen(vfx_level_up.text)/2);
     ASSERT(vfx_level_up.draw_function == draw_vfx_level_up);
-    ASSERT(vfx_level_up.frame_timer == 60);
+    ASSERT(vfx_level_up.frame_timer == LEVEL_UP_VFX_FRAMES);
     ASSERT(vfx_level_up.enabled == true);
 
     return true;
@@ -613,7 +613,7 @@ bool test_vfx_enable_level_up(void) {
 
 bool test_vfx_enable_stats_lines(void) {
     GameWindow stats_window = game_window_get(STATS_WINDOW_H, STATS_WINDOW_W, STATS_WINDOW_Y, STATS_WINDOW_X);
-    VFX vfx_stats_lines = vfx_get(&stats_window, NULL, 60);
+    VFX vfx_stats_lines = vfx_get(&stats_window, draw_vfx_stats_lines_reset, STATS_LINES_VFX_FRAMES);
     GameState game_state = game_state_get();
 
     vfx_enable_level_up(&vfx_stats_lines, &game_state);
@@ -633,7 +633,7 @@ bool test_vfx_enable_stats_lines(void) {
     ASSERT(vfx_stats_lines.y == STATS_LINES_Y);
     ASSERT(vfx_stats_lines.x == STATS_LINES_X);
     ASSERT(vfx_stats_lines.draw_function == draw_vfx_stats_lines);
-    ASSERT(vfx_stats_lines.frame_timer == 60);
+    ASSERT(vfx_stats_lines.frame_timer == STATS_LINES_VFX_FRAMES);
     ASSERT(vfx_stats_lines.enabled == true);
 
     return true;
@@ -641,7 +641,7 @@ bool test_vfx_enable_stats_lines(void) {
 
 bool test_vfx_enable_stats_level(void) {
     GameWindow stats_window = game_window_get(STATS_WINDOW_H, STATS_WINDOW_W, STATS_WINDOW_Y, STATS_WINDOW_X);
-    VFX vfx_stats_level = vfx_get(&stats_window, NULL, 60);
+    VFX vfx_stats_level = vfx_get(&stats_window, draw_vfx_stats_level_reset, STATS_LEVEL_VFX_FRAMES);
     GameState game_state = game_state_get();
 
     vfx_enable_level_up(&vfx_stats_level, &game_state);
@@ -661,7 +661,7 @@ bool test_vfx_enable_stats_level(void) {
     ASSERT(vfx_stats_level.y == STATS_LEVEL_Y);
     ASSERT(vfx_stats_level.x == STATS_LEVEL_X);
     ASSERT(vfx_stats_level.draw_function == draw_vfx_stats_level);
-    ASSERT(vfx_stats_level.frame_timer == 60);
+    ASSERT(vfx_stats_level.frame_timer == STATS_LEVEL_VFX_FRAMES);
     ASSERT(vfx_stats_level.enabled == true);
 
     return true;
