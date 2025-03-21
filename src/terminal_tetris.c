@@ -245,11 +245,15 @@ static void start_tetris(
             draw_next_piece(next_window, game_state);
             draw_stats(stats_window, game_state, stats);
             
+            // turn into list for loop -> check event -> enable
             vfx_enable_hold_piece(vfx_hold_piece, game_state);
             vfx_enable_next_piece(vfx_next_piece, game_state);
             vfx_enable_lock_piece(vfx_lock_piece, game_state);
             vfx_enable_line_clear(vfx_line_clear, game_state);
-            vfx_enable_last_action(vfx_action, vfx_combo, vfx_b2b_combo, vfx_score, game_state);
+            vfx_enable_action(vfx_action, game_state);
+            vfx_enable_combo(vfx_combo, game_state);
+            vfx_enable_b2b_combo(vfx_b2b_combo, game_state);
+            vfx_enable_score(vfx_score, game_state);
             vfx_enable_level_up(vfx_level_up, game_state);
             vfx_enable_stats_lines(vfx_stats_lines, game_state);
             vfx_enable_stats_level(vfx_stats_level, game_state);

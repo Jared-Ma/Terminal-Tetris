@@ -459,133 +459,87 @@ void draw_vfx_next_z_piece(VFX* vfx) {
     draw_window_title(vfx->game_window, NEXT_TITLE, COLOR_PAIR_RED);
 }
 
-void vfx_enable_last_action(VFX* vfx_action, VFX* vfx_combo, VFX* vfx_b2b, VFX* vfx_score, GameState* game_state) {
-    if (!vfx_action || !vfx_combo || !vfx_b2b || !vfx_score || !game_state) {
+void vfx_enable_action(VFX* vfx, GameState* game_state) {
+    if (!vfx || !game_state) {
         return;
     }
 
     if (game_state->last_action_t_spin || game_state->last_action_t_spin_mini || game_state->last_action_num_lines > 0) {
-        if (vfx_action->reset_function) {
-            vfx_action->reset_function(vfx_action);
-        }
-        if (vfx_combo->reset_function) {
-            vfx_combo->reset_function(vfx_combo);
-        }
-        if (vfx_b2b->reset_function) {
-            vfx_b2b->reset_function(vfx_b2b);
-        }
-        if (vfx_score->reset_function) {
-            vfx_score->reset_function(vfx_score);
-        }
-            
-        size_t start_y = vfx_action->game_window->content_h;
-
-        if (game_state->last_action_points > 0) {
-            sprintf(vfx_score->text, "%*lu", vfx_score->game_window->content_w, game_state->last_action_points);
-            start_y--;
-            vfx_score->y = start_y;
-            vfx_enable(vfx_score, draw_vfx_score);
-        }
-
-        if (game_state->difficult_clear_combo > 0) {
-            sprintf(vfx_b2b->text, "%li x b2b", game_state->difficult_clear_combo);
-            start_y--;
-            vfx_b2b->y = start_y;
-            vfx_enable(vfx_b2b, draw_vfx_b2b);
-        }
-
-        if (game_state->combo > 0) {
-            sprintf(vfx_combo->text, "%li x combo", game_state->combo);
-            start_y--;
-            vfx_combo->y = start_y;
-            vfx_enable(vfx_combo, draw_vfx_combo);
-        }
+        vfx_disable(vfx);
+        vfx->y = vfx->game_window->content_h;
+        vfx->y -= (game_state->last_action_points > 0) ? 1 : 0;
+        vfx->y -= (game_state->difficult_clear_combo > 0) ? 1 : 0;
+        vfx->y -= (game_state->combo > 0) ? 1 : 0;
 
         if (game_state->last_action_t_spin) {
             if (game_state->last_action_num_lines == 0) {
-                strcpy(vfx_action->text, "t-spin");
-                start_y--;
-                vfx_action->y = start_y;
+                strcpy(vfx->text, "t-spin");
+                vfx->y--;
             } else if (game_state->last_action_num_lines == 1) {
-                strcpy(vfx_action->text, "t-spin\nsingle");
-                start_y -= 2;
-                vfx_action->y = start_y;
+                strcpy(vfx->text, "t-spin\nsingle");
+                vfx->y -= 2;
             } else if (game_state->last_action_num_lines == 2) {
-                strcpy(vfx_action->text, "t-spin\ndouble");
-                start_y -= 2;
-                vfx_action->y = start_y;
+                strcpy(vfx->text, "t-spin\ndouble");
+                vfx->y -= 2;
             } else if (game_state->last_action_num_lines == 3) {
-                strcpy(vfx_action->text, "t-spin\ntriple");
-                start_y -= 2;
+                strcpy(vfx->text, "t-spin\ntriple");
+                vfx->y -= 2;
             }
-            vfx_action->y = start_y;
-            vfx_enable(vfx_action, draw_vfx_action_t_spin);
+            vfx_enable(vfx, draw_vfx_action_t_spin);
         } else if (game_state->last_action_t_spin_mini) {
             if (game_state->last_action_num_lines == 0) {
-                strcpy(vfx_action->text, "t-spin mini");
-                start_y--;
-                vfx_action->y = start_y;
-                vfx_enable(vfx_action, draw_vfx_action_t_spin);
+                strcpy(vfx->text, "t-spin mini");
+                vfx->y--;
+                vfx_enable(vfx, draw_vfx_action_t_spin);
             } else if (game_state->last_action_num_lines == 1) {
-                strcpy(vfx_action->text, "t-spin mini\nsingle");
-                start_y -= 2;
-                vfx_action->y = start_y;
-                vfx_enable(vfx_action, draw_vfx_action_t_spin);
+                strcpy(vfx->text, "t-spin mini\nsingle");
+                vfx->y -= 2;
+                vfx_enable(vfx, draw_vfx_action_t_spin);
             } else if (game_state->last_action_num_lines == 2) {
-                strcpy(vfx_action->text, "t-spin mini\ndouble");
-                start_y -= 2;
-                vfx_action->y = start_y;
-                vfx_enable(vfx_action, draw_vfx_action_t_spin);
+                strcpy(vfx->text, "t-spin mini\ndouble");
+                vfx->y -= 2;
+                vfx_enable(vfx, draw_vfx_action_t_spin);
             }
         } else if (game_state->last_action_all_clear) {
             if (game_state->last_action_num_lines == 1) {
-                strcpy(vfx_action->text, "single\nall clear");
-                start_y -= 2;
-                vfx_action->y = start_y;
-                vfx_enable(vfx_action, draw_vfx_action_all_clear);
+                strcpy(vfx->text, "single\nall clear");
+                vfx->y -= 2;
+                vfx_enable(vfx, draw_vfx_action_all_clear);
             } else if (game_state->last_action_num_lines == 2) {
-                strcpy(vfx_action->text, "double\nall clear");
-                start_y -= 2;
-                vfx_action->y = start_y;
-                vfx_enable(vfx_action, draw_vfx_action_all_clear);
+                strcpy(vfx->text, "double\nall clear");
+                vfx->y -= 2;
+                vfx_enable(vfx, draw_vfx_action_all_clear);
             } else if (game_state->last_action_num_lines == 3) {
-                strcpy(vfx_action->text, "triple\nall clear");
-                start_y -= 2;
-                vfx_action->y = start_y;
-                vfx_enable(vfx_action, draw_vfx_action_all_clear);
+                strcpy(vfx->text, "triple\nall clear");
+                vfx->y -= 2;
+                vfx_enable(vfx, draw_vfx_action_all_clear);
             } else if (game_state->last_action_num_lines == 4) {
                 if (game_state->tetris_all_clear_combo > 0) {
-                    strcpy(vfx_action->text, "b2b tetris\nall clear");
-                    start_y -= 2;
-                    vfx_action->y = start_y;
-                    vfx_enable(vfx_action, draw_vfx_action_all_clear);
+                    strcpy(vfx->text, "b2b tetris\nall clear");
+                    vfx->y -= 2;
+                    vfx_enable(vfx, draw_vfx_action_all_clear);
                 } else {
-                    strcpy(vfx_action->text, "tetris\nall clear");
-                    start_y -= 2;
-                    vfx_action->y = start_y;
-                    vfx_enable(vfx_action, draw_vfx_action_all_clear);
+                    strcpy(vfx->text, "tetris\nall clear");
+                    vfx->y -= 2;
+                    vfx_enable(vfx, draw_vfx_action_all_clear);
                 }
             }
         } else if (game_state->last_action_num_lines == 1) {
-            strcpy(vfx_action->text, "single");
-            start_y--;
-            vfx_action->y = start_y;
-            vfx_enable(vfx_action, draw_vfx_action_single);
+            strcpy(vfx->text, "single");
+            vfx->y--;
+            vfx_enable(vfx, draw_vfx_action_single);
         } else if (game_state->last_action_num_lines == 2) {
-            strcpy(vfx_action->text, "double");
-            start_y--;
-            vfx_action->y = start_y;
-            vfx_enable(vfx_action, draw_vfx_action_double);
+            strcpy(vfx->text, "double");
+            vfx->y--;
+            vfx_enable(vfx, draw_vfx_action_double);
         } else if (game_state->last_action_num_lines == 3) {
-            strcpy(vfx_action->text, "triple");
-            start_y--;
-            vfx_action->y = start_y;
-            vfx_enable(vfx_action, draw_vfx_action_triple);
+            strcpy(vfx->text, "triple");
+            vfx->y--;
+            vfx_enable(vfx, draw_vfx_action_triple);
         } else if (game_state->last_action_num_lines == 4) {
-            strcpy(vfx_action->text, "tetris");
-            start_y--;
-            vfx_action->y = start_y;
-            vfx_enable(vfx_action, draw_vfx_action_tetris);
+            strcpy(vfx->text, "tetris");
+            vfx->y--;
+            vfx_enable(vfx, draw_vfx_action_tetris);
         }
     }
 }
@@ -612,7 +566,6 @@ void draw_vfx_action_single(VFX* vfx) {
         wattron(vfx->game_window->content, A_DIM);
     }
 
-    mvwprintw(vfx->game_window->content, vfx->y, vfx->x, "%*s", vfx->game_window->content_w, "");
     wattron(vfx->game_window->content, COLOR_PAIR(COLOR_PAIR_GREEN));
     mvwprintw(vfx->game_window->content, vfx->y, vfx->x, "%s", vfx->text);
     wattroff(vfx->game_window->content, COLOR_PAIR(COLOR_PAIR_GREEN));
@@ -631,7 +584,6 @@ void draw_vfx_action_double(VFX* vfx) {
         wattron(vfx->game_window->content, A_DIM);
     }
 
-    mvwprintw(vfx->game_window->content, vfx->y, vfx->x, "%*s", vfx->game_window->content_w, "");
     wattron(vfx->game_window->content, COLOR_PAIR(COLOR_PAIR_BLUE));
     mvwprintw(vfx->game_window->content, vfx->y, vfx->x, "%s", vfx->text);
     wattroff(vfx->game_window->content, COLOR_PAIR(COLOR_PAIR_BLUE));
@@ -645,8 +597,6 @@ void draw_vfx_action_triple(VFX* vfx) {
     if (!vfx) {
         return;
     }
-    
-    mvwprintw(vfx->game_window->content, vfx->y, vfx->x, "%*s", vfx->game_window->content_w, "");
     
     if (vfx->frame_timer < LAST_ACTION_VFX_DIM_FRAMES) {
         wattron(vfx->game_window->content, A_DIM);
@@ -665,7 +615,6 @@ void draw_vfx_action_tetris(VFX* vfx) {
     if (!vfx) {
         return;
     }
-    mvwprintw(vfx->game_window->content, vfx->y, vfx->x, "%*s", vfx->game_window->content_w, "");
     
     if (vfx->frame_timer < LAST_ACTION_VFX_DIM_FRAMES) {
         wattron(vfx->game_window->content, A_DIM);
@@ -685,12 +634,10 @@ void draw_vfx_action_t_spin(VFX* vfx) {
         return;
     }
 
-    mvwprintw(vfx->game_window->content, vfx->y, vfx->x, "%*s", vfx->game_window->content_w, "");
-
     if (vfx->frame_timer < LAST_ACTION_VFX_DIM_FRAMES) {
         wattron(vfx->game_window->content, A_DIM);
     }
-
+    
     wattron(vfx->game_window->content, COLOR_PAIR(COLOR_PAIR_MAGENTA));
     mvwprintw(vfx->game_window->content, vfx->y, vfx->x, "%s", vfx->text);
     wattroff(vfx->game_window->content, COLOR_PAIR(COLOR_PAIR_MAGENTA));
@@ -726,13 +673,30 @@ void draw_vfx_action_all_clear(VFX* vfx) {
         wattron(vfx->game_window->content, A_DIM);
     }
     
-    mvwprintw(vfx->game_window->content, vfx->y, vfx->x, "%*s", vfx->game_window->content_w, "");
     wattron(vfx->game_window->content, COLOR_PAIR(color_pair));
     mvwprintw(vfx->game_window->content, vfx->y, vfx->x, "%s", vfx->text);
     wattroff(vfx->game_window->content, COLOR_PAIR(color_pair));
 
     if (vfx->frame_timer < LAST_ACTION_VFX_DIM_FRAMES) {
         wattroff(vfx->game_window->content, A_DIM);
+    }
+}
+
+void vfx_enable_combo(VFX* vfx, GameState* game_state) {
+    if (!vfx || !game_state) {
+        return;
+    }
+    
+    if (game_state->last_action_t_spin || game_state->last_action_t_spin_mini || game_state->last_action_num_lines > 0) { 
+        vfx_disable(vfx);
+        if (game_state->combo > 0) {
+            sprintf(vfx->text, "%li x combo", game_state->combo);
+            vfx->y = vfx->game_window->content_h;
+            vfx->y -= (game_state->last_action_points > 0) ? 1 : 0;
+            vfx->y -= (game_state->difficult_clear_combo > 0) ? 1 : 0;
+            vfx->y--;
+            vfx_enable(vfx, draw_vfx_combo);
+        }
     }
 }
 
@@ -752,13 +716,29 @@ void draw_vfx_combo(VFX* vfx) {
         wattron(vfx->game_window->content, A_DIM);
     }
 
-    mvwprintw(vfx->game_window->content, vfx->y, vfx->x, "%*s", vfx->game_window->content_w, "");
     wattron(vfx->game_window->content, COLOR_PAIR(COLOR_PAIR_RED));
     mvwprintw(vfx->game_window->content, vfx->y, vfx->x, "%s", vfx->text);
     wattroff(vfx->game_window->content, COLOR_PAIR(COLOR_PAIR_RED));
 
     if (vfx->frame_timer < LAST_ACTION_VFX_DIM_FRAMES) {
         wattroff(vfx->game_window->content, A_DIM);
+    }
+}
+
+void vfx_enable_b2b_combo(VFX* vfx, GameState* game_state) {
+    if (!vfx || !game_state) {
+        return;
+    }
+
+    if (game_state->last_action_t_spin || game_state->last_action_t_spin_mini || game_state->last_action_num_lines > 0) { 
+        vfx_disable(vfx);
+        if (game_state->difficult_clear_combo > 0) {
+            sprintf(vfx->text, "%li x b2b", game_state->difficult_clear_combo);
+            vfx->y = vfx->game_window->content_h;
+            vfx->y -= (game_state->last_action_points > 0) ? 1 : 0;
+            vfx->y--;
+            vfx_enable(vfx, draw_vfx_b2b_combo);
+        }
     }
 }
 
@@ -769,7 +749,7 @@ void draw_vfx_b2b_combo_reset(VFX* vfx) {
     mvwprintw(vfx->game_window->content, vfx->y, vfx->x, "%*s", vfx->game_window->content_w, "");
 }
 
-void draw_vfx_b2b(VFX* vfx) {
+void draw_vfx_b2b_combo(VFX* vfx) {
     if (!vfx) {
         return;
     }
@@ -778,13 +758,28 @@ void draw_vfx_b2b(VFX* vfx) {
         wattron(vfx->game_window->content, A_DIM);
     }
 
-    mvwprintw(vfx->game_window->content, vfx->y, vfx->x, "%*s", vfx->game_window->content_w, "");
     wattron(vfx->game_window->content, COLOR_PAIR(COLOR_PAIR_ORANGE));
     mvwprintw(vfx->game_window->content, vfx->y, vfx->x, "%s", vfx->text);
     wattroff(vfx->game_window->content, COLOR_PAIR(COLOR_PAIR_ORANGE));
     
     if (vfx->frame_timer < LAST_ACTION_VFX_DIM_FRAMES) {
         wattroff(vfx->game_window->content, A_DIM);
+    }
+}
+
+void vfx_enable_score(VFX* vfx, GameState* game_state) {
+    if (!vfx || !game_state) {
+        return;
+    }
+
+    if (game_state->last_action_t_spin || game_state->last_action_t_spin_mini || game_state->last_action_num_lines > 0) { 
+        vfx_disable(vfx);
+        if (game_state->last_action_points > 0) {
+            sprintf(vfx->text, "%*lu", vfx->game_window->content_w, game_state->last_action_points);
+            vfx->y = vfx->game_window->content_h;
+            vfx->y--;
+            vfx_enable(vfx, draw_vfx_score);
+        }
     }
 }
 
@@ -804,7 +799,6 @@ void draw_vfx_score(VFX* vfx) {
         wattron(vfx->game_window->content, A_DIM);
     }
 
-    mvwprintw(vfx->game_window->content, vfx->y, vfx->x, "%*s", vfx->game_window->content_w, "");
     wattron(vfx->game_window->content, COLOR_PAIR(COLOR_PAIR_DEFAULT));
     mvwprintw(vfx->game_window->content, vfx->y, vfx->x, "%s", vfx->text);
     wattroff(vfx->game_window->content, COLOR_PAIR(COLOR_PAIR_DEFAULT));

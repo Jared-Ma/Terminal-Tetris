@@ -19,19 +19,19 @@ bool test_vfx_enable_hold_piece(void);
 
 bool test_vfx_enable_next_piece(void);
 
-bool test_vfx_enable_last_action_line_clear(void);
+bool test_vfx_enable_action_line_clear(void);
 
-bool test_vfx_enable_last_action_t_spin(void);
+bool test_vfx_enable_action_t_spin(void);
 
-bool test_vfx_enable_last_action_t_spin_mini(void);
+bool test_vfx_enable_action_t_spin_mini(void);
 
-bool test_vfx_enable_last_action_all_clear(void);
+bool test_vfx_enable_action_all_clear(void);
 
-bool test_vfx_enable_last_action_combo(void);
+bool test_vfx_enable_combo(void);
 
-bool test_vfx_enable_last_action_b2b(void);
+bool test_vfx_enable_b2b(void);
 
-bool test_vfx_enable_last_action_score(void);
+bool test_vfx_enable_score(void);
 
 bool test_vfx_enable_level_up(void);
 

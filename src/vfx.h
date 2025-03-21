@@ -129,7 +129,7 @@ void draw_vfx_next_t_piece(VFX* vfx);
 
 void draw_vfx_next_z_piece(VFX* vfx);
 
-void vfx_enable_last_action(VFX* vfx_action, VFX* vfx_combo, VFX* vfx_b2b, VFX* vfx_score, GameState* game_state);
+void vfx_enable_action(VFX* vfx, GameState* game_state);
 
 void draw_vfx_action_reset(VFX* vfx);
 
@@ -145,13 +145,19 @@ void draw_vfx_action_t_spin(VFX* vfx);
 
 void draw_vfx_action_all_clear(VFX* vfx);
 
+void vfx_enable_combo(VFX* vfx, GameState* game_state);
+
 void draw_vfx_combo_reset(VFX* vfx);
 
 void draw_vfx_combo(VFX* vfx);
 
+void vfx_enable_b2b_combo(VFX* vfx, GameState* game_state);
+
 void draw_vfx_b2b_combo_reset(VFX* vfx);
 
-void draw_vfx_b2b(VFX* vfx);
+void draw_vfx_b2b_combo(VFX* vfx);
+
+void vfx_enable_score(VFX* vfx, GameState* game_state);
 
 void draw_vfx_score_reset(VFX* vfx);
 

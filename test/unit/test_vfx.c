@@ -281,15 +281,12 @@ bool test_vfx_enable_next_piece(void) {
     return true;
 }
 
-bool test_vfx_enable_last_action_line_clear(void) {
+bool test_vfx_enable_action_line_clear(void) {
     GameWindow stats_window = game_window_get(STATS_WINDOW_H, STATS_WINDOW_W, STATS_WINDOW_Y, STATS_WINDOW_X);
-    VFX vfx_action = vfx_get(&stats_window, NULL, 60);
-    VFX vfx_combo = vfx_get(&stats_window, NULL, 60);
-    VFX vfx_b2b = vfx_get(&stats_window, NULL, 60);
-    VFX vfx_score = vfx_get(&stats_window, NULL, 60);
+    VFX vfx_action = vfx_get(&stats_window, draw_vfx_action_reset, ACTION_VFX_FRAMES);
     GameState game_state = game_state_get();
 
-    vfx_enable_last_action(&vfx_action, &vfx_combo, &vfx_b2b, &vfx_score, &game_state);
+    vfx_enable_action(&vfx_action, &game_state);
     ASSERT(strlen(vfx_action.text) == 0);
     ASSERT(vfx_action.y == 0);
     ASSERT(vfx_action.x == 0);
@@ -298,53 +295,50 @@ bool test_vfx_enable_last_action_line_clear(void) {
     ASSERT(vfx_action.enabled == false);
 
     game_state.last_action_num_lines = 1;
-    vfx_enable_last_action(&vfx_action, &vfx_combo, &vfx_b2b, &vfx_score, &game_state);
+    vfx_enable_action(&vfx_action, &game_state);
     ASSERT(strcmp(vfx_action.text, "single") == 0);
     ASSERT(vfx_action.y == vfx_action.game_window->content_h - 1);
     ASSERT(vfx_action.x == 0);
     ASSERT(vfx_action.draw_function == draw_vfx_action_single);
-    ASSERT(vfx_action.frame_timer == 60);
+    ASSERT(vfx_action.frame_timer == ACTION_VFX_FRAMES);
     ASSERT(vfx_action.enabled == true);
 
     game_state.last_action_num_lines = 2;
-    vfx_enable_last_action(&vfx_action, &vfx_combo, &vfx_b2b, &vfx_score, &game_state);
+    vfx_enable_action(&vfx_action, &game_state);
     ASSERT(strcmp(vfx_action.text, "double") == 0);
     ASSERT(vfx_action.y == vfx_action.game_window->content_h - 1);
     ASSERT(vfx_action.x == 0);
     ASSERT(vfx_action.draw_function == draw_vfx_action_double);
-    ASSERT(vfx_action.frame_timer == 60);
+    ASSERT(vfx_action.frame_timer == ACTION_VFX_FRAMES);
     ASSERT(vfx_action.enabled == true);
 
     game_state.last_action_num_lines = 3;
-    vfx_enable_last_action(&vfx_action, &vfx_combo, &vfx_b2b, &vfx_score, &game_state);
+    vfx_enable_action(&vfx_action, &game_state);
     ASSERT(strcmp(vfx_action.text, "triple") == 0);
     ASSERT(vfx_action.y == vfx_action.game_window->content_h - 1);
     ASSERT(vfx_action.x == 0);
     ASSERT(vfx_action.draw_function == draw_vfx_action_triple);
-    ASSERT(vfx_action.frame_timer == 60);
+    ASSERT(vfx_action.frame_timer == ACTION_VFX_FRAMES);
     ASSERT(vfx_action.enabled == true);
 
     game_state.last_action_num_lines = 4;
-    vfx_enable_last_action(&vfx_action, &vfx_combo, &vfx_b2b, &vfx_score, &game_state);
+    vfx_enable_action(&vfx_action, &game_state);
     ASSERT(strcmp(vfx_action.text, "tetris") == 0);
     ASSERT(vfx_action.y == vfx_action.game_window->content_h - 1);
     ASSERT(vfx_action.x == 0);
     ASSERT(vfx_action.draw_function == draw_vfx_action_tetris);
-    ASSERT(vfx_action.frame_timer == 60);
+    ASSERT(vfx_action.frame_timer == ACTION_VFX_FRAMES);
     ASSERT(vfx_action.enabled == true);
 
     return true;
 }
 
-bool test_vfx_enable_last_action_t_spin(void) {
+bool test_vfx_enable_action_t_spin(void) {
     GameWindow stats_window = game_window_get(STATS_WINDOW_H, STATS_WINDOW_W, STATS_WINDOW_Y, STATS_WINDOW_X);
-    VFX vfx_action = vfx_get(&stats_window, NULL, 60);
-    VFX vfx_combo = vfx_get(&stats_window, NULL, 60);
-    VFX vfx_b2b = vfx_get(&stats_window, NULL, 60);
-    VFX vfx_score = vfx_get(&stats_window, NULL, 60);
+    VFX vfx_action = vfx_get(&stats_window, draw_vfx_action_reset, ACTION_VFX_FRAMES);
     GameState game_state = game_state_get();
 
-    vfx_enable_last_action(&vfx_action, &vfx_combo, &vfx_b2b, &vfx_score, &game_state);
+    vfx_enable_action(&vfx_action, &game_state);
     ASSERT(strlen(vfx_action.text) == 0);
     ASSERT(vfx_action.y == 0);
     ASSERT(vfx_action.x == 0);
@@ -354,53 +348,50 @@ bool test_vfx_enable_last_action_t_spin(void) {
 
     game_state.last_action_t_spin = true;
     game_state.last_action_num_lines = 0;
-    vfx_enable_last_action(&vfx_action, &vfx_combo, &vfx_b2b, &vfx_score, &game_state);
+    vfx_enable_action(&vfx_action, &game_state);
     ASSERT(strcmp(vfx_action.text, "t-spin") == 0);
     ASSERT(vfx_action.y == vfx_action.game_window->content_h - 1);
     ASSERT(vfx_action.x == 0);
     ASSERT(vfx_action.draw_function == draw_vfx_action_t_spin);
-    ASSERT(vfx_action.frame_timer == 60);
+    ASSERT(vfx_action.frame_timer == ACTION_VFX_FRAMES);
     ASSERT(vfx_action.enabled == true);
 
     game_state.last_action_num_lines = 1;
-    vfx_enable_last_action(&vfx_action, &vfx_combo, &vfx_b2b, &vfx_score, &game_state);
+    vfx_enable_action(&vfx_action, &game_state);
     ASSERT(strcmp(vfx_action.text, "t-spin\nsingle") == 0);
     ASSERT(vfx_action.y == vfx_action.game_window->content_h - 2);
     ASSERT(vfx_action.x == 0);
     ASSERT(vfx_action.draw_function == draw_vfx_action_t_spin);
-    ASSERT(vfx_action.frame_timer == 60);
+    ASSERT(vfx_action.frame_timer == ACTION_VFX_FRAMES);
     ASSERT(vfx_action.enabled == true);
 
     game_state.last_action_num_lines = 2;
-    vfx_enable_last_action(&vfx_action, &vfx_combo, &vfx_b2b, &vfx_score, &game_state);
+    vfx_enable_action(&vfx_action, &game_state);
     ASSERT(strcmp(vfx_action.text, "t-spin\ndouble") == 0);
     ASSERT(vfx_action.y == vfx_action.game_window->content_h - 2);
     ASSERT(vfx_action.x == 0);
     ASSERT(vfx_action.draw_function == draw_vfx_action_t_spin);
-    ASSERT(vfx_action.frame_timer == 60);
+    ASSERT(vfx_action.frame_timer == ACTION_VFX_FRAMES);
     ASSERT(vfx_action.enabled == true);
 
     game_state.last_action_num_lines = 3;
-    vfx_enable_last_action(&vfx_action, &vfx_combo, &vfx_b2b, &vfx_score, &game_state);
+    vfx_enable_action(&vfx_action, &game_state);
     ASSERT(strcmp(vfx_action.text, "t-spin\ntriple") == 0);
     ASSERT(vfx_action.y == vfx_action.game_window->content_h - 2);
     ASSERT(vfx_action.x == 0);
     ASSERT(vfx_action.draw_function == draw_vfx_action_t_spin);
-    ASSERT(vfx_action.frame_timer == 60);
+    ASSERT(vfx_action.frame_timer == ACTION_VFX_FRAMES);
     ASSERT(vfx_action.enabled == true);
 
     return true;
 }
 
-bool test_vfx_enable_last_action_t_spin_mini(void) {
+bool test_vfx_enable_action_t_spin_mini(void) {
     GameWindow stats_window = game_window_get(STATS_WINDOW_H, STATS_WINDOW_W, STATS_WINDOW_Y, STATS_WINDOW_X);
-    VFX vfx_action = vfx_get(&stats_window, NULL, 60);
-    VFX vfx_combo = vfx_get(&stats_window, NULL, 60);
-    VFX vfx_b2b = vfx_get(&stats_window, NULL, 60);
-    VFX vfx_score = vfx_get(&stats_window, NULL, 60);
+    VFX vfx_action = vfx_get(&stats_window, draw_vfx_action_reset, ACTION_VFX_FRAMES);
     GameState game_state = game_state_get();
 
-    vfx_enable_last_action(&vfx_action, &vfx_combo, &vfx_b2b, &vfx_score, &game_state);
+    vfx_enable_action(&vfx_action, &game_state);
     ASSERT(strlen(vfx_action.text) == 0);
     ASSERT(vfx_action.y == 0);
     ASSERT(vfx_action.x == 0);
@@ -410,44 +401,41 @@ bool test_vfx_enable_last_action_t_spin_mini(void) {
 
     game_state.last_action_t_spin_mini = true;
     game_state.last_action_num_lines = 0;
-    vfx_enable_last_action(&vfx_action, &vfx_combo, &vfx_b2b, &vfx_score, &game_state);
+    vfx_enable_action(&vfx_action, &game_state);
     ASSERT(strcmp(vfx_action.text, "t-spin mini") == 0);
     ASSERT(vfx_action.y == vfx_action.game_window->content_h - 1);
     ASSERT(vfx_action.x == 0);
     ASSERT(vfx_action.draw_function == draw_vfx_action_t_spin);
-    ASSERT(vfx_action.frame_timer == 60);
+    ASSERT(vfx_action.frame_timer == ACTION_VFX_FRAMES);
     ASSERT(vfx_action.enabled == true);
 
     game_state.last_action_num_lines = 1;
-    vfx_enable_last_action(&vfx_action, &vfx_combo, &vfx_b2b, &vfx_score, &game_state);
+    vfx_enable_action(&vfx_action, &game_state);
     ASSERT(strcmp(vfx_action.text, "t-spin mini\nsingle") == 0);
     ASSERT(vfx_action.y == vfx_action.game_window->content_h - 2);
     ASSERT(vfx_action.x == 0);
     ASSERT(vfx_action.draw_function == draw_vfx_action_t_spin);
-    ASSERT(vfx_action.frame_timer == 60);
+    ASSERT(vfx_action.frame_timer == ACTION_VFX_FRAMES);
     ASSERT(vfx_action.enabled == true);
 
     game_state.last_action_num_lines = 2;
-    vfx_enable_last_action(&vfx_action, &vfx_combo, &vfx_b2b, &vfx_score, &game_state);
+    vfx_enable_action(&vfx_action, &game_state);
     ASSERT(strcmp(vfx_action.text, "t-spin mini\ndouble") == 0);
     ASSERT(vfx_action.y == vfx_action.game_window->content_h - 2);
     ASSERT(vfx_action.x == 0);
     ASSERT(vfx_action.draw_function == draw_vfx_action_t_spin);
-    ASSERT(vfx_action.frame_timer == 60);
+    ASSERT(vfx_action.frame_timer == ACTION_VFX_FRAMES);
     ASSERT(vfx_action.enabled == true);
 
     return true;
 }
 
-bool test_vfx_enable_last_action_all_clear(void) {
+bool test_vfx_enable_action_all_clear(void) {
     GameWindow stats_window = game_window_get(STATS_WINDOW_H, STATS_WINDOW_W, STATS_WINDOW_Y, STATS_WINDOW_X);
-    VFX vfx_action = vfx_get(&stats_window, NULL, 60);
-    VFX vfx_combo = vfx_get(&stats_window, NULL, 60);
-    VFX vfx_b2b = vfx_get(&stats_window, NULL, 60);
-    VFX vfx_score = vfx_get(&stats_window, NULL, 60);
+    VFX vfx_action = vfx_get(&stats_window, draw_vfx_action_reset, ACTION_VFX_FRAMES);
     GameState game_state = game_state_get();
 
-    vfx_enable_last_action(&vfx_action, &vfx_combo, &vfx_b2b, &vfx_score, &game_state);
+    vfx_enable_action(&vfx_action, &game_state);
     ASSERT(strlen(vfx_action.text) == 0);
     ASSERT(vfx_action.y == 0);
     ASSERT(vfx_action.x == 0);
@@ -457,63 +445,60 @@ bool test_vfx_enable_last_action_all_clear(void) {
 
     game_state.last_action_all_clear = true;
     game_state.last_action_num_lines = 1;
-    vfx_enable_last_action(&vfx_action, &vfx_combo, &vfx_b2b, &vfx_score, &game_state);
+    vfx_enable_action(&vfx_action, &game_state);
     ASSERT(strcmp(vfx_action.text, "single\nall clear") == 0);
     ASSERT(vfx_action.y == vfx_action.game_window->content_h - 2);
     ASSERT(vfx_action.x == 0);
     ASSERT(vfx_action.draw_function == draw_vfx_action_all_clear);
-    ASSERT(vfx_action.frame_timer == 60);
+    ASSERT(vfx_action.frame_timer == ACTION_VFX_FRAMES);
     ASSERT(vfx_action.enabled == true);
 
     game_state.last_action_num_lines = 2;
-    vfx_enable_last_action(&vfx_action, &vfx_combo, &vfx_b2b, &vfx_score, &game_state);
+    vfx_enable_action(&vfx_action, &game_state);
     ASSERT(strcmp(vfx_action.text, "double\nall clear") == 0);
     ASSERT(vfx_action.y == vfx_action.game_window->content_h - 2);
     ASSERT(vfx_action.x == 0);
     ASSERT(vfx_action.draw_function == draw_vfx_action_all_clear);
-    ASSERT(vfx_action.frame_timer == 60);
+    ASSERT(vfx_action.frame_timer == ACTION_VFX_FRAMES);
     ASSERT(vfx_action.enabled == true);
 
     game_state.last_action_num_lines = 3;
-    vfx_enable_last_action(&vfx_action, &vfx_combo, &vfx_b2b, &vfx_score, &game_state);
+    vfx_enable_action(&vfx_action, &game_state);
     ASSERT(strcmp(vfx_action.text, "triple\nall clear") == 0);
     ASSERT(vfx_action.y == vfx_action.game_window->content_h - 2);
     ASSERT(vfx_action.x == 0);
     ASSERT(vfx_action.draw_function == draw_vfx_action_all_clear);
-    ASSERT(vfx_action.frame_timer == 60);
+    ASSERT(vfx_action.frame_timer == ACTION_VFX_FRAMES);
     ASSERT(vfx_action.enabled == true);
 
     game_state.last_action_num_lines = 4;
-    vfx_enable_last_action(&vfx_action, &vfx_combo, &vfx_b2b, &vfx_score, &game_state);
+    vfx_enable_action(&vfx_action, &game_state);
     ASSERT(strcmp(vfx_action.text, "tetris\nall clear") == 0);
     ASSERT(vfx_action.y == vfx_action.game_window->content_h - 2);
     ASSERT(vfx_action.x == 0);
     ASSERT(vfx_action.draw_function == draw_vfx_action_all_clear);
-    ASSERT(vfx_action.frame_timer == 60);
+    ASSERT(vfx_action.frame_timer == ACTION_VFX_FRAMES);
     ASSERT(vfx_action.enabled == true);
 
     game_state.last_action_num_lines = 4;
     game_state.tetris_all_clear_combo = 1;
-    vfx_enable_last_action(&vfx_action, &vfx_combo, &vfx_b2b, &vfx_score, &game_state);
+    vfx_enable_action(&vfx_action, &game_state);
     ASSERT(strcmp(vfx_action.text, "b2b tetris\nall clear") == 0);
     ASSERT(vfx_action.y == vfx_action.game_window->content_h - 2);
     ASSERT(vfx_action.x == 0);
     ASSERT(vfx_action.draw_function == draw_vfx_action_all_clear);
-    ASSERT(vfx_action.frame_timer == 60);
+    ASSERT(vfx_action.frame_timer == ACTION_VFX_FRAMES);
     ASSERT(vfx_action.enabled == true);
 
     return true;
 }
 
-bool test_vfx_enable_last_action_combo(void) {
+bool test_vfx_enable_combo(void) {
     GameWindow stats_window = game_window_get(STATS_WINDOW_H, STATS_WINDOW_W, STATS_WINDOW_Y, STATS_WINDOW_X);
-    VFX vfx_action = vfx_get(&stats_window, NULL, 60);
-    VFX vfx_combo = vfx_get(&stats_window, NULL, 60);
-    VFX vfx_b2b = vfx_get(&stats_window, NULL, 60);
-    VFX vfx_score = vfx_get(&stats_window, NULL, 60);
+    VFX vfx_combo = vfx_get(&stats_window, draw_vfx_combo_reset, COMBO_VFX_FRAMES);
     GameState game_state = game_state_get();
 
-    vfx_enable_last_action(&vfx_action, &vfx_combo, &vfx_b2b, &vfx_score, &game_state);
+    vfx_enable_combo(&vfx_combo, &game_state);
     ASSERT(strlen(vfx_combo.text) == 0);
     ASSERT(vfx_combo.y == 0);
     ASSERT(vfx_combo.x == 0);
@@ -523,65 +508,49 @@ bool test_vfx_enable_last_action_combo(void) {
 
     game_state.last_action_num_lines = 1;
     game_state.combo = 1;
-    vfx_enable_last_action(&vfx_action, &vfx_combo, &vfx_b2b, &vfx_score, &game_state);
+    vfx_enable_combo(&vfx_combo, &game_state);
     ASSERT(strcmp(vfx_combo.text, "1 x combo") == 0);
     ASSERT(vfx_combo.y == vfx_combo.game_window->content_h - 1);
     ASSERT(vfx_combo.x == 0);
     ASSERT(vfx_combo.draw_function == draw_vfx_combo);
-    ASSERT(vfx_combo.frame_timer == 60);
+    ASSERT(vfx_combo.frame_timer == COMBO_VFX_FRAMES);
     ASSERT(vfx_combo.enabled == true);
-    ASSERT(vfx_action.y == vfx_action.game_window->content_h - 2);
-    ASSERT(vfx_action.x == 0);
-    ASSERT(vfx_action.draw_function == draw_vfx_action_single);
-    ASSERT(vfx_action.frame_timer == 60);
-    ASSERT(vfx_action.enabled == true);
     
     return true;
 }
 
-bool test_vfx_enable_last_action_b2b(void) {
+bool test_vfx_enable_b2b(void) {
     GameWindow stats_window = game_window_get(STATS_WINDOW_H, STATS_WINDOW_W, STATS_WINDOW_Y, STATS_WINDOW_X);
-    VFX vfx_action = vfx_get(&stats_window, NULL, 60);
-    VFX vfx_combo = vfx_get(&stats_window, NULL, 60);
-    VFX vfx_b2b = vfx_get(&stats_window, NULL, 60);
-    VFX vfx_score = vfx_get(&stats_window, NULL, 60);
+    VFX vfx_b2b_combo = vfx_get(&stats_window, draw_vfx_b2b_combo_reset, B2B_COMBO_VFX_FRAMES);
     GameState game_state = game_state_get();
 
-    vfx_enable_last_action(&vfx_action, &vfx_combo, &vfx_b2b, &vfx_score, &game_state);
-    ASSERT(strlen(vfx_b2b.text) == 0);
-    ASSERT(vfx_b2b.y == 0);
-    ASSERT(vfx_b2b.x == 0);
-    ASSERT(vfx_b2b.draw_function == NULL);
-    ASSERT(vfx_b2b.frame_timer == 0);
-    ASSERT(vfx_b2b.enabled == false);
+    vfx_enable_b2b_combo(&vfx_b2b_combo, &game_state);
+    ASSERT(strlen(vfx_b2b_combo.text) == 0);
+    ASSERT(vfx_b2b_combo.y == 0);
+    ASSERT(vfx_b2b_combo.x == 0);
+    ASSERT(vfx_b2b_combo.draw_function == NULL);
+    ASSERT(vfx_b2b_combo.frame_timer == 0);
+    ASSERT(vfx_b2b_combo.enabled == false);
 
     game_state.last_action_num_lines = 1;
     game_state.difficult_clear_combo = 1;
-    vfx_enable_last_action(&vfx_action, &vfx_combo, &vfx_b2b, &vfx_score, &game_state);
-    ASSERT(strcmp(vfx_b2b.text, "1 x b2b") == 0);
-    ASSERT(vfx_b2b.y == vfx_b2b.game_window->content_h - 1);
-    ASSERT(vfx_b2b.x == 0);
-    ASSERT(vfx_b2b.draw_function == draw_vfx_b2b);
-    ASSERT(vfx_b2b.frame_timer == 60);
-    ASSERT(vfx_b2b.enabled == true);
-    ASSERT(vfx_action.y == vfx_action.game_window->content_h - 2);
-    ASSERT(vfx_action.x == 0);
-    ASSERT(vfx_action.draw_function == draw_vfx_action_single);
-    ASSERT(vfx_action.frame_timer == 60);
-    ASSERT(vfx_action.enabled == true);
+    vfx_enable_b2b_combo(&vfx_b2b_combo, &game_state);
+    ASSERT(strcmp(vfx_b2b_combo.text, "1 x b2b") == 0);
+    ASSERT(vfx_b2b_combo.y == vfx_b2b_combo.game_window->content_h - 1);
+    ASSERT(vfx_b2b_combo.x == 0);
+    ASSERT(vfx_b2b_combo.draw_function == draw_vfx_b2b_combo);
+    ASSERT(vfx_b2b_combo.frame_timer == B2B_COMBO_VFX_FRAMES);
+    ASSERT(vfx_b2b_combo.enabled == true);
     
     return true;
 }
 
-bool test_vfx_enable_last_action_score(void) {
+bool test_vfx_enable_score(void) {
     GameWindow stats_window = game_window_get(STATS_WINDOW_H, STATS_WINDOW_W, STATS_WINDOW_Y, STATS_WINDOW_X);
-    VFX vfx_action = vfx_get(&stats_window, NULL, 60);
-    VFX vfx_combo = vfx_get(&stats_window, NULL, 60);
-    VFX vfx_b2b = vfx_get(&stats_window, NULL, 60);
-    VFX vfx_score = vfx_get(&stats_window, NULL, 60);
+    VFX vfx_score = vfx_get(&stats_window, draw_vfx_score_reset, SCORE_VFX_FRAMES);
     GameState game_state = game_state_get();
 
-    vfx_enable_last_action(&vfx_action, &vfx_combo, &vfx_b2b, &vfx_score, &game_state);
+    vfx_enable_score(&vfx_score, &game_state);
     ASSERT(strlen(vfx_score.text) == 0);
     ASSERT(vfx_score.y == 0);
     ASSERT(vfx_score.x == 0);
@@ -593,18 +562,13 @@ bool test_vfx_enable_last_action_score(void) {
     game_state.last_action_points = 100;
     char score_text[64];
     sprintf(score_text, "%*lu", vfx_score.game_window->content_w, game_state.last_action_points); 
-    vfx_enable_last_action(&vfx_action, &vfx_combo, &vfx_b2b, &vfx_score, &game_state);
+    vfx_enable_score(&vfx_score, &game_state);
     ASSERT(strcmp(vfx_score.text, score_text) == 0);
     ASSERT(vfx_score.y == vfx_score.game_window->content_h - 1);
     ASSERT(vfx_score.x == 0);
     ASSERT(vfx_score.draw_function == draw_vfx_score);
-    ASSERT(vfx_score.frame_timer == 60);
+    ASSERT(vfx_score.frame_timer == SCORE_VFX_FRAMES);
     ASSERT(vfx_score.enabled == true);
-    ASSERT(vfx_action.y == vfx_action.game_window->content_h - 2);
-    ASSERT(vfx_action.x == 0);
-    ASSERT(vfx_action.draw_function == draw_vfx_action_single);
-    ASSERT(vfx_action.frame_timer == 60);
-    ASSERT(vfx_action.enabled == true);
     
     return true;
 }
