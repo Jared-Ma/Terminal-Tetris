@@ -81,7 +81,7 @@ static void reset_game(GameState* game_state, Stats* stats, VFX* vfx_list[NUM_VF
     game_state_reset(game_state);
     stats_reset(stats);
     for (size_t i = 0; i < NUM_VFX; ++i) {
-        vfx_list[i]->reset_function(vfx_list[i]);
+        vfx_list[i]->clear_vfx(vfx_list[i]);
         vfx_disable(vfx_list[i]);
     }
 }
@@ -98,20 +98,86 @@ static void start_tetris(
 ) {
     GameState* game_state = game_state_init();
     Stats* stats = stats_init();
-
-    VFX* vfx_lock_piece  = vfx_init(board_window, draw_vfx_lock_piece_reset,  LOCK_PIECE_VFX_FRAMES);
-    VFX* vfx_line_clear  = vfx_init(board_window, draw_vfx_line_clear_reset,  LINE_CLEAR_VFX_FRAMES);
-    VFX* vfx_hold_piece  = vfx_init(hold_window,  draw_vfx_hold_piece_reset,  HOLD_PIECE_VFX_FRAMES);
-    VFX* vfx_next_piece  = vfx_init(next_window,  draw_vfx_next_piece_reset,  NEXT_PIECE_VFX_FRAMES);
-    VFX* vfx_action      = vfx_init(stats_window, draw_vfx_action_reset,      ACTION_VFX_FRAMES);
-    VFX* vfx_combo       = vfx_init(stats_window, draw_vfx_combo_reset,       COMBO_VFX_FRAMES);
-    VFX* vfx_b2b_combo   = vfx_init(stats_window, draw_vfx_b2b_combo_reset,   B2B_COMBO_VFX_FRAMES);
-    VFX* vfx_points      = vfx_init(stats_window, draw_vfx_points_reset,      POINTS_VFX_FRAMES);
-    VFX* vfx_level_up    = vfx_init(board_window, draw_vfx_level_up_reset,    LEVEL_UP_VFX_FRAMES);
-    VFX* vfx_stats_lines = vfx_init(stats_window, draw_vfx_stats_lines_reset, STATS_LINES_VFX_FRAMES);
-    VFX* vfx_stats_level = vfx_init(stats_window, draw_vfx_stats_level_reset, STATS_LEVEL_VFX_FRAMES);
     
-    VFX* vfx_list[NUM_VFX] = {
+    VFX* vfx_lock_piece = vfx_init(
+        board_window,
+        clear_vfx_lock_piece,
+        vfx_check_lock_piece,
+        vfx_enable_lock_piece,
+        LOCK_PIECE_VFX_FRAMES
+    );
+    VFX* vfx_line_clear = vfx_init(
+        board_window,
+        clear_vfx_line_clear,
+        vfx_check_line_clear,
+        vfx_enable_line_clear,
+        LINE_CLEAR_VFX_FRAMES
+    );
+    VFX* vfx_hold_piece = vfx_init(
+        hold_window, 
+        clear_vfx_hold_piece, 
+        vfx_check_hold_piece, 
+        vfx_enable_hold_piece, 
+        HOLD_PIECE_VFX_FRAMES
+    );
+    VFX* vfx_next_piece = vfx_init(
+        next_window, 
+        clear_vfx_next_piece, 
+        vfx_check_next_piece, 
+        vfx_enable_next_piece, 
+        NEXT_PIECE_VFX_FRAMES
+    );
+    VFX* vfx_action = vfx_init(
+        stats_window, 
+        clear_vfx_action, 
+        vfx_check_action, 
+        vfx_enable_action, 
+        ACTION_VFX_FRAMES
+    );
+    VFX* vfx_combo = vfx_init(
+        stats_window, 
+        clear_vfx_combo, 
+        vfx_check_combo, 
+        vfx_enable_combo, 
+        COMBO_VFX_FRAMES
+    );
+    VFX* vfx_b2b_combo = vfx_init(
+        stats_window, 
+        clear_vfx_b2b_combo, 
+        vfx_check_b2b_combo, 
+        vfx_enable_b2b_combo, 
+        B2B_COMBO_VFX_FRAMES
+    );
+    VFX* vfx_points = vfx_init(
+        stats_window, 
+        clear_vfx_points, 
+        vfx_check_points, 
+        vfx_enable_points, 
+        POINTS_VFX_FRAMES
+    );
+    VFX* vfx_level_up = vfx_init(
+        board_window, 
+        clear_vfx_level_up, 
+        vfx_check_level_up, 
+        vfx_enable_level_up, 
+        LEVEL_UP_VFX_FRAMES
+    );
+    VFX* vfx_stats_lines = vfx_init(
+        stats_window, 
+        clear_vfx_stats_lines, 
+        vfx_check_stats_lines, 
+        vfx_enable_stats_lines, 
+        STATS_LINES_VFX_FRAMES
+    );
+    VFX* vfx_stats_level = vfx_init(
+        stats_window, 
+        clear_vfx_stats_level, 
+        vfx_check_stats_level, 
+        vfx_enable_stats_level, 
+        STATS_LEVEL_VFX_FRAMES
+    );
+    
+    VFX* vfx_list[NUM_VFX] = { 
         vfx_lock_piece,
         vfx_line_clear,
         vfx_hold_piece,
@@ -244,25 +310,18 @@ static void start_tetris(
             draw_hold_piece(hold_window, game_state);
             draw_next_piece(next_window, game_state);
             draw_stats(stats_window, game_state, stats);
-            
-            // turn into list for loop -> check event -> enable
-            vfx_enable_hold_piece(vfx_hold_piece, game_state);
-            vfx_enable_next_piece(vfx_next_piece, game_state);
-            vfx_enable_lock_piece(vfx_lock_piece, game_state);
-            vfx_enable_line_clear(vfx_line_clear, game_state);
-            vfx_enable_action(vfx_action, game_state);
-            vfx_enable_combo(vfx_combo, game_state);
-            vfx_enable_b2b_combo(vfx_b2b_combo, game_state);
-            vfx_enable_points(vfx_points, game_state);
-            vfx_enable_level_up(vfx_level_up, game_state);
-            vfx_enable_stats_lines(vfx_stats_lines, game_state);
-            vfx_enable_stats_level(vfx_stats_level, game_state);
+
+            for (size_t i = 0; i < NUM_VFX; ++i) {
+                if (vfx_list[i]->check_cond(vfx_list[i], game_state)) {
+                    vfx_list[i]->enable_vfx(vfx_list[i], game_state);
+                }
+            }
 
             for (size_t i = 0; i < NUM_VFX; ++i) {
                 draw_vfx_frame(vfx_list[i]);
             }
-            
-            game_state_reset_vfx_vars(game_state);
+
+            game_state_reset_vfx_conditions(game_state);
         } else if (input_state == PAUSED) {
             draw_pause_window(pause_window);
             draw_pause_stats(stats_window, stats);

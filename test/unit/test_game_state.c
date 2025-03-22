@@ -148,7 +148,7 @@ bool test_game_state_reset_vfx_vars(void) {
     game_state.level_up_event_flag = true;
     game_state.last_locked_piece_shape = I;
 
-    game_state_reset_vfx_vars(&game_state);
+    game_state_reset_vfx_conditions(&game_state);
     
     ASSERT(game_state.last_action_points == 0);
     ASSERT(game_state.last_action_num_lines == 0);

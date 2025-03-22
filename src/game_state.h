@@ -102,7 +102,7 @@ void game_state_start(GameState* game_state);
 
 void game_state_reset(GameState* game_state);
 
-void game_state_reset_vfx_vars(GameState* game_state);
+void game_state_reset_vfx_conditions(GameState* game_state);
 
 void game_state_debug_print(GameState* game_state);
 

@@ -167,7 +167,7 @@ void game_state_reset(GameState* game_state) {
     game_state_start(game_state);
 }
 
-void game_state_reset_vfx_vars(GameState* game_state) {
+void game_state_reset_vfx_conditions(GameState* game_state) {
     game_state->last_action_points = 0;
     game_state->last_action_num_lines = 0;
     game_state->last_action_t_spin = false;
