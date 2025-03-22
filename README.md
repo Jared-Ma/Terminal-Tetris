@@ -1,6 +1,6 @@
 ## Terminal Tetris
 
-A multithreaded application that plays tetris in the terminal.
+A minimalistic implementation of Tetris that plays in a terminal.
 
 ### Libraries used:
 - ncurses
