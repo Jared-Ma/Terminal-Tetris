@@ -1,6 +1,6 @@
 ## Terminal Tetris
 
-A minimalistic implementation of Tetris that plays in a terminal.
+A minimalistic Linux application that plays Tetris in a terminal. 
 
 ### Libraries used:
 - ncurses
