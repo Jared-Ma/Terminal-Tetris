@@ -355,17 +355,9 @@ static void start_tetris(
 
     game_state_destroy(game_state);
     stats_destroy(stats);
-    vfx_destroy(vfx_line_clear);
-    vfx_destroy(vfx_hold_piece);
-    vfx_destroy(vfx_next_piece);
-    vfx_destroy(vfx_lock_piece);
-    vfx_destroy(vfx_action);
-    vfx_destroy(vfx_combo);
-    vfx_destroy(vfx_b2b_combo);
-    vfx_destroy(vfx_points);
-    vfx_destroy(vfx_level_up);
-    vfx_destroy(vfx_stats_lines);
-    vfx_destroy(vfx_stats_level);
+    for (size_t i = 0; i < NUM_VFX; ++i) {
+        vfx_destroy(vfx_list[i]);
+    }
 }
 
 int main(int argc, char* argv[argc+1]) {
