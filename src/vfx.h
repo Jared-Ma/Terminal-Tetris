@@ -18,7 +18,7 @@ extern const uint16_t NEXT_PIECE_VFX_FRAMES;
 extern const uint16_t ACTION_VFX_FRAMES;
 extern const uint16_t COMBO_VFX_FRAMES;
 extern const uint16_t B2B_COMBO_VFX_FRAMES;
-extern const uint16_t SCORE_VFX_FRAMES;
+extern const uint16_t POINTS_VFX_FRAMES;
 
 extern const uint16_t LEVEL_UP_VFX_FRAMES;
 extern const uint16_t STATS_LINES_VFX_FRAMES;
@@ -157,11 +157,11 @@ void draw_vfx_b2b_combo_reset(VFX* vfx);
 
 void draw_vfx_b2b_combo(VFX* vfx);
 
-void vfx_enable_score(VFX* vfx, GameState* game_state);
+void vfx_enable_points(VFX* vfx, GameState* game_state);
 
-void draw_vfx_score_reset(VFX* vfx);
+void draw_vfx_points_reset(VFX* vfx);
 
-void draw_vfx_score(VFX* vfx);
+void draw_vfx_points(VFX* vfx);
 
 void vfx_enable_level_up(VFX* vfx, GameState* game_state);
 

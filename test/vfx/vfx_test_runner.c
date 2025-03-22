@@ -92,7 +92,7 @@ int main(void) {
         VFX_TEST(test_vfx_action_all_clear_tetris),
         VFX_TEST(test_vfx_combo),
         VFX_TEST(test_vfx_b2b_combo),
-        VFX_TEST(test_vfx_score),
+        VFX_TEST(test_vfx_points),
         VFX_TEST(test_vfx_level_up),
         VFX_TEST(test_vfx_stats_lines),
         VFX_TEST(test_vfx_stats_level),

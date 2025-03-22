@@ -84,7 +84,7 @@ int main(void) {
         UNIT_TEST(test_vfx_enable_action_all_clear),
         UNIT_TEST(test_vfx_enable_combo),
         UNIT_TEST(test_vfx_enable_b2b),
-        UNIT_TEST(test_vfx_enable_score),
+        UNIT_TEST(test_vfx_enable_points),
         UNIT_TEST(test_vfx_enable_level_up),
         UNIT_TEST(test_vfx_enable_stats_lines),
         UNIT_TEST(test_vfx_enable_stats_level)

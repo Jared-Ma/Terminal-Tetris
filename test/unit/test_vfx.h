@@ -31,7 +31,7 @@ bool test_vfx_enable_combo(void);
 
 bool test_vfx_enable_b2b(void);
 
-bool test_vfx_enable_score(void);
+bool test_vfx_enable_points(void);
 
 bool test_vfx_enable_level_up(void);
 

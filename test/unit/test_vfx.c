@@ -545,30 +545,30 @@ bool test_vfx_enable_b2b(void) {
     return true;
 }
 
-bool test_vfx_enable_score(void) {
+bool test_vfx_enable_points(void) {
     GameWindow stats_window = game_window_get(STATS_WINDOW_H, STATS_WINDOW_W, STATS_WINDOW_Y, STATS_WINDOW_X);
-    VFX vfx_score = vfx_get(&stats_window, draw_vfx_score_reset, SCORE_VFX_FRAMES);
+    VFX vfx_points = vfx_get(&stats_window, draw_vfx_points_reset, POINTS_VFX_FRAMES);
     GameState game_state = game_state_get();
 
-    vfx_enable_score(&vfx_score, &game_state);
-    ASSERT(strlen(vfx_score.text) == 0);
-    ASSERT(vfx_score.y == 0);
-    ASSERT(vfx_score.x == 0);
-    ASSERT(vfx_score.draw_function == NULL);
-    ASSERT(vfx_score.frame_timer == 0);
-    ASSERT(vfx_score.enabled == false);
+    vfx_enable_points(&vfx_points, &game_state);
+    ASSERT(strlen(vfx_points.text) == 0);
+    ASSERT(vfx_points.y == 0);
+    ASSERT(vfx_points.x == 0);
+    ASSERT(vfx_points.draw_function == NULL);
+    ASSERT(vfx_points.frame_timer == 0);
+    ASSERT(vfx_points.enabled == false);
 
     game_state.last_action_num_lines = 1;
     game_state.last_action_points = 100;
-    char score_text[64];
-    sprintf(score_text, "%*lu", vfx_score.game_window->content_w, game_state.last_action_points); 
-    vfx_enable_score(&vfx_score, &game_state);
-    ASSERT(strcmp(vfx_score.text, score_text) == 0);
-    ASSERT(vfx_score.y == vfx_score.game_window->content_h - 1);
-    ASSERT(vfx_score.x == 0);
-    ASSERT(vfx_score.draw_function == draw_vfx_score);
-    ASSERT(vfx_score.frame_timer == SCORE_VFX_FRAMES);
-    ASSERT(vfx_score.enabled == true);
+    char points_text[64];
+    sprintf(points_text, "%*lu", vfx_points.game_window->content_w, game_state.last_action_points); 
+    vfx_enable_points(&vfx_points, &game_state);
+    ASSERT(strcmp(vfx_points.text, points_text) == 0);
+    ASSERT(vfx_points.y == vfx_points.game_window->content_h - 1);
+    ASSERT(vfx_points.x == 0);
+    ASSERT(vfx_points.draw_function == draw_vfx_points);
+    ASSERT(vfx_points.frame_timer == POINTS_VFX_FRAMES);
+    ASSERT(vfx_points.enabled == true);
     
     return true;
 }

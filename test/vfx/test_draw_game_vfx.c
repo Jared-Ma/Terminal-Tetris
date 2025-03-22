@@ -585,7 +585,7 @@ void test_vfx_b2b_combo(GameWindow* game_window, VFX* vfx, int8_t y_offset, int8
     vfx_enable_b2b_combo(vfx, &game_state);
 }
 
-void test_vfx_score(GameWindow* game_window, VFX* vfx, int8_t y_offset, int8_t x_offset) {
+void test_vfx_points(GameWindow* game_window, VFX* vfx, int8_t y_offset, int8_t x_offset) {
     *game_window = game_window_get(
         STATS_WINDOW_H, STATS_WINDOW_W,
         STATS_WINDOW_Y + y_offset, STATS_WINDOW_X + x_offset
@@ -598,8 +598,8 @@ void test_vfx_score(GameWindow* game_window, VFX* vfx, int8_t y_offset, int8_t x
     game_state.last_action_points = 12345678;
     draw_stats(game_window, &game_state, &stats);
 
-    *vfx = vfx_get(game_window, draw_vfx_score_reset, SCORE_VFX_FRAMES);
-    vfx_enable_score(vfx, &game_state);
+    *vfx = vfx_get(game_window, draw_vfx_points_reset, POINTS_VFX_FRAMES);
+    vfx_enable_points(vfx, &game_state);
 }
 
 void test_vfx_level_up(GameWindow* game_window, VFX* vfx, int8_t y_offset, int8_t x_offset) {

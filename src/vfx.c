@@ -18,7 +18,7 @@ const uint16_t LINE_CLEAR_VFX_FRAMES = 30;
 const uint16_t ACTION_VFX_FRAMES    = 240;
 const uint16_t COMBO_VFX_FRAMES     = 240;
 const uint16_t B2B_COMBO_VFX_FRAMES = 240;
-const uint16_t SCORE_VFX_FRAMES     = 240;
+const uint16_t POINTS_VFX_FRAMES     = 240;
 
 const uint16_t LEVEL_UP_VFX_FRAMES    = 120;
 const uint16_t STATS_LINES_VFX_FRAMES = 5;
@@ -767,7 +767,7 @@ void draw_vfx_b2b_combo(VFX* vfx) {
     }
 }
 
-void vfx_enable_score(VFX* vfx, GameState* game_state) {
+void vfx_enable_points(VFX* vfx, GameState* game_state) {
     if (!vfx || !game_state) {
         return;
     }
@@ -778,19 +778,19 @@ void vfx_enable_score(VFX* vfx, GameState* game_state) {
             sprintf(vfx->text, "%*lu", vfx->game_window->content_w, game_state->last_action_points);
             vfx->y = vfx->game_window->content_h;
             vfx->y--;
-            vfx_enable(vfx, draw_vfx_score);
+            vfx_enable(vfx, draw_vfx_points);
         }
     }
 }
 
-void draw_vfx_score_reset(VFX* vfx) {
+void draw_vfx_points_reset(VFX* vfx) {
     if (!vfx) {
         return;
     }
     mvwprintw(vfx->game_window->content, vfx->y, vfx->x, "%*s", vfx->game_window->content_w, "");
 }
 
-void draw_vfx_score(VFX* vfx) {
+void draw_vfx_points(VFX* vfx) {
     if (!vfx) {
         return;
     }

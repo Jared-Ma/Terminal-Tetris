@@ -93,7 +93,7 @@ void test_vfx_combo(GameWindow* game_window, VFX* vfx, int8_t y_offset, int8_t x
 
 void test_vfx_b2b_combo(GameWindow* game_window, VFX* vfx, int8_t y_offset, int8_t x_offset);
 
-void test_vfx_score(GameWindow* game_window, VFX* vfx, int8_t y_offset, int8_t x_offset);
+void test_vfx_points(GameWindow* game_window, VFX* vfx, int8_t y_offset, int8_t x_offset);
 
 void test_vfx_level_up(GameWindow* game_window, VFX* vfx, int8_t y_offset, int8_t x_offset);
 
