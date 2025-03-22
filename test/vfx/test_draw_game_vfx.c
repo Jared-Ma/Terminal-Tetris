@@ -302,6 +302,306 @@ void test_vfx_next_z_piece(GameWindow* game_window, VFX* vfx, int8_t y_offset, i
     vfx_enable(vfx, draw_vfx_next_z_piece);
 }
 
+void test_vfx_action_single(GameWindow* game_window, VFX* vfx, int8_t y_offset, int8_t x_offset) {
+    *game_window = game_window_get(
+        STATS_WINDOW_H, STATS_WINDOW_W,
+        STATS_WINDOW_Y + y_offset, STATS_WINDOW_X + x_offset
+    );
+    draw_stats_window(game_window);
+
+    GameState game_state = game_state_get();
+    Stats stats = stats_get();
+    game_state.last_action_num_lines = 1;
+    draw_stats(game_window, &game_state, &stats);
+
+    *vfx = vfx_get(game_window, draw_vfx_action_reset, ACTION_VFX_FRAMES);
+    vfx_enable_action(vfx, &game_state);
+}
+
+void test_vfx_action_double(GameWindow* game_window, VFX* vfx, int8_t y_offset, int8_t x_offset) {
+    *game_window = game_window_get(
+        STATS_WINDOW_H, STATS_WINDOW_W,
+        STATS_WINDOW_Y + y_offset, STATS_WINDOW_X + x_offset
+    );
+    draw_stats_window(game_window);
+
+    GameState game_state = game_state_get();
+    Stats stats = stats_get();
+    game_state.last_action_num_lines = 2;
+    draw_stats(game_window, &game_state, &stats);
+
+    *vfx = vfx_get(game_window, draw_vfx_action_reset, ACTION_VFX_FRAMES);
+    vfx_enable_action(vfx, &game_state);
+}
+
+void test_vfx_action_triple(GameWindow* game_window, VFX* vfx, int8_t y_offset, int8_t x_offset) {
+    *game_window = game_window_get(
+        STATS_WINDOW_H, STATS_WINDOW_W,
+        STATS_WINDOW_Y + y_offset, STATS_WINDOW_X + x_offset
+    );
+    draw_stats_window(game_window);
+
+    GameState game_state = game_state_get();
+    Stats stats = stats_get();
+    game_state.last_action_num_lines = 3;
+    draw_stats(game_window, &game_state, &stats);
+
+    *vfx = vfx_get(game_window, draw_vfx_action_reset, ACTION_VFX_FRAMES);
+    vfx_enable_action(vfx, &game_state);
+}
+
+void test_vfx_action_tetris(GameWindow* game_window, VFX* vfx, int8_t y_offset, int8_t x_offset) {
+    *game_window = game_window_get(
+        STATS_WINDOW_H, STATS_WINDOW_W,
+        STATS_WINDOW_Y + y_offset, STATS_WINDOW_X + x_offset
+    );
+    draw_stats_window(game_window);
+
+    GameState game_state = game_state_get();
+    Stats stats = stats_get();
+    game_state.last_action_num_lines = 4;
+    draw_stats(game_window, &game_state, &stats);
+
+    *vfx = vfx_get(game_window, draw_vfx_action_reset, ACTION_VFX_FRAMES);
+    vfx_enable_action(vfx, &game_state);
+}
+
+void test_vfx_action_t_spin(GameWindow* game_window, VFX* vfx, int8_t y_offset, int8_t x_offset) {
+    *game_window = game_window_get(
+        STATS_WINDOW_H, STATS_WINDOW_W,
+        STATS_WINDOW_Y + y_offset, STATS_WINDOW_X + x_offset
+    );
+    draw_stats_window(game_window);
+
+    GameState game_state = game_state_get();
+    Stats stats = stats_get();
+    game_state.last_action_t_spin = true;
+    draw_stats(game_window, &game_state, &stats);
+
+    *vfx = vfx_get(game_window, draw_vfx_action_reset, ACTION_VFX_FRAMES);
+    vfx_enable_action(vfx, &game_state);
+}
+
+void test_vfx_action_t_spin_single(GameWindow* game_window, VFX* vfx, int8_t y_offset, int8_t x_offset) {
+    *game_window = game_window_get(
+        STATS_WINDOW_H, STATS_WINDOW_W,
+        STATS_WINDOW_Y + y_offset, STATS_WINDOW_X + x_offset
+    );
+    draw_stats_window(game_window);
+
+    GameState game_state = game_state_get();
+    Stats stats = stats_get();
+    game_state.last_action_num_lines = 1;
+    game_state.last_action_t_spin = true;
+    draw_stats(game_window, &game_state, &stats);
+
+    *vfx = vfx_get(game_window, draw_vfx_action_reset, ACTION_VFX_FRAMES);
+    vfx_enable_action(vfx, &game_state);
+}
+
+void test_vfx_action_t_spin_double(GameWindow* game_window, VFX* vfx, int8_t y_offset, int8_t x_offset) {
+    *game_window = game_window_get(
+        STATS_WINDOW_H, STATS_WINDOW_W,
+        STATS_WINDOW_Y + y_offset, STATS_WINDOW_X + x_offset
+    );
+    draw_stats_window(game_window);
+
+    GameState game_state = game_state_get();
+    Stats stats = stats_get();
+    game_state.last_action_num_lines = 2;
+    game_state.last_action_t_spin = true;
+    draw_stats(game_window, &game_state, &stats);
+
+    *vfx = vfx_get(game_window, draw_vfx_action_reset, ACTION_VFX_FRAMES);
+    vfx_enable_action(vfx, &game_state);
+}
+
+void test_vfx_action_t_spin_triple(GameWindow* game_window, VFX* vfx, int8_t y_offset, int8_t x_offset) {
+    *game_window = game_window_get(
+        STATS_WINDOW_H, STATS_WINDOW_W,
+        STATS_WINDOW_Y + y_offset, STATS_WINDOW_X + x_offset
+    );
+    draw_stats_window(game_window);
+
+    GameState game_state = game_state_get();
+    Stats stats = stats_get();
+    game_state.last_action_num_lines = 3;
+    game_state.last_action_t_spin = true;
+    draw_stats(game_window, &game_state, &stats);
+
+    *vfx = vfx_get(game_window, draw_vfx_action_reset, ACTION_VFX_FRAMES);
+    vfx_enable_action(vfx, &game_state);
+}
+
+void test_vfx_action_t_spin_mini(GameWindow* game_window, VFX* vfx, int8_t y_offset, int8_t x_offset) {
+    *game_window = game_window_get(
+        STATS_WINDOW_H, STATS_WINDOW_W,
+        STATS_WINDOW_Y + y_offset, STATS_WINDOW_X + x_offset
+    );
+    draw_stats_window(game_window);
+
+    GameState game_state = game_state_get();
+    Stats stats = stats_get();
+    game_state.last_action_t_spin_mini = true;
+    draw_stats(game_window, &game_state, &stats);
+
+    *vfx = vfx_get(game_window, draw_vfx_action_reset, ACTION_VFX_FRAMES);
+    vfx_enable_action(vfx, &game_state);
+}
+
+void test_vfx_action_t_spin_mini_single(GameWindow* game_window, VFX* vfx, int8_t y_offset, int8_t x_offset) {
+    *game_window = game_window_get(
+        STATS_WINDOW_H, STATS_WINDOW_W,
+        STATS_WINDOW_Y + y_offset, STATS_WINDOW_X + x_offset
+    );
+    draw_stats_window(game_window);
+
+    GameState game_state = game_state_get();
+    Stats stats = stats_get();
+    game_state.last_action_num_lines = 1;
+    game_state.last_action_t_spin_mini = true;
+    draw_stats(game_window, &game_state, &stats);
+
+    *vfx = vfx_get(game_window, draw_vfx_action_reset, ACTION_VFX_FRAMES);
+    vfx_enable_action(vfx, &game_state);
+}
+
+void test_vfx_action_t_spin_mini_double(GameWindow* game_window, VFX* vfx, int8_t y_offset, int8_t x_offset) {
+    *game_window = game_window_get(
+        STATS_WINDOW_H, STATS_WINDOW_W,
+        STATS_WINDOW_Y + y_offset, STATS_WINDOW_X + x_offset
+    );
+    draw_stats_window(game_window);
+
+    GameState game_state = game_state_get();
+    Stats stats = stats_get();
+    game_state.last_action_num_lines = 2;
+    game_state.last_action_t_spin_mini = true;
+    draw_stats(game_window, &game_state, &stats);
+
+    *vfx = vfx_get(game_window, draw_vfx_action_reset, ACTION_VFX_FRAMES);
+    vfx_enable_action(vfx, &game_state);
+}
+
+void test_vfx_action_all_clear_single(GameWindow* game_window, VFX* vfx, int8_t y_offset, int8_t x_offset) {
+    *game_window = game_window_get(
+        STATS_WINDOW_H, STATS_WINDOW_W,
+        STATS_WINDOW_Y + y_offset, STATS_WINDOW_X + x_offset
+    );
+    draw_stats_window(game_window);
+
+    GameState game_state = game_state_get();
+    Stats stats = stats_get();
+    game_state.last_action_num_lines = 1;
+    game_state.last_action_all_clear = true;
+    draw_stats(game_window, &game_state, &stats);
+
+    *vfx = vfx_get(game_window, draw_vfx_action_reset, ACTION_VFX_FRAMES);
+    vfx_enable_action(vfx, &game_state);
+}
+
+void test_vfx_action_all_clear_double(GameWindow* game_window, VFX* vfx, int8_t y_offset, int8_t x_offset) {
+    *game_window = game_window_get(
+        STATS_WINDOW_H, STATS_WINDOW_W,
+        STATS_WINDOW_Y + y_offset, STATS_WINDOW_X + x_offset
+    );
+    draw_stats_window(game_window);
+
+    GameState game_state = game_state_get();
+    Stats stats = stats_get();
+    game_state.last_action_num_lines = 2;
+    game_state.last_action_all_clear = true;
+    draw_stats(game_window, &game_state, &stats);
+
+    *vfx = vfx_get(game_window, draw_vfx_action_reset, ACTION_VFX_FRAMES);
+    vfx_enable_action(vfx, &game_state);
+}
+
+void test_vfx_action_all_clear_triple(GameWindow* game_window, VFX* vfx, int8_t y_offset, int8_t x_offset) {
+    *game_window = game_window_get(
+        STATS_WINDOW_H, STATS_WINDOW_W,
+        STATS_WINDOW_Y + y_offset, STATS_WINDOW_X + x_offset
+    );
+    draw_stats_window(game_window);
+
+    GameState game_state = game_state_get();
+    Stats stats = stats_get();
+    game_state.last_action_num_lines = 3;
+    game_state.last_action_all_clear = true;
+    draw_stats(game_window, &game_state, &stats);
+
+    *vfx = vfx_get(game_window, draw_vfx_action_reset, ACTION_VFX_FRAMES);
+    vfx_enable_action(vfx, &game_state);
+}
+
+void test_vfx_action_all_clear_tetris(GameWindow* game_window, VFX* vfx, int8_t y_offset, int8_t x_offset) {
+    *game_window = game_window_get(
+        STATS_WINDOW_H, STATS_WINDOW_W,
+        STATS_WINDOW_Y + y_offset, STATS_WINDOW_X + x_offset
+    );
+    draw_stats_window(game_window);
+
+    GameState game_state = game_state_get();
+    Stats stats = stats_get();
+    game_state.last_action_num_lines = 4;
+    game_state.last_action_all_clear = true;
+    draw_stats(game_window, &game_state, &stats);
+
+    *vfx = vfx_get(game_window, draw_vfx_action_reset, ACTION_VFX_FRAMES);
+    vfx_enable_action(vfx, &game_state);
+}
+
+void test_vfx_combo(GameWindow* game_window, VFX* vfx, int8_t y_offset, int8_t x_offset) {
+    *game_window = game_window_get(
+        STATS_WINDOW_H, STATS_WINDOW_W,
+        STATS_WINDOW_Y + y_offset, STATS_WINDOW_X + x_offset
+    );
+    draw_stats_window(game_window);
+
+    GameState game_state = game_state_get();
+    Stats stats = stats_get();
+    game_state.last_action_num_lines = 1;
+    game_state.combo = 123;
+    draw_stats(game_window, &game_state, &stats);
+
+    *vfx = vfx_get(game_window, draw_vfx_combo_reset, COMBO_VFX_FRAMES);
+    vfx_enable_combo(vfx, &game_state);
+}
+
+void test_vfx_b2b_combo(GameWindow* game_window, VFX* vfx, int8_t y_offset, int8_t x_offset) {
+    *game_window = game_window_get(
+        STATS_WINDOW_H, STATS_WINDOW_W,
+        STATS_WINDOW_Y + y_offset, STATS_WINDOW_X + x_offset
+    );
+    draw_stats_window(game_window);
+
+    GameState game_state = game_state_get();
+    Stats stats = stats_get();
+    game_state.last_action_num_lines = 1;
+    game_state.difficult_clear_combo = 123;
+    draw_stats(game_window, &game_state, &stats);
+
+    *vfx = vfx_get(game_window, draw_vfx_b2b_combo_reset, B2B_COMBO_VFX_FRAMES);
+    vfx_enable_b2b_combo(vfx, &game_state);
+}
+
+void test_vfx_score(GameWindow* game_window, VFX* vfx, int8_t y_offset, int8_t x_offset) {
+    *game_window = game_window_get(
+        STATS_WINDOW_H, STATS_WINDOW_W,
+        STATS_WINDOW_Y + y_offset, STATS_WINDOW_X + x_offset
+    );
+    draw_stats_window(game_window);
+
+    GameState game_state = game_state_get();
+    Stats stats = stats_get();
+    game_state.last_action_num_lines = 1;
+    game_state.last_action_points = 12345678;
+    draw_stats(game_window, &game_state, &stats);
+
+    *vfx = vfx_get(game_window, draw_vfx_score_reset, SCORE_VFX_FRAMES);
+    vfx_enable_score(vfx, &game_state);
+}
+
 void test_vfx_level_up(GameWindow* game_window, VFX* vfx, int8_t y_offset, int8_t x_offset) {
     *game_window = game_window_get(
         BOARD_WINDOW_H, BOARD_WINDOW_W,

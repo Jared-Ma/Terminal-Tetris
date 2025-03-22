@@ -59,6 +59,42 @@ void test_vfx_next_t_piece(GameWindow* game_window, VFX* vfx, int8_t y_offset, i
 
 void test_vfx_next_z_piece(GameWindow* game_window, VFX* vfx, int8_t y_offset, int8_t x_offset);
 
+void test_vfx_action_single(GameWindow* game_window, VFX* vfx, int8_t y_offset, int8_t x_offset);
+
+void test_vfx_action_double(GameWindow* game_window, VFX* vfx, int8_t y_offset, int8_t x_offset);
+
+void test_vfx_action_triple(GameWindow* game_window, VFX* vfx, int8_t y_offset, int8_t x_offset);
+
+void test_vfx_action_tetris(GameWindow* game_window, VFX* vfx, int8_t y_offset, int8_t x_offset);
+
+void test_vfx_action_t_spin(GameWindow* game_window, VFX* vfx, int8_t y_offset, int8_t x_offset);
+
+void test_vfx_action_t_spin_single(GameWindow* game_window, VFX* vfx, int8_t y_offset, int8_t x_offset);
+
+void test_vfx_action_t_spin_double(GameWindow* game_window, VFX* vfx, int8_t y_offset, int8_t x_offset);
+
+void test_vfx_action_t_spin_triple(GameWindow* game_window, VFX* vfx, int8_t y_offset, int8_t x_offset);
+
+void test_vfx_action_t_spin_mini(GameWindow* game_window, VFX* vfx, int8_t y_offset, int8_t x_offset);
+
+void test_vfx_action_t_spin_mini_single(GameWindow* game_window, VFX* vfx, int8_t y_offset, int8_t x_offset);
+
+void test_vfx_action_t_spin_mini_double(GameWindow* game_window, VFX* vfx, int8_t y_offset, int8_t x_offset);
+
+void test_vfx_action_all_clear_single(GameWindow* game_window, VFX* vfx, int8_t y_offset, int8_t x_offset);
+
+void test_vfx_action_all_clear_double(GameWindow* game_window, VFX* vfx, int8_t y_offset, int8_t x_offset);
+
+void test_vfx_action_all_clear_triple(GameWindow* game_window, VFX* vfx, int8_t y_offset, int8_t x_offset);
+
+void test_vfx_action_all_clear_tetris(GameWindow* game_window, VFX* vfx, int8_t y_offset, int8_t x_offset);
+
+void test_vfx_combo(GameWindow* game_window, VFX* vfx, int8_t y_offset, int8_t x_offset);
+
+void test_vfx_b2b_combo(GameWindow* game_window, VFX* vfx, int8_t y_offset, int8_t x_offset);
+
+void test_vfx_score(GameWindow* game_window, VFX* vfx, int8_t y_offset, int8_t x_offset);
+
 void test_vfx_level_up(GameWindow* game_window, VFX* vfx, int8_t y_offset, int8_t x_offset);
 
 void test_vfx_stats_lines(GameWindow* game_window, VFX* vfx, int8_t y_offset, int8_t x_offset);

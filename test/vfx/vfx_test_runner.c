@@ -11,7 +11,7 @@
 #include <string.h>
 #include <time.h>
 
-#define NUM_TESTS 30
+#define NUM_TESTS 48
 
 
 static void start_curses(void) {
@@ -75,6 +75,24 @@ int main(void) {
         VFX_TEST(test_vfx_next_s_piece),
         VFX_TEST(test_vfx_next_t_piece),
         VFX_TEST(test_vfx_next_z_piece),
+        VFX_TEST(test_vfx_action_single),
+        VFX_TEST(test_vfx_action_double),
+        VFX_TEST(test_vfx_action_triple),
+        VFX_TEST(test_vfx_action_tetris),
+        VFX_TEST(test_vfx_action_t_spin),
+        VFX_TEST(test_vfx_action_t_spin_single),
+        VFX_TEST(test_vfx_action_t_spin_double),
+        VFX_TEST(test_vfx_action_t_spin_triple),
+        VFX_TEST(test_vfx_action_t_spin_mini),
+        VFX_TEST(test_vfx_action_t_spin_mini_single),
+        VFX_TEST(test_vfx_action_t_spin_mini_double),
+        VFX_TEST(test_vfx_action_all_clear_single),
+        VFX_TEST(test_vfx_action_all_clear_double),
+        VFX_TEST(test_vfx_action_all_clear_triple),
+        VFX_TEST(test_vfx_action_all_clear_tetris),
+        VFX_TEST(test_vfx_combo),
+        VFX_TEST(test_vfx_b2b_combo),
+        VFX_TEST(test_vfx_score),
         VFX_TEST(test_vfx_level_up),
         VFX_TEST(test_vfx_stats_lines),
         VFX_TEST(test_vfx_stats_level),
