@@ -183,6 +183,7 @@ int main(void) {
             break;
             case ' ':
             run_vfx_test(vfx_tests[test_index], game_window_y_offset, game_window_x_offset);
+            flushinp();
             break;
             case '\e':
             running = false;
