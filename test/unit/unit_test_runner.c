@@ -9,7 +9,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#define NUM_TESTS 70
+#define NUM_TESTS 81
 
 
 int main(void) {
@@ -74,19 +74,30 @@ int main(void) {
         UNIT_TEST(test_vfx_init),
         UNIT_TEST(test_vfx_enable),
         UNIT_TEST(test_vfx_disable),
+        UNIT_TEST(test_vfx_check_lock_piece),
         UNIT_TEST(test_vfx_enable_lock_piece),
+        UNIT_TEST(test_vfx_check_line_clear),
         UNIT_TEST(test_vfx_enable_line_clear),
+        UNIT_TEST(test_vfx_check_hold_piece),
         UNIT_TEST(test_vfx_enable_hold_piece),
+        UNIT_TEST(test_vfx_check_next_piece),
         UNIT_TEST(test_vfx_enable_next_piece),
+        UNIT_TEST(test_vfx_check_action),
         UNIT_TEST(test_vfx_enable_action_line_clear),
         UNIT_TEST(test_vfx_enable_action_t_spin),
         UNIT_TEST(test_vfx_enable_action_t_spin_mini),
         UNIT_TEST(test_vfx_enable_action_all_clear),
+        UNIT_TEST(test_vfx_check_combo),
         UNIT_TEST(test_vfx_enable_combo),
-        UNIT_TEST(test_vfx_enable_b2b),
+        UNIT_TEST(test_vfx_check_b2b_combo),
+        UNIT_TEST(test_vfx_enable_b2b_combo),
+        UNIT_TEST(test_vfx_check_points),
         UNIT_TEST(test_vfx_enable_points),
+        UNIT_TEST(test_vfx_check_level_up),
         UNIT_TEST(test_vfx_enable_level_up),
+        UNIT_TEST(test_vfx_check_stats_lines),
         UNIT_TEST(test_vfx_enable_stats_lines),
+        UNIT_TEST(test_vfx_check_stats_level),
         UNIT_TEST(test_vfx_enable_stats_level)
     };
 
