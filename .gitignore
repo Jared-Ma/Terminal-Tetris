@@ -2,5 +2,6 @@ terminal_tetris
 unit_test_runner
 ui_test_runner
 vfx_test_runner
+perf_test_runner
 /logs
 /obj

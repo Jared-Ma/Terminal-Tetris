@@ -44,6 +44,15 @@ VFX_TEST_MAIN_OBJ = $(addprefix $(OBJ_DIR), $(addsuffix .o, $(notdir $(basename 
 VFX_TEST_UTIL_OBJ = $(addprefix $(OBJ_DIR), $(addsuffix .o, $(notdir $(basename $(VFX_TEST_UTIL_SRC)))))
 VFX_TEST_CASE_OBJ = $(addprefix $(OBJ_DIR), $(addsuffix .o, $(notdir $(basename $(VFX_TEST_CASE_SRC)))))
 
+PERF_TEST_DIR      = $(TEST_DIR)perf/
+PERF_TEST_EXE      = perf_test_runner
+PERF_TEST_MAIN_SRC = $(addprefix $(PERF_TEST_DIR), perf_test_runner.c)
+PERF_TEST_UTIL_SRC = $(addprefix $(PERF_TEST_DIR), perf_test.c)
+PERF_TEST_CASE_SRC = $(addprefix $(PERF_TEST_DIR), $(wildcard $(PERF_TEST_DIR)test*.c))
+PERF_TEST_MAIN_OBJ = $(addprefix $(OBJ_DIR), $(addsuffix .o, $(notdir $(basename $(PERF_TEST_MAIN_SRC)))))
+PERF_TEST_UTIL_OBJ = $(addprefix $(OBJ_DIR), $(addsuffix .o, $(notdir $(basename $(PERF_TEST_UTIL_SRC)))))
+PERF_TEST_CASE_OBJ = $(addprefix $(OBJ_DIR), $(addsuffix .o, $(notdir $(basename $(PERF_TEST_CASE_SRC)))))
+
 
 all: $(EXE)
 
@@ -96,6 +105,21 @@ $(OBJ_DIR)vfx_test.o: $(VFX_TEST_DIR)vfx_test.c
 	$(CC) $(CFLAGS) $(INCLUDE_SRC) $< -o $@
 
 $(OBJ_DIR)test%.o: $(VFX_TEST_DIR)test%.c
+	$(CC) $(CFLAGS) $(INCLUDE_SRC) $(INCLUDE_TEST_UTIL) $< -o $@
+
+
+perf_test: $(PERF_TEST_EXE)
+
+$(PERF_TEST_EXE): $(PERF_TEST_MAIN_OBJ) $(PERF_TEST_UTIL_OBJ) $(PERF_TEST_CASE_OBJ) $(OBJ)
+	$(CC) $(PERF_TEST_MAIN_OBJ) $(PERF_TEST_UTIL_OBJ) $(PERF_TEST_CASE_OBJ) $(OBJ) $(LIBS) -o $(EXE_DIR)$(PERF_TEST_EXE)	
+
+$(OBJ_DIR)perf_test_runner.o: $(PERF_TEST_DIR)perf_test_runner.c
+	$(CC) $(CFLAGS) $< -o $@ 
+
+$(OBJ_DIR)perf_test.o: $(PERF_TEST_DIR)perf_test.c
+	$(CC) $(CFLAGS) $< -o $@
+
+$(OBJ_DIR)test%.o: $(PERF_TEST_DIR)test%.c
 	$(CC) $(CFLAGS) $(INCLUDE_SRC) $(INCLUDE_TEST_UTIL) $< -o $@
 
 
