@@ -225,7 +225,7 @@ static void start_tetris(
     while (running) {
         clock_gettime(CLOCK_MONOTONIC, &start_time);
 
-        // Input        
+        // Input
         int input = getch();
         if (input_state == PLAYING) {
             switch (input) {
