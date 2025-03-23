@@ -729,7 +729,12 @@ bool vfx_check_combo(VFX* vfx, GameState* game_state) {
     if (!vfx || !game_state) {
         return false;
     }
-    return game_state->last_action_t_spin || game_state->last_action_t_spin_mini || game_state->last_action_num_lines > 0;
+
+    if (game_state->last_action_t_spin || game_state->last_action_t_spin_mini || game_state->last_action_num_lines > 0) {
+        vfx_disable(vfx);
+        return game_state->combo > 0;
+    }
+    return false;
 }
 
 void vfx_enable_combo(VFX* vfx, GameState* game_state) {
@@ -737,15 +742,12 @@ void vfx_enable_combo(VFX* vfx, GameState* game_state) {
         return;
     }
     
-    vfx_disable(vfx);
-    if (game_state->combo > 0) {
-        sprintf(vfx->text, "%li x combo", game_state->combo);
-        vfx->y = vfx->game_window->content_h;
-        vfx->y -= (game_state->last_action_points > 0) ? 1 : 0; // use vfx_check_function
-        vfx->y -= (game_state->difficult_clear_combo > 0) ? 1 : 0;
-        vfx->y--;
-        vfx_enable(vfx, draw_vfx_combo);
-    }
+    sprintf(vfx->text, "%li x combo", game_state->combo);
+    vfx->y = vfx->game_window->content_h;
+    vfx->y -= (game_state->last_action_points > 0) ? 1 : 0; // use vfx_check_function
+    vfx->y -= (game_state->difficult_clear_combo > 0) ? 1 : 0;
+    vfx->y--;
+    vfx_enable(vfx, draw_vfx_combo);
 }
 
 void clear_vfx_combo(VFX* vfx) {
@@ -777,22 +779,24 @@ bool vfx_check_b2b_combo(VFX* vfx, GameState* game_state) {
     if (!vfx || !game_state) {
         return false;
     }
-    return game_state->last_action_t_spin || game_state->last_action_t_spin_mini || game_state->last_action_num_lines > 0;
+
+    if (game_state->last_action_t_spin || game_state->last_action_t_spin_mini || game_state->last_action_num_lines > 0) {
+        vfx_disable(vfx);
+        return game_state->difficult_clear_combo > 0;
+    }
+    return false;
 }
 
 void vfx_enable_b2b_combo(VFX* vfx, GameState* game_state) {
     if (!vfx || !game_state) {
         return;
     }
-
-    vfx_disable(vfx);
-    if (game_state->difficult_clear_combo > 0) {
-        sprintf(vfx->text, "%li x b2b", game_state->difficult_clear_combo);
-        vfx->y = vfx->game_window->content_h;
-        vfx->y -= (game_state->last_action_points > 0) ? 1 : 0;
-        vfx->y--;
-        vfx_enable(vfx, draw_vfx_b2b_combo);
-    }
+        
+    sprintf(vfx->text, "%li x b2b", game_state->difficult_clear_combo);
+    vfx->y = vfx->game_window->content_h;
+    vfx->y -= (game_state->last_action_points > 0) ? 1 : 0;
+    vfx->y--;
+    vfx_enable(vfx, draw_vfx_b2b_combo);
 }
 
 void clear_vfx_b2b_combo(VFX* vfx) {
@@ -824,7 +828,12 @@ bool vfx_check_points(VFX* vfx, GameState* game_state) {
     if (!vfx || !game_state) {
         return false;
     }
-    return game_state->last_action_t_spin || game_state->last_action_t_spin_mini || game_state->last_action_num_lines > 0;
+    
+    if (game_state->last_action_t_spin || game_state->last_action_t_spin_mini || game_state->last_action_num_lines > 0) {
+        vfx_disable(vfx);
+        return game_state->last_action_points > 0;
+    }
+    return false;
 }
 
 void vfx_enable_points(VFX* vfx, GameState* game_state) {
@@ -832,13 +841,10 @@ void vfx_enable_points(VFX* vfx, GameState* game_state) {
         return;
     }
 
-    vfx_disable(vfx);
-    if (game_state->last_action_points > 0) {
-        sprintf(vfx->text, "%*lu", vfx->game_window->content_w, game_state->last_action_points);
-        vfx->y = vfx->game_window->content_h;
-        vfx->y--;
-        vfx_enable(vfx, draw_vfx_points);
-    }
+    sprintf(vfx->text, "%*lu", vfx->game_window->content_w, game_state->last_action_points);
+    vfx->y = vfx->game_window->content_h;
+    vfx->y--;
+    vfx_enable(vfx, draw_vfx_points);
 }
 
 void clear_vfx_points(VFX* vfx) {

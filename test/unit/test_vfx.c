@@ -738,6 +738,7 @@ bool test_vfx_check_combo(void) {
     
     ASSERT(vfx_check_combo(&vfx_combo, &game_state) == false);
     game_state.last_action_num_lines = 1;
+    game_state.combo = 1;
     ASSERT(vfx_check_combo(&vfx_combo, &game_state) == true);
 
     game_state.last_action_num_lines = 0;
@@ -801,6 +802,7 @@ bool test_vfx_check_b2b_combo(void) {
     
     ASSERT(vfx_check_b2b_combo(&vfx_b2b_combo, &game_state) == false);
     game_state.last_action_num_lines = 1;
+    game_state.difficult_clear_combo = 1;
     ASSERT(vfx_check_b2b_combo(&vfx_b2b_combo, &game_state) == true);
 
     game_state.last_action_num_lines = 0;
@@ -864,6 +866,7 @@ bool test_vfx_check_points(void) {
     
     ASSERT(vfx_check_points(&vfx_points, &game_state) == false);
     game_state.last_action_num_lines = 1;
+    game_state.last_action_points = 100;
     ASSERT(vfx_check_points(&vfx_points, &game_state) == true);
 
     game_state.last_action_num_lines = 0;
