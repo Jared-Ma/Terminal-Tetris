@@ -3,12 +3,16 @@
 
 #include <stdlib.h>
 
-#define NUM_TESTS 1
+#define NUM_TESTS 5
 
 
 int main(void) {
     PerfTest perf_tests[NUM_TESTS] = {
         PERF_TEST(test_game_state_clear_lines_perf),
+        PERF_TEST(test_game_state_start_perf),
+        PERF_TEST(test_game_state_spawn_curr_piece_perf),
+        PERF_TEST(test_game_state_move_curr_piece_perf),
+        PERF_TEST(test_game_state_rotate_curr_piece_srs),
     };
 
     size_t num_perf_tests = sizeof(perf_tests) / sizeof(perf_tests[0]);
