@@ -6,16 +6,16 @@
 
 
 struct Stats {
-    double seconds;
-    double score_per_sec;
-    double piece_per_sec;
-    uint64_t num_pieces;
-    uint64_t num_single;
-    uint64_t num_double;
-    uint64_t num_triple;
-    uint64_t num_tetris;
+    float seconds;
+    float score_per_sec;
+    float piece_per_sec;
+    uint32_t num_pieces;
+    uint32_t num_single;
+    uint32_t num_double;
+    uint32_t num_triple;
+    uint32_t num_tetris;
     uint64_t frame_count;
-    double fps;
+    float fps;
 };
 
 typedef struct Stats Stats;

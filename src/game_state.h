@@ -71,15 +71,15 @@ struct GameState {
     uint8_t lock_delay_timer;
     uint8_t move_reset_count;
 
-    uint64_t level;
-    uint64_t lines;
+    uint16_t level;
+    uint32_t lines;
     uint64_t score;
-    int64_t combo;
-    int64_t difficult_clear_combo;
-    int64_t tetris_all_clear_combo;
+    int16_t combo;
+    int16_t difficult_clear_combo;
+    int16_t tetris_all_clear_combo;
     uint8_t t_rotation_test_num;
 
-    uint64_t last_action_points;
+    uint32_t last_action_points;
     uint8_t last_action_num_lines;
     bool last_action_t_spin;
     bool last_action_t_spin_mini;
@@ -118,7 +118,7 @@ bool game_state_check_collision(const GameState* game_state, Piece piece);
 
 bool game_state_check_curr_piece_grounded(const GameState* game_state);
 
-void game_state_move_curr_piece(GameState* game_state, int y, int x);
+void game_state_move_curr_piece(GameState* game_state, int8_t y, int8_t x);
 
 void game_state_rotate_curr_piece(GameState* game_state, Rotation rotation);
 
@@ -128,9 +128,9 @@ void game_state_hard_drop_curr_piece(GameState* game_state);
 
 void game_state_lock_curr_piece(GameState* game_state);
 
-void game_state_apply_stack_gravity(GameState* game_state, size_t row);
+void game_state_apply_stack_gravity(GameState* game_state, uint8_t row);
 
-void game_state_clear_line(GameState* game_state, size_t row);
+void game_state_clear_line(GameState* game_state, uint8_t row);
 
 void game_state_clear_lines(GameState* game_state);
 
@@ -140,7 +140,7 @@ void game_state_apply_soft_drop_gravity(GameState* game_state);
 
 void game_state_soft_drop_curr_piece(GameState* game_state);
 
-void game_state_move_ghost_piece(GameState* game_state, int y, int x);
+void game_state_move_ghost_piece(GameState* game_state, int8_t y, int8_t x);
 
 void game_state_update_ghost_piece(GameState* game_state);
 
@@ -150,16 +150,16 @@ bool game_state_check_t_spin_mini(const GameState* game_state);
 
 bool game_state_check_empty_board(const GameState* game_state);
 
-uint64_t game_state_calc_t_spin_points(GameState* game_state, uint64_t num_lines);
+uint32_t game_state_calc_t_spin_points(GameState* game_state, uint8_t num_lines);
 
-uint64_t game_state_calc_line_clear_points(GameState* game_state, uint64_t num_lines);
+uint32_t game_state_calc_line_clear_points(GameState* game_state, uint8_t num_lines);
 
-uint64_t game_state_calc_t_spin_points(GameState* game_state, uint64_t num_lines);
+uint32_t game_state_calc_t_spin_points(GameState* game_state, uint8_t num_lines);
 
-uint64_t game_state_calc_all_clear_points(GameState* game_state, uint64_t num_lines);
+uint32_t game_state_calc_all_clear_points(GameState* game_state, uint8_t num_lines);
 
-uint64_t game_state_calc_combo_points(GameState* game_state, uint64_t num_lines);
+uint32_t game_state_calc_combo_points(GameState* game_state, uint8_t num_lines);
 
-float game_state_calc_difficult_clear_mult(GameState* game_state, uint64_t num_lines);
+float game_state_calc_difficult_clear_mult(GameState* game_state, uint8_t num_lines);
 
 #endif

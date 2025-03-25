@@ -23,7 +23,7 @@
 #define INPUT_PAUSE        '\e'
 
 
-const uint16_t TARGET_FPS = 60;
+const uint8_t TARGET_FPS = 60;
 const uint32_t TARGET_FRAME_TIME_NS = 1e9 / TARGET_FPS;
 
 enum InputState {
@@ -219,7 +219,7 @@ static void start_tetris(
     
     InputState input_state = PLAYING;
     struct timespec start_time, end_time;
-    uint64_t frame_time_ns;
+    uint32_t frame_time_ns;
     bool running = true;
 
     while (running) {

@@ -337,8 +337,8 @@ bool game_state_check_collision(const GameState* game_state, Piece piece) {
         return false;
     }
 
-    int top_left_y = piece.y - piece.n / 2; 
-    int top_left_x = piece.x - piece.n / 2;
+    int8_t top_left_y = piece.y - piece.n / 2; 
+    int8_t top_left_x = piece.x - piece.n / 2;
     for (size_t i = 0; i < piece.n; ++i) {
         for (size_t j = 0; j < piece.n; ++j) {
             if (piece.M[piece.r][i][j] == 1) {
@@ -360,8 +360,8 @@ bool game_state_check_curr_piece_grounded(const GameState* game_state) {
         return false;
     }
 
-    int top_left_y = game_state->curr_piece.y - game_state->curr_piece.n / 2; 
-    int top_left_x = game_state->curr_piece.x - game_state->curr_piece.n / 2;
+    int8_t top_left_y = game_state->curr_piece.y - game_state->curr_piece.n / 2; 
+    int8_t top_left_x = game_state->curr_piece.x - game_state->curr_piece.n / 2;
     for (size_t i = 0; i < game_state->curr_piece.n; ++i) {
         for (size_t j = 0; j < game_state->curr_piece.n; ++j) {
             if (game_state->curr_piece.M[game_state->curr_piece.r][i][j] == 1) {
@@ -377,7 +377,7 @@ bool game_state_check_curr_piece_grounded(const GameState* game_state) {
     return false;
 }
 
-void game_state_move_curr_piece(GameState* game_state, int y, int x) {
+void game_state_move_curr_piece(GameState* game_state, int8_t y, int8_t x) {
     if (!game_state) {
         return;
     }
@@ -415,7 +415,7 @@ void game_state_rotate_curr_piece_srs(GameState* game_state, Rotation rotation) 
     }
 
     Piece curr_piece_copy = game_state->curr_piece;
-    size_t r_index;
+    uint8_t r_index;
     if (rotation == RIGHT) {
         r_index = 2 * game_state->curr_piece.r;
     } else {
@@ -464,7 +464,7 @@ void game_state_hard_drop_curr_piece(GameState* game_state) {
         return;
     }
 
-    int prev_y = game_state->curr_piece.y;
+    int8_t prev_y = game_state->curr_piece.y;
     for (size_t y = game_state->curr_piece.y + 1; y < BOARD_H; ++y) {
         Piece prev_piece = game_state->curr_piece;
         game_state_move_curr_piece(game_state, y, game_state->curr_piece.x);
@@ -481,8 +481,8 @@ void game_state_lock_curr_piece(GameState* game_state) {
         return;
     }
 
-    int top_left_y = game_state->curr_piece.y - game_state->curr_piece.n / 2; 
-    int top_left_x = game_state->curr_piece.x - game_state->curr_piece.n / 2;
+    int8_t top_left_y = game_state->curr_piece.y - game_state->curr_piece.n / 2; 
+    int8_t top_left_x = game_state->curr_piece.x - game_state->curr_piece.n / 2;
     for (size_t i = 0; i < game_state->curr_piece.n; ++i) {
         for (size_t j = 0; j < game_state->curr_piece.n; ++j) {
             if (game_state->curr_piece.M[game_state->curr_piece.r][i][j] == 1) {
@@ -494,7 +494,7 @@ void game_state_lock_curr_piece(GameState* game_state) {
     game_state->last_locked_piece_shape = game_state->curr_piece.shape;
 }
 
-void game_state_apply_stack_gravity(GameState* game_state, size_t row) {
+void game_state_apply_stack_gravity(GameState* game_state, uint8_t row) {
     if (!game_state) {
         return;
     }
@@ -506,7 +506,7 @@ void game_state_apply_stack_gravity(GameState* game_state, size_t row) {
     }
 }
 
-void game_state_clear_line(GameState* game_state, size_t row) {
+void game_state_clear_line(GameState* game_state, uint8_t row) {
     if (!game_state) {
         return;
     }
@@ -521,8 +521,8 @@ void game_state_clear_lines(GameState* game_state) {
     }
 
     // find rows that are to be cleared
-    size_t rows[4];
-    size_t num_lines = 0;
+    uint8_t rows[4];
+    uint8_t num_lines = 0;
     for (size_t i = 0; i < BOARD_H; ++i) {
         bool line = true;
         for (size_t j = 0; j < BOARD_W; ++j) {
@@ -537,7 +537,7 @@ void game_state_clear_lines(GameState* game_state) {
     }
 
     // calculate amount of points from line clear
-    size_t points = 0;
+    uint32_t points = 0;
     points += game_state_calc_t_spin_points(game_state, num_lines);
     points += game_state_calc_line_clear_points(game_state, num_lines);
 
@@ -583,7 +583,7 @@ void game_state_apply_soft_drop_gravity(GameState* game_state) {
         return;
     }
     
-    int prev_y = game_state->curr_piece.y;
+    int8_t prev_y = game_state->curr_piece.y;
     if (game_state->level > MAX_GRAVITY_LEVEL) {
         game_state->gravity_value += SOFT_DROP_GRAVITY_MULT * GRAVITY_TABLE[MAX_GRAVITY_LEVEL - 1];
     } else {
@@ -599,13 +599,13 @@ void game_state_soft_drop_curr_piece(GameState* game_state) {
         return;
     }
     
-    int prev_y = game_state->curr_piece.y;
+    int8_t prev_y = game_state->curr_piece.y;
     game_state_move_curr_piece(game_state, game_state->curr_piece.y + 1, game_state->curr_piece.x);
     game_state->score += SOFT_DROP_POINTS * (game_state->curr_piece.y - prev_y);
     game_state->soft_drop = true;
 }
 
-void game_state_move_ghost_piece(GameState* game_state, int y, int x) {
+void game_state_move_ghost_piece(GameState* game_state, int8_t y, int8_t x) {
     if (!game_state) {
         return;
     }
@@ -639,8 +639,8 @@ bool game_state_check_t_spin(const GameState* game_state) {
     }
 
     if (game_state->t_rotation_test_num > 0) {
-        int top_left_y = game_state->curr_piece.y - game_state->curr_piece.n / 2; 
-        int top_left_x = game_state->curr_piece.x - game_state->curr_piece.n / 2;
+        int8_t top_left_y = game_state->curr_piece.y - game_state->curr_piece.n / 2; 
+        int8_t top_left_x = game_state->curr_piece.x - game_state->curr_piece.n / 2;
 
         bool top_left = false;
         bool top_right = false;
@@ -713,8 +713,8 @@ bool game_state_check_t_spin_mini(const GameState* game_state) {
     }
 
     if (game_state->t_rotation_test_num > 0 && game_state->t_rotation_test_num < SRS_NUM_TESTS) {
-        int top_left_y = game_state->curr_piece.y - game_state->curr_piece.n / 2; 
-        int top_left_x = game_state->curr_piece.x - game_state->curr_piece.n / 2;
+        int8_t top_left_y = game_state->curr_piece.y - game_state->curr_piece.n / 2; 
+        int8_t top_left_x = game_state->curr_piece.x - game_state->curr_piece.n / 2;
 
         bool top_left = false;
         bool top_right = false;
@@ -790,12 +790,12 @@ bool game_state_check_empty_board(const GameState* game_state) {
     return true;
 }
 
-uint64_t game_state_calc_t_spin_points(GameState* game_state, uint64_t num_lines) {
+uint32_t game_state_calc_t_spin_points(GameState* game_state, uint8_t num_lines) {
     if (!game_state) {
         return 0;
     }
 
-    uint64_t points = 0;
+    uint32_t points = 0;
     if (game_state_check_t_spin(game_state)) {
         if (num_lines == 0) {
             points += T_SPIN_ZERO_POINTS * game_state->level;
@@ -830,12 +830,12 @@ uint64_t game_state_calc_t_spin_points(GameState* game_state, uint64_t num_lines
     return points;
 }
 
-uint64_t game_state_calc_line_clear_points(GameState* game_state, uint64_t num_lines) {
+uint32_t game_state_calc_line_clear_points(GameState* game_state, uint8_t num_lines) {
     if (!game_state) {
         return 0;
     }
 
-    uint64_t points = 0;
+    uint32_t points = 0;
     if (!game_state_check_t_spin(game_state) && !game_state_check_t_spin_mini(game_state)) {
         if (num_lines == 1) {
             points += SINGLE_POINTS * game_state->level;
@@ -854,12 +854,12 @@ uint64_t game_state_calc_line_clear_points(GameState* game_state, uint64_t num_l
     return points;
 }
 
-uint64_t game_state_calc_all_clear_points(GameState* game_state, uint64_t num_lines) {
+uint32_t game_state_calc_all_clear_points(GameState* game_state, uint8_t num_lines) {
     if (!game_state) {
         return 0;
     }
 
-    uint64_t points = 0;
+    uint32_t points = 0;
     if (game_state_check_empty_board(game_state) && num_lines > 0) {
         if (num_lines == 1) {
             points += SINGLE_ALL_CLEAR_POINTS * game_state->level;
@@ -883,12 +883,12 @@ uint64_t game_state_calc_all_clear_points(GameState* game_state, uint64_t num_li
     return points;
 }
 
-uint64_t game_state_calc_combo_points(GameState* game_state, uint64_t num_lines) {
+uint32_t game_state_calc_combo_points(GameState* game_state, uint8_t num_lines) {
     if (!game_state) {
         return 0;
     }
 
-    uint64_t points = 0;
+    uint32_t points = 0;
     if (num_lines > 0) {
         game_state->combo++;
         points += COMBO_POINTS * game_state->combo * game_state->level;
@@ -898,7 +898,7 @@ uint64_t game_state_calc_combo_points(GameState* game_state, uint64_t num_lines)
     return points;
 }
 
-float game_state_calc_difficult_clear_mult(GameState* game_state, uint64_t num_lines) {
+float game_state_calc_difficult_clear_mult(GameState* game_state, uint8_t num_lines) {
     if (!game_state) {
         return 0.0;
     }

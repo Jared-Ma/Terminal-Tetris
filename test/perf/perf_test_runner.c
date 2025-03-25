@@ -2,11 +2,12 @@
 #include "perf_test.h"
 
 #include <stdlib.h>
+#include <stdint.h>
 
 #define NUM_TESTS 5
 
 
-const size_t NUM_TRIALS = 5;
+const uint8_t NUM_TRIALS = 5;
 
 int main(void) {
     PerfTest perf_tests[NUM_TESTS] = {

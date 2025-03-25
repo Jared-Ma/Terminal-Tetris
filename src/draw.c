@@ -324,8 +324,8 @@ void draw_board_stack(GameWindow* board_window, const GameState* game_state) {
 }
 
 void draw_curr_piece(GameWindow* board_window, const GameState* game_state) {
-    int start_y = game_state->curr_piece.y - game_state->curr_piece.n/2;
-    int start_x = 2*(game_state->curr_piece.x - game_state->curr_piece.n/2);
+    int8_t start_y = game_state->curr_piece.y - game_state->curr_piece.n/2;
+    int8_t start_x = 2*(game_state->curr_piece.x - game_state->curr_piece.n/2);
 
     wattron(board_window->content, COLOR_PAIR(game_state->curr_piece.shape));
     if (
@@ -364,8 +364,8 @@ void draw_curr_piece(GameWindow* board_window, const GameState* game_state) {
 
 void draw_ghost_piece(GameWindow* board_window, const GameState* game_state) {
     if (game_state->ghost_piece.y != game_state->curr_piece.y) {
-        int start_y = game_state->ghost_piece.y - game_state->ghost_piece.n/2;
-        int start_x = 2*(game_state->ghost_piece.x - game_state->ghost_piece.n/2);
+        int8_t start_y = game_state->ghost_piece.y - game_state->ghost_piece.n/2;
+        int8_t start_x = 2*(game_state->ghost_piece.x - game_state->ghost_piece.n/2);
         wattron(board_window->content, COLOR_PAIR(game_state->ghost_piece.shape) | A_DIM);
 
         for (size_t i = 0; i < game_state->ghost_piece.n; ++i) {
@@ -395,9 +395,9 @@ void draw_hold_piece(GameWindow* hold_window, const GameState* game_state) {
     werase(hold_window->content);
     
     if (game_state->holding_piece) {
-        int horizontal_padding = 2*(game_state->hold_piece.n - game_state->hold_piece.l);
-        int start_y = hold_window->content_h / 2 - game_state->hold_piece.n / 2;
-        int start_x = hold_window->content_w / 2 - game_state->hold_piece.l - horizontal_padding;
+        int8_t horizontal_padding = 2*(game_state->hold_piece.n - game_state->hold_piece.l);
+        int8_t start_y = hold_window->content_h / 2 - game_state->hold_piece.n / 2;
+        int8_t start_x = hold_window->content_w / 2 - game_state->hold_piece.l - horizontal_padding;
         
         wattron(hold_window->content, COLOR_PAIR(game_state->hold_piece.shape));
         if (game_state->hold_blocked) {
@@ -426,9 +426,9 @@ void draw_hold_piece(GameWindow* hold_window, const GameState* game_state) {
 void draw_next_piece(GameWindow* next_window, const GameState* game_state) {
     werase(next_window->content);
 
-    int horizontal_padding = 2*(game_state->next_piece.n - game_state->next_piece.l);
-    int start_y = next_window->content_h / 2 - game_state->next_piece.n / 2;
-    int start_x = next_window->content_w / 2 - game_state->next_piece.l - horizontal_padding;
+    int8_t horizontal_padding = 2*(game_state->next_piece.n - game_state->next_piece.l);
+    int8_t start_y = next_window->content_h / 2 - game_state->next_piece.n / 2;
+    int8_t start_x = next_window->content_w / 2 - game_state->next_piece.l - horizontal_padding;
     wattron(next_window->content, COLOR_PAIR(game_state->next_piece.shape));
 
     for (size_t i = 0; i < game_state->next_piece.n; ++i) {
@@ -445,9 +445,9 @@ void draw_next_piece(GameWindow* next_window, const GameState* game_state) {
 void draw_stats(GameWindow* stats_window, const GameState* game_state, const Stats* stats) {
     werase(stats_window->content);
 
-    uint64_t h = stats->seconds / 3600;
-    uint64_t m = (stats->seconds - 3600*h) / 60;
-    uint64_t s = stats->seconds - 3600*h - 60*m;
+    uint8_t h = stats->seconds / 3600;
+    uint8_t m = (stats->seconds - 3600*h) / 60;
+    uint8_t s = stats->seconds - 3600*h - 60*m;
 
     mvwprintw(stats_window->content, STATS_TIME_Y, STATS_TIME_X, "time: %02lu:%02lu", m, s);
     mvwprintw(stats_window->content, STATS_LINES_Y, STATS_LINES_X, "lines: %lu", game_state->lines);
