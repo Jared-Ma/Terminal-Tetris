@@ -179,7 +179,7 @@ void game_state_reset_vfx_conditions(GameState* game_state) {
     game_state->last_locked_piece_shape = 0;
 }
 
-void game_state_debug_print(GameState* game_state) {
+void game_state_debug_print(const GameState* game_state) {
     if (!game_state) {
         return;
     }
@@ -332,7 +332,7 @@ void game_state_hold_piece(GameState* game_state) {
     }
 }
 
-bool game_state_check_collision(GameState* game_state, Piece piece) {
+bool game_state_check_collision(const GameState* game_state, Piece piece) {
     if (!game_state) {
         return false;
     }
@@ -355,7 +355,7 @@ bool game_state_check_collision(GameState* game_state, Piece piece) {
     return false;
 }
 
-bool game_state_check_curr_piece_grounded(GameState* game_state) {
+bool game_state_check_curr_piece_grounded(const GameState* game_state) {
     if (!game_state) {
         return false;
     }
@@ -633,7 +633,7 @@ void game_state_update_ghost_piece(GameState* game_state) {
     }
 }
 
-bool game_state_check_t_spin(GameState* game_state) {
+bool game_state_check_t_spin(const GameState* game_state) {
     if (!game_state) {
         return false;
     }
@@ -707,7 +707,7 @@ bool game_state_check_t_spin(GameState* game_state) {
     return false;
 }
 
-bool game_state_check_t_spin_mini(GameState* game_state) {
+bool game_state_check_t_spin_mini(const GameState* game_state) {
     if (!game_state) {
         return false;
     }
@@ -775,7 +775,7 @@ bool game_state_check_t_spin_mini(GameState* game_state) {
     return false;
 }
 
-bool game_state_check_empty_board(GameState* game_state) {
+bool game_state_check_empty_board(const GameState* game_state) {
     if (!game_state) {
         return false;
     }

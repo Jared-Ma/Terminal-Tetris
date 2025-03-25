@@ -294,7 +294,7 @@ void draw_debug_window(GameWindow* debug_window) {
     draw_window_title(debug_window, DEBUG_TITLE, COLOR_PAIR_RED);
 }
 
-void draw_board_state(GameWindow* board_window, GameState* game_state) {
+void draw_board_state(GameWindow* board_window, const GameState* game_state) {
     werase(board_window->content);
     draw_buffer_zone_line(board_window);
     draw_board_stack(board_window, game_state);
@@ -311,7 +311,7 @@ void draw_buffer_zone_line(GameWindow* board_window) {
     wattroff(board_window->content, COLOR_PAIR(COLOR_PAIR_RED) | A_DIM);
 }
 
-void draw_board_stack(GameWindow* board_window, GameState* game_state) {
+void draw_board_stack(GameWindow* board_window, const GameState* game_state) {
     for (size_t i = 0; i < BOARD_H; ++i) {
         for (size_t j = 0; j < BOARD_W; ++j) {
             if (game_state->board[i][j] > 0) {
@@ -323,7 +323,7 @@ void draw_board_stack(GameWindow* board_window, GameState* game_state) {
     }
 }
 
-void draw_curr_piece(GameWindow* board_window, GameState* game_state) {
+void draw_curr_piece(GameWindow* board_window, const GameState* game_state) {
     int start_y = game_state->curr_piece.y - game_state->curr_piece.n/2;
     int start_x = 2*(game_state->curr_piece.x - game_state->curr_piece.n/2);
 
@@ -362,7 +362,7 @@ void draw_curr_piece(GameWindow* board_window, GameState* game_state) {
     }
 }
 
-void draw_ghost_piece(GameWindow* board_window, GameState* game_state) {
+void draw_ghost_piece(GameWindow* board_window, const GameState* game_state) {
     if (game_state->ghost_piece.y != game_state->curr_piece.y) {
         int start_y = game_state->ghost_piece.y - game_state->ghost_piece.n/2;
         int start_x = 2*(game_state->ghost_piece.x - game_state->ghost_piece.n/2);
@@ -380,7 +380,7 @@ void draw_ghost_piece(GameWindow* board_window, GameState* game_state) {
     }
 }
 
-void draw_score(GameWindow* board_window, GameState* game_state) {
+void draw_score(GameWindow* board_window, const GameState* game_state) {
     mvwprintw(
         board_window->border, 
         board_window->border_h - 1, 
@@ -391,7 +391,7 @@ void draw_score(GameWindow* board_window, GameState* game_state) {
     );
 }
 
-void draw_hold_piece(GameWindow* hold_window, GameState* game_state) {
+void draw_hold_piece(GameWindow* hold_window, const GameState* game_state) {
     werase(hold_window->content);
     
     if (game_state->holding_piece) {
@@ -423,7 +423,7 @@ void draw_hold_piece(GameWindow* hold_window, GameState* game_state) {
     }
 }
 
-void draw_next_piece(GameWindow* next_window, GameState* game_state) {
+void draw_next_piece(GameWindow* next_window, const GameState* game_state) {
     werase(next_window->content);
 
     int horizontal_padding = 2*(game_state->next_piece.n - game_state->next_piece.l);
@@ -442,7 +442,7 @@ void draw_next_piece(GameWindow* next_window, GameState* game_state) {
     wattroff(next_window->content, COLOR_PAIR(game_state->next_piece.shape));
 }
 
-void draw_stats(GameWindow* stats_window, GameState* game_state, Stats* stats) {
+void draw_stats(GameWindow* stats_window, const GameState* game_state, const Stats* stats) {
     werase(stats_window->content);
 
     uint64_t h = stats->seconds / 3600;
@@ -466,7 +466,7 @@ void draw_stats(GameWindow* stats_window, GameState* game_state, Stats* stats) {
     }
 }
 
-void draw_pause_stats(GameWindow* stats_window, Stats* stats) {
+void draw_pause_stats(GameWindow* stats_window, const Stats* stats) {
     mvwprintw(stats_window->content, PAUSE_STATS_SINGLE_Y, PAUSE_STATS_SINGLE_X, "%*s", stats_window->content_w, "");
     mvwprintw(stats_window->content, PAUSE_STATS_DOUBLE_Y, PAUSE_STATS_DOUBLE_X, "%*s", stats_window->content_w, "");
     mvwprintw(stats_window->content, PAUSE_STATS_TRIPLE_Y, PAUSE_STATS_TRIPLE_X, "%*s", stats_window->content_w, "");
@@ -478,7 +478,7 @@ void draw_pause_stats(GameWindow* stats_window, Stats* stats) {
     mvwprintw(stats_window->content, PAUSE_STATS_TETRIS_Y, PAUSE_STATS_TETRIS_X, "tetris: %lu", stats->num_tetris);
 }
 
-void draw_debug_variables(GameWindow* debug_window, GameState* game_state, Stats* stats) {
+void draw_debug_variables(GameWindow* debug_window, const GameState* game_state, const Stats* stats) {
     werase(debug_window->content);
     mvwprintw(
         debug_window->content, 0, 0,

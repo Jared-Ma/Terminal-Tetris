@@ -125,26 +125,26 @@ void draw_game_over_window(GameWindow* game_over_window);
 
 void draw_debug_window(GameWindow* debug_window);
 
-void draw_board_state(GameWindow* board_window, GameState* game_state);
+void draw_board_state(GameWindow* board_window, const GameState* game_state);
 
 void draw_buffer_zone_line(GameWindow* board_window);
 
-void draw_board_stack(GameWindow* board_window, GameState* game_state);
+void draw_board_stack(GameWindow* board_window, const GameState* game_state);
 
-void draw_curr_piece(GameWindow* board_window, GameState* game_state);
+void draw_curr_piece(GameWindow* board_window, const GameState* game_state);
 
-void draw_ghost_piece(GameWindow* board_window, GameState* game_state);
+void draw_ghost_piece(GameWindow* board_window, const GameState* game_state);
 
-void draw_score(GameWindow* board_window, GameState* game_state);
+void draw_score(GameWindow* board_window, const GameState* game_state);
 
-void draw_hold_piece(GameWindow* hold_window, GameState* game_state);
+void draw_hold_piece(GameWindow* hold_window, const GameState* game_state);
 
-void draw_next_piece(GameWindow* next_window, GameState* game_state);
+void draw_next_piece(GameWindow* next_window, const GameState* game_state);
 
-void draw_stats(GameWindow* stats_window, GameState* game_state, Stats* stats);
+void draw_stats(GameWindow* stats_window, const GameState* game_state, const Stats* stats);
 
-void draw_pause_stats(GameWindow* stats_window, Stats* stats);
+void draw_pause_stats(GameWindow* stats_window, const Stats* stats);
 
-void draw_debug_variables(GameWindow* debug_window, GameState* game_state, Stats* stats);
+void draw_debug_variables(GameWindow* debug_window, const GameState* game_state, const Stats* stats);
 
 #endif

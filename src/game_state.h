@@ -104,7 +104,7 @@ void game_state_reset(GameState* game_state);
 
 void game_state_reset_vfx_conditions(GameState* game_state);
 
-void game_state_debug_print(GameState* game_state);
+void game_state_debug_print(const GameState* game_state);
 
 void game_state_generate_next_queue(GameState* game_state);
 
@@ -114,9 +114,9 @@ void game_state_spawn_curr_piece(GameState* game_state);
 
 void game_state_hold_piece(GameState* game_state);
 
-bool game_state_check_collision(GameState* game_state, Piece piece);
+bool game_state_check_collision(const GameState* game_state, Piece piece);
 
-bool game_state_check_curr_piece_grounded(GameState* game_state);
+bool game_state_check_curr_piece_grounded(const GameState* game_state);
 
 void game_state_move_curr_piece(GameState* game_state, int y, int x);
 
@@ -144,11 +144,11 @@ void game_state_move_ghost_piece(GameState* game_state, int y, int x);
 
 void game_state_update_ghost_piece(GameState* game_state);
 
-bool game_state_check_t_spin(GameState* game_state);
+bool game_state_check_t_spin(const GameState* game_state);
 
-bool game_state_check_t_spin_mini(GameState* game_state);
+bool game_state_check_t_spin_mini(const GameState* game_state);
 
-bool game_state_check_empty_board(GameState* game_state);
+bool game_state_check_empty_board(const GameState* game_state);
 
 uint64_t game_state_calc_t_spin_points(GameState* game_state, uint64_t num_lines);
 

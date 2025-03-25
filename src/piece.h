@@ -45,7 +45,7 @@ Piece* piece_init(Shape shape, int8_t y, int8_t x);
 
 void piece_destroy(Piece* piece);
 
-void piece_debug_print(Piece* piece);
+void piece_debug_print(const Piece* piece);
 
 void piece_move(Piece* piece, int8_t y, int8_t x);
 

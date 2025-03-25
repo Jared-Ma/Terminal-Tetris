@@ -103,11 +103,10 @@ int main(void) {
 
     size_t failed_unit_tests[NUM_TESTS] = { 0 };
 
-    size_t num_unit_tests = sizeof(unit_tests) / sizeof(unit_tests[0]);
     size_t num_unit_tests_passed = 0;
     size_t num_unit_tests_failed = 0; 
 
-    for (size_t i = 0; i < num_unit_tests; ++i) {
+    for (size_t i = 0; i < NUM_TESTS; ++i) {
         bool test_result = run_unit_test(i+1, unit_tests[i]);
         if (test_result) {
             num_unit_tests_passed++;
@@ -116,7 +115,7 @@ int main(void) {
         }
     } 
     
-    printf("%lu / %lu unit tests passed\n", num_unit_tests_passed, num_unit_tests);
+    printf("%lu / %u unit tests passed\n", num_unit_tests_passed, NUM_TESTS);
     
     if (num_unit_tests_failed > 0) {
         printf("\nFailed unit tests:\n");

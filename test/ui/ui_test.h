@@ -17,7 +17,7 @@ typedef enum TestResult TestResult;
 
 struct UITest {
     ui_test_function* test_function;
-    char* test_name;
+    const char* test_name;
     TestResult test_result;
 };
 

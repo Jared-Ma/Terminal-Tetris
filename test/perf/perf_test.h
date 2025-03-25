@@ -9,7 +9,7 @@ typedef void perf_test_function(struct timespec* start_time, struct timespec* en
 
 struct PerfTest {
     perf_test_function* test_function;
-    char* test_name;
+    const char* test_name;
 };
 
 typedef struct PerfTest PerfTest;

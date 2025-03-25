@@ -98,8 +98,6 @@ int main(void) {
         VFX_TEST(test_vfx_stats_level),
     };
 
-    size_t num_vfx_tests = sizeof(vfx_tests) / sizeof(vfx_tests[0]);
-
     const int8_t TEST_INFO_WINDOW_H = GAME_H + 4;
     const int8_t TEST_INFO_WINDOW_W = GAME_W + 2;
     const int8_t TEST_INFO_WINDOW_Y = 0;
@@ -120,11 +118,10 @@ int main(void) {
         TEST_CONTENT_WINDOW_Y, TEST_CONTENT_WINDOW_X
     );
 
-    int8_t game_window_y_offset = TEST_CONTENT_WINDOW_Y + 1;
-    int8_t game_window_x_offset = TEST_CONTENT_WINDOW_X + 1;
+    const int8_t game_window_y_offset = TEST_CONTENT_WINDOW_Y + 1;
+    const int8_t game_window_x_offset = TEST_CONTENT_WINDOW_X + 1;
 
-    char title_string[64];
-    char* controls_string = "< prev | pass: z | fail: x | end: esc | next >";
+    const char* controls_string = "< prev | pass: z | fail: x | end: esc | next >";
     mvwprintw(test_info_window, TEST_INFO_WINDOW_H - 1, TEST_INFO_WINDOW_W / 2 - strlen(controls_string) / 2, "%s", controls_string);
     wrefresh(test_info_window);
     
@@ -134,16 +131,17 @@ int main(void) {
     mvwprintw(test_content_window, 1, TEST_CONTENT_WINDOW_W - strlen("play vfx: _") - 1, "play vfx: _");
     wrefresh(test_content_window);
     
+    char title_string[64];
     size_t test_index = 0;    
     bool running = true;
 
     while (running) {
         if (vfx_tests[test_index].test_result == PENDING) {
-            sprintf(title_string, "%s - PENDING - %lu / %lu", vfx_tests[test_index].test_name, test_index + 1, num_vfx_tests);
+            sprintf(title_string, "%s - PENDING - %lu / %u", vfx_tests[test_index].test_name, test_index + 1, NUM_TESTS);
         } else if (vfx_tests[test_index].test_result == PASSED){
-            sprintf(title_string, "%s - PASSED - %lu / %lu", vfx_tests[test_index].test_name, test_index + 1, num_vfx_tests);
+            sprintf(title_string, "%s - PASSED - %lu / %u", vfx_tests[test_index].test_name, test_index + 1, NUM_TESTS);
         } else if (vfx_tests[test_index].test_result == FAILED) {
-            sprintf(title_string, "%s - FAILED - %lu / %lu", vfx_tests[test_index].test_name, test_index + 1, num_vfx_tests);
+            sprintf(title_string, "%s - FAILED - %lu / %u", vfx_tests[test_index].test_name, test_index + 1, NUM_TESTS);
         }
         mvprintw(0, 0, "%*s", (int)sizeof(title_string), "");
         if (vfx_tests[test_index].test_result == PASSED) {
@@ -203,7 +201,7 @@ int main(void) {
     size_t num_vfx_tests_passed = 0; 
     size_t num_vfx_tests_failed = 0; 
 
-    for (size_t i = 0; i < num_vfx_tests; ++i) {
+    for (size_t i = 0; i < NUM_TESTS; ++i) {
         if (vfx_tests[i].test_result == PENDING) {
             pending_vfx_tests[num_vfx_tests_pending++] = i;
         } else if (vfx_tests[i].test_result == PASSED) {
@@ -218,7 +216,7 @@ int main(void) {
         for (size_t i = 0; i < num_vfx_tests_pending; ++i) {
             printf("%lu - %s\n", pending_vfx_tests[i] + 1, vfx_tests[pending_vfx_tests[i]].test_name);
         }   
-        printf("%lu / %lu VFX tests pending\n", num_vfx_tests_pending, num_vfx_tests);
+        printf("%lu / %u VFX tests pending\n", num_vfx_tests_pending, NUM_TESTS);
     }
 
     if (num_vfx_tests_passed > 0) {
@@ -226,7 +224,7 @@ int main(void) {
         for (size_t i = 0; i < num_vfx_tests_passed; ++i) {
             printf("%lu - %s\n", passed_vfx_tests[i] + 1, vfx_tests[passed_vfx_tests[i]].test_name);
         }
-        printf("%lu / %lu VFX tests passed\n", num_vfx_tests_passed, num_vfx_tests);
+        printf("%lu / %u VFX tests passed\n", num_vfx_tests_passed, NUM_TESTS);
     }    
 
     if (num_vfx_tests_failed > 0) {
@@ -234,7 +232,7 @@ int main(void) {
         for (size_t i = 0; i < num_vfx_tests_failed; ++i) {
             printf("%lu - %s\n", failed_vfx_tests[i] + 1, vfx_tests[failed_vfx_tests[i]].test_name);
         }
-        printf("%lu / %lu VFX tests failed\n", num_vfx_tests_failed, num_vfx_tests);
+        printf("%lu / %u VFX tests failed\n", num_vfx_tests_failed, NUM_TESTS);
     }
 
     return EXIT_SUCCESS;

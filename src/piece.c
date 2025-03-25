@@ -265,7 +265,7 @@ void piece_destroy(Piece* piece) {
     free(piece);
 }
 
-void piece_debug_print(Piece* piece) {
+void piece_debug_print(const Piece* piece) {
     if (!piece) {
         fprintf(debug_log, "NULL\n");
         return;

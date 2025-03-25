@@ -26,10 +26,10 @@ Stats *stats_init(void);
 
 void stats_destroy(Stats* stats);
 
-void stats_debug_print(Stats* stats);
+void stats_debug_print(const Stats* stats);
 
 void stats_reset(Stats* stats);
 
-void stats_update(Stats* stats, GameState* game_state);
+void stats_update(Stats* stats, const GameState* game_state);
 
 #endif

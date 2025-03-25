@@ -135,14 +135,14 @@ void draw_vfx_board_window_border(VFX* vfx, int16_t color_pair) {
     wattroff(vfx->game_window->border, COLOR_PAIR(color_pair));
 }
 
-bool vfx_check_lock_piece(VFX* vfx, GameState* game_state) {
+bool vfx_check_lock_piece(VFX* vfx, const GameState* game_state) {
     if (!vfx || !game_state) {
         return false;
     }
     return game_state->last_locked_piece_shape > 0;
 }
 
-void vfx_enable_lock_piece(VFX* vfx, GameState* game_state) {
+void vfx_enable_lock_piece(VFX* vfx, const GameState* game_state) {
     if (!vfx || !game_state) {
         return;
     }
@@ -220,14 +220,14 @@ void draw_vfx_lock_z_piece(VFX* vfx) {
     draw_vfx_board_window_border(vfx, COLOR_PAIR_RED);
 }
 
-bool vfx_check_line_clear(VFX* vfx, GameState* game_state) {
+bool vfx_check_line_clear(VFX* vfx, const GameState* game_state) {
     if (!vfx || !game_state) {
         return false;
     }
     return game_state->last_action_num_lines > 0;
 }
 
-void vfx_enable_line_clear(VFX* vfx, GameState* game_state) {
+void vfx_enable_line_clear(VFX* vfx, const GameState* game_state) {
     if (!vfx || !game_state) {
         return;
     }
@@ -311,14 +311,14 @@ void draw_vfx_line_clear_all_clear(VFX* vfx) {
     }
 }
 
-bool vfx_check_hold_piece(VFX* vfx, GameState* game_state) {
+bool vfx_check_hold_piece(VFX* vfx, const GameState* game_state) {
     if (!vfx || !game_state) {
         return false;
     }
     return game_state->hold_piece_event_flag;
 }
 
-void vfx_enable_hold_piece(VFX* vfx, GameState* game_state) {
+void vfx_enable_hold_piece(VFX* vfx, const GameState* game_state) {
     if (!vfx || !game_state) {
         return;
     }
@@ -404,14 +404,14 @@ void draw_vfx_hold_z_piece(VFX* vfx) {
     draw_window_title(vfx->game_window, HOLD_TITLE, COLOR_PAIR_RED);
 }
 
-bool vfx_check_next_piece(VFX* vfx, GameState* game_state) {
+bool vfx_check_next_piece(VFX* vfx, const GameState* game_state) {
     if (!vfx || !game_state) {
         return false;
     }
     return game_state->next_piece_event_flag;
 }
 
-void vfx_enable_next_piece(VFX* vfx, GameState* game_state) {
+void vfx_enable_next_piece(VFX* vfx, const GameState* game_state) {
     if (!vfx || !game_state) {
         return;
     }
@@ -497,14 +497,14 @@ void draw_vfx_next_z_piece(VFX* vfx) {
     draw_window_title(vfx->game_window, NEXT_TITLE, COLOR_PAIR_RED);
 }
 
-bool vfx_check_action(VFX* vfx, GameState* game_state) {
+bool vfx_check_action(VFX* vfx, const GameState* game_state) {
     if (!vfx || !game_state) {
         return false;
     }
     return game_state->last_action_t_spin || game_state->last_action_t_spin_mini || game_state->last_action_num_lines > 0;
 }
 
-void vfx_enable_action(VFX* vfx, GameState* game_state) {
+void vfx_enable_action(VFX* vfx, const GameState* game_state) {
     if (!vfx || !game_state) {
         return;
     }
@@ -725,7 +725,7 @@ void draw_vfx_action_all_clear(VFX* vfx) {
     }
 }
 
-bool vfx_check_combo(VFX* vfx, GameState* game_state) {
+bool vfx_check_combo(VFX* vfx, const GameState* game_state) {
     if (!vfx || !game_state) {
         return false;
     }
@@ -737,7 +737,7 @@ bool vfx_check_combo(VFX* vfx, GameState* game_state) {
     return false;
 }
 
-void vfx_enable_combo(VFX* vfx, GameState* game_state) {
+void vfx_enable_combo(VFX* vfx, const GameState* game_state) {
     if (!vfx || !game_state) {
         return;
     }
@@ -775,7 +775,7 @@ void draw_vfx_combo(VFX* vfx) {
     }
 }
 
-bool vfx_check_b2b_combo(VFX* vfx, GameState* game_state) {
+bool vfx_check_b2b_combo(VFX* vfx, const GameState* game_state) {
     if (!vfx || !game_state) {
         return false;
     }
@@ -787,7 +787,7 @@ bool vfx_check_b2b_combo(VFX* vfx, GameState* game_state) {
     return false;
 }
 
-void vfx_enable_b2b_combo(VFX* vfx, GameState* game_state) {
+void vfx_enable_b2b_combo(VFX* vfx, const GameState* game_state) {
     if (!vfx || !game_state) {
         return;
     }
@@ -824,7 +824,7 @@ void draw_vfx_b2b_combo(VFX* vfx) {
     }
 }
 
-bool vfx_check_points(VFX* vfx, GameState* game_state) {
+bool vfx_check_points(VFX* vfx, const GameState* game_state) {
     if (!vfx || !game_state) {
         return false;
     }
@@ -836,7 +836,7 @@ bool vfx_check_points(VFX* vfx, GameState* game_state) {
     return false;
 }
 
-void vfx_enable_points(VFX* vfx, GameState* game_state) {
+void vfx_enable_points(VFX* vfx, const GameState* game_state) {
     if (!vfx || !game_state) {
         return;
     }
@@ -872,14 +872,14 @@ void draw_vfx_points(VFX* vfx) {
     }
 }
 
-bool vfx_check_level_up(VFX* vfx, GameState* game_state) {
+bool vfx_check_level_up(VFX* vfx, const GameState* game_state) {
     if (!vfx || !game_state) {
         return false;
     }
     return game_state->level_up_event_flag;
 }
 
-void vfx_enable_level_up(VFX* vfx, GameState* game_state) {
+void vfx_enable_level_up(VFX* vfx, const GameState* game_state) {
     if (!vfx || !game_state) {
         return;
     }
@@ -932,14 +932,14 @@ void draw_vfx_level_up(VFX* vfx) {
     }
 }
 
-bool vfx_check_stats_lines(VFX* vfx, GameState* game_state) {
+bool vfx_check_stats_lines(VFX* vfx, const GameState* game_state) {
     if (!vfx || !game_state) {
         return false;
     }
     return game_state->last_action_num_lines > 0;
 }
 
-void vfx_enable_stats_lines(VFX* vfx, GameState* game_state) {
+void vfx_enable_stats_lines(VFX* vfx, const GameState* game_state) {
     if (!vfx) {
         return;
     }
@@ -966,14 +966,14 @@ void draw_vfx_stats_lines(VFX* vfx) {
     wattroff(vfx->game_window->content, A_STANDOUT);
 }
 
-bool vfx_check_stats_level(VFX* vfx, GameState* game_state) {
+bool vfx_check_stats_level(VFX* vfx, const GameState* game_state) {
     if (!vfx || !game_state) {
         return false;
     }
     return game_state->level_up_event_flag;
 }
 
-void vfx_enable_stats_level(VFX* vfx, GameState* game_state) {
+void vfx_enable_stats_level(VFX* vfx, const GameState* game_state) {
     if (!vfx) {
         return;
     }

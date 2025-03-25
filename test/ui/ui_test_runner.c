@@ -99,8 +99,6 @@ int main(void) {
         UI_TEST(test_draw_pause_stats),
     };
 
-    size_t num_ui_tests = sizeof(ui_tests) / sizeof(ui_tests[0]);
-
     const int8_t TEST_INFO_WINDOW_H = GAME_H + 4;
     const int8_t TEST_INFO_WINDOW_W = GAME_W + 2;
     const int8_t TEST_INFO_WINDOW_Y = 0;
@@ -121,24 +119,24 @@ int main(void) {
         TEST_CONTENT_WINDOW_Y, TEST_CONTENT_WINDOW_X
     );
 
-    int8_t game_window_y_offset = TEST_CONTENT_WINDOW_Y + 1;
-    int8_t game_window_x_offset = TEST_CONTENT_WINDOW_X + 1;
+    const int8_t game_window_y_offset = TEST_CONTENT_WINDOW_Y + 1;
+    const int8_t game_window_x_offset = TEST_CONTENT_WINDOW_X + 1;
 
-    char title_string[64];
-    char* controls_string = "< prev | pass: z | fail: x | end: esc | next >";
+    const char* controls_string = "< prev | pass: z | fail: x | end: esc | next >";
     mvwprintw(test_info_window, TEST_INFO_WINDOW_H - 1, TEST_INFO_WINDOW_W / 2 - strlen(controls_string) / 2, "%s", controls_string);
     wrefresh(test_info_window);
-
+    
+    char title_string[64];
     size_t test_index = 0;
     bool running = true;
     
     while (running) {
         if (ui_tests[test_index].test_result == PENDING) {
-            sprintf(title_string, "%s - PENDING - %lu / %lu", ui_tests[test_index].test_name, test_index + 1, num_ui_tests);
+            sprintf(title_string, "%s - PENDING - %lu / %u", ui_tests[test_index].test_name, test_index + 1, NUM_TESTS);
         } else if (ui_tests[test_index].test_result == PASSED){
-            sprintf(title_string, "%s - PASSED - %lu / %lu", ui_tests[test_index].test_name, test_index + 1, num_ui_tests);
+            sprintf(title_string, "%s - PASSED - %lu / %u", ui_tests[test_index].test_name, test_index + 1, NUM_TESTS);
         } else if (ui_tests[test_index].test_result == FAILED) {
-            sprintf(title_string, "%s - FAILED - %lu / %lu", ui_tests[test_index].test_name, test_index + 1, num_ui_tests);
+            sprintf(title_string, "%s - FAILED - %lu / %u", ui_tests[test_index].test_name, test_index + 1, NUM_TESTS);
         }
         mvprintw(0, 0, "%*s", (int)sizeof(title_string), "");
         if (ui_tests[test_index].test_result == PASSED) {
@@ -194,7 +192,7 @@ int main(void) {
     size_t num_ui_tests_passed = 0; 
     size_t num_ui_tests_failed = 0; 
 
-    for (size_t i = 0; i < num_ui_tests; ++i) {
+    for (size_t i = 0; i < NUM_TESTS; ++i) {
         if (ui_tests[i].test_result == PENDING) {
             pending_ui_tests[num_ui_tests_pending++] = i;
         } else if (ui_tests[i].test_result == PASSED) {
@@ -209,7 +207,7 @@ int main(void) {
         for (size_t i = 0; i < num_ui_tests_pending; ++i) {
             printf("%lu - %s\n", pending_ui_tests[i] + 1, ui_tests[pending_ui_tests[i]].test_name);
         }   
-        printf("%lu / %lu UI tests pending\n", num_ui_tests_pending, num_ui_tests);
+        printf("%lu / %u UI tests pending\n", num_ui_tests_pending, NUM_TESTS);
     }
 
     if (num_ui_tests_passed > 0) {
@@ -217,7 +215,7 @@ int main(void) {
         for (size_t i = 0; i < num_ui_tests_passed; ++i) {
             printf("%lu - %s\n", passed_ui_tests[i] + 1, ui_tests[passed_ui_tests[i]].test_name);
         }
-        printf("%lu / %lu UI tests passed\n", num_ui_tests_passed, num_ui_tests);
+        printf("%lu / %u UI tests passed\n", num_ui_tests_passed, NUM_TESTS);
     }    
 
     if (num_ui_tests_failed > 0) {
@@ -225,7 +223,7 @@ int main(void) {
         for (size_t i = 0; i < num_ui_tests_failed; ++i) {
             printf("%lu - %s\n", failed_ui_tests[i] + 1, ui_tests[failed_ui_tests[i]].test_name);
         }
-        printf("%lu / %lu UI tests failed\n", num_ui_tests_failed, num_ui_tests);
+        printf("%lu / %u UI tests failed\n", num_ui_tests_failed, NUM_TESTS);
     }
 
     return EXIT_SUCCESS;

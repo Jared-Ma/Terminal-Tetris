@@ -10,7 +10,7 @@ typedef bool unit_test_function(void);
 
 struct UnitTest {
     unit_test_function* test_function;
-    char* test_name;
+    const char* test_name;
 };
 
 typedef struct UnitTest UnitTest; 
