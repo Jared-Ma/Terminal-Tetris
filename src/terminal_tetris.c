@@ -34,22 +34,72 @@ enum InputState {
 
 typedef enum InputState InputState;
 
-static void start_curses(void) {
-    initscr();                // initialize curses screen
-    noecho();                 // disable echo input to screen
-    curs_set(0);              // hide cursor
-    set_escdelay(0);          // remove delay after reading escape key
-    keypad(stdscr, true);     // enable arrow key input
-    nodelay(stdscr, true);    // enable non-blocking getch()
-    refresh();                // initial refresh of stdscr
+static void setup_curses(void) {
+    // initialize curses screen
+    if (initscr() == NULL) {
+        fprintf(stderr, "During curses setup, initscr() failed to initialize curses screen.\n");
+        exit(EXIT_FAILURE);
+    }
 
-    // initialize color pairs of tetronimos
-    start_color();
-    use_default_colors();
+    // disable input echoing to screen
+    if (noecho() == ERR) {
+        fprintf(stderr, "During curses setup, noecho() failed to disable input echoing.\n");
+        exit(EXIT_FAILURE);
+    }
+    
+    // hide cursor
+    if (curs_set(0) == ERR) {
+        fprintf(stderr, "During curses setup, curs_set(0) failed to set cursor to invisible mode.\n");
+        exit(EXIT_FAILURE);
+    }
+    
+    // disable delay after reading escape key
+    if (set_escdelay(0) == ERR) {
+        fprintf(stderr, "During curses setup, set_escdelay(0) failed to disable escape key delay.\n");
+        exit(EXIT_FAILURE);
+    }
+    
+    // enable arrow key input
+    if (keypad(stdscr, true) == ERR) {
+        fprintf(stderr, "During curses setup, keypad(stdscr, true) failed to enable keypad.\n");
+        exit(EXIT_FAILURE);
+    }
+    
+    // enable non-blocking getch()
+    if (nodelay(stdscr, true) == ERR) {
+        fprintf(stderr, "During curses setup, nodelay(stdscr, true) failed to enable non-blocking getch().\n");
+        exit(EXIT_FAILURE);
+    }
 
+    // initial refresh of stdscr
+    if (refresh() == ERR) {
+        fprintf(stderr, "During curses setup, initial refresh() failed.\n");
+        exit(EXIT_FAILURE);
+    } 
+
+    // check if terminal supports colors
+    if (!has_colors()) {
+        fprintf(stderr, "During curses setup, has_colors() return false, continuing without color.\n");
+        return;
+    }
+
+    // initialize default colors
+    if (use_default_colors() == ERR) {
+        fprintf(stderr, "During curses setup, use_default_colors() not supported, continuing without color.\n");
+        return;
+    }
+
+    // initialize curses colors 
+    if (start_color() == ERR) {
+        fprintf(stderr, "During curses setup, start_color() failed to initialize colors, continuing without color.\n");
+        return;
+    }
+
+    // initialize non-default orange color
     short COLOR_ORANGE = 8;
     init_color(COLOR_ORANGE, 900, 600, 0);
 
+    // initialize color pairs of tetronimos
     init_pair(I, COLOR_CYAN,    -1);
     init_pair(J, COLOR_BLUE,    -1);
     init_pair(L, COLOR_ORANGE,  -1);
@@ -59,9 +109,27 @@ static void start_curses(void) {
     init_pair(Z, COLOR_RED,     -1);
 }
 
-static void end_curses(void) {
-    endwin();
-    curs_set(2);
+static void cleanup(void) {
+    // show cursor
+    if (stdscr != NULL) {
+        if (curs_set(2) == ERR) {
+            fprintf(stderr, "During cleanup, curs_set(2) failed to set cursor to visible mode.\n");
+        }
+    }
+
+    // exit curses
+    if (stdscr != NULL) {
+        if (endwin() == ERR) {
+            fprintf(stderr, "During cleanup, endwin() failed to restore normal terminal mode.\n");
+        }
+    }
+
+    // close debug log file
+    if (debug_log != NULL) {
+        if (fclose(debug_log) == EOF) {
+            fprintf(stderr, "During cleanup, failed to close debug log file.\n");
+        }
+    }
 }
 
 static void sleep_ns(uint64_t nanoseconds) {
@@ -86,7 +154,7 @@ static void reset_game(GameState* game_state, Stats* stats, VFX* vfx_list[NUM_VF
     }
 }
 
-static void start_tetris(
+static void run_tetris(
     GameWindow* board_window,
     GameWindow* hold_window,
     GameWindow* next_window,
@@ -361,12 +429,19 @@ static void start_tetris(
 }
 
 int main(int argc, char* argv[argc+1]) {
-    if (!debug_log_open("./logs/debug.txt")) {
-        fprintf(stderr, "Failed to open debug log file (debug.txt).\n");
+    // register cleanup function on exit
+    if (atexit(cleanup) != 0) {
+        fprintf(stderr, "Failed to register cleanup function.\n");
         return EXIT_FAILURE;
     }
 
-    start_curses();
+    // open debug log file
+    if (!debug_log_open(DEBUG_LOG_FILEPATH)) {
+        fprintf(stderr, "Failed to open debug log file.\n");
+        return EXIT_FAILURE;
+    }
+
+    setup_curses();
     
     GameWindow* board_window = game_window_init(
         BOARD_WINDOW_H, BOARD_WINDOW_W, 
@@ -401,7 +476,7 @@ int main(int argc, char* argv[argc+1]) {
         DEBUG_WINDOW_Y, DEBUG_WINDOW_X
     );
     
-    start_tetris(
+    run_tetris(
         board_window, 
         hold_window, 
         next_window, 
@@ -418,8 +493,6 @@ int main(int argc, char* argv[argc+1]) {
     game_window_destroy(stats_window);
     game_window_destroy(controls_window);
     game_window_destroy(debug_window);
-    end_curses();
-    fclose(debug_log);
 
     return EXIT_SUCCESS;
 }
