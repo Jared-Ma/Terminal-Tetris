@@ -228,14 +228,14 @@ void game_state_debug_print(const GameState* game_state) {
     );
     fprintf(
         debug_log,
-        "\tlevel = %lu\n"
-        "\tlines = %lu\n"
+        "\tlevel = %u\n"
+        "\tlines = %u\n"
         "\tscore = %lu\n"
-        "\tcombo = %li\n"
-        "\tdifficult_clear_combo = %li\n"
-        "\ttetris_all_clear_combo = %li\n"
+        "\tcombo = %i\n"
+        "\tdifficult_clear_combo = %i\n"
+        "\ttetris_all_clear_combo = %i\n"
         "\tt_rotation_test_num = %u\n"
-        "\tlast_action_points = %lu\n"
+        "\tlast_action_points = %u\n"
         "\tlast_action_num_lines = %u\n"
         "\tlast_action_t_spin = %i\n"
         "\tlast_action_t_spin_mini = %i\n"
