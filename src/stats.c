@@ -43,16 +43,16 @@ void stats_debug_print(const Stats* stats) {
     fprintf(
         debug_log,
         "%p = {\n"
-        "\tseconds = %lf\n"
-        "\tscore_per_sec = %lf\n"
-        "\tpiece_per_sec = %lf\n"
-        "\tnum_pieces = %lu\n"
-        "\tnum_single = %lu\n"
-        "\tnum_double = %lu\n"
-        "\tnum_triple = %lu\n"
-        "\tnum_tetris = %lu\n"
+        "\tseconds = %f\n"
+        "\tscore_per_sec = %f\n"
+        "\tpiece_per_sec = %f\n"
+        "\tnum_pieces = %u\n"
+        "\tnum_single = %u\n"
+        "\tnum_double = %u\n"
+        "\tnum_triple = %u\n"
+        "\tnum_tetris = %u\n"
         "\tframe_count = %lu\n"
-        "\tfps = %lf\n"
+        "\tfps = %f\n"
         "}\n",
         stats,
         stats->seconds,

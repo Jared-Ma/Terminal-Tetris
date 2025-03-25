@@ -742,7 +742,7 @@ void vfx_enable_combo(VFX* vfx, const GameState* game_state) {
         return;
     }
     
-    sprintf(vfx->text, "%li x combo", game_state->combo);
+    sprintf(vfx->text, "%i x combo", game_state->combo);
     vfx->y = vfx->game_window->content_h;
     vfx->y -= (game_state->last_action_points > 0) ? 1 : 0; // use vfx_check_function
     vfx->y -= (game_state->difficult_clear_combo > 0) ? 1 : 0;
@@ -792,7 +792,7 @@ void vfx_enable_b2b_combo(VFX* vfx, const GameState* game_state) {
         return;
     }
         
-    sprintf(vfx->text, "%li x b2b", game_state->difficult_clear_combo);
+    sprintf(vfx->text, "%i x b2b", game_state->difficult_clear_combo);
     vfx->y = vfx->game_window->content_h;
     vfx->y -= (game_state->last_action_points > 0) ? 1 : 0;
     vfx->y--;
@@ -841,7 +841,7 @@ void vfx_enable_points(VFX* vfx, const GameState* game_state) {
         return;
     }
 
-    sprintf(vfx->text, "%*lu", vfx->game_window->content_w, game_state->last_action_points);
+    sprintf(vfx->text, "%*u", vfx->game_window->content_w, game_state->last_action_points);
     vfx->y = vfx->game_window->content_h;
     vfx->y--;
     vfx_enable(vfx, draw_vfx_points);
@@ -884,7 +884,7 @@ void vfx_enable_level_up(VFX* vfx, const GameState* game_state) {
         return;
     }
 
-    sprintf(vfx->text, "LEVEL%*lu", (int)(LEVEL_UP_VFX_W - strlen("LEVEL")), game_state->level);
+    sprintf(vfx->text, "LEVEL%*u", (int)(LEVEL_UP_VFX_W - strlen("LEVEL")), game_state->level);
     vfx->y = LEVEL_UP_VFX_Y;
     vfx->x = vfx->game_window->content_w/2 - strlen(vfx->text)/2;
     vfx_enable(vfx, draw_vfx_level_up);
@@ -944,7 +944,7 @@ void vfx_enable_stats_lines(VFX* vfx, const GameState* game_state) {
         return;
     }
 
-    sprintf(vfx->text, "lines: %lu", game_state->lines);
+    sprintf(vfx->text, "lines: %u", game_state->lines);
     vfx->y = STATS_LINES_Y;
     vfx->x = STATS_LINES_X;
     vfx_enable(vfx, draw_vfx_stats_lines);
@@ -978,7 +978,7 @@ void vfx_enable_stats_level(VFX* vfx, const GameState* game_state) {
         return;
     }
 
-    sprintf(vfx->text, "level: %lu", game_state->level);
+    sprintf(vfx->text, "level: %u", game_state->level);
     vfx->y = STATS_LEVEL_Y;
     vfx->x = STATS_LEVEL_X;
     vfx_enable(vfx, draw_vfx_stats_level);

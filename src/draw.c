@@ -449,9 +449,9 @@ void draw_stats(GameWindow* stats_window, const GameState* game_state, const Sta
     uint8_t m = (stats->seconds - 3600*h) / 60;
     uint8_t s = stats->seconds - 3600*h - 60*m;
 
-    mvwprintw(stats_window->content, STATS_TIME_Y, STATS_TIME_X, "time: %02lu:%02lu", m, s);
-    mvwprintw(stats_window->content, STATS_LINES_Y, STATS_LINES_X, "lines: %lu", game_state->lines);
-    mvwprintw(stats_window->content, STATS_LEVEL_Y, STATS_LEVEL_X, "level: %lu", game_state->level);
+    mvwprintw(stats_window->content, STATS_TIME_Y, STATS_TIME_X, "time: %02u:%02u", m, s);
+    mvwprintw(stats_window->content, STATS_LINES_Y, STATS_LINES_X, "lines: %u", game_state->lines);
+    mvwprintw(stats_window->content, STATS_LEVEL_Y, STATS_LEVEL_X, "level: %u", game_state->level);
 
     if (stats->score_per_sec > 0 && stats->score_per_sec < 1) {
         mvwprintw(stats_window->content, STATS_SPS_Y, STATS_SPS_X, "sps: %#.4g\n", stats->score_per_sec);
@@ -472,10 +472,10 @@ void draw_pause_stats(GameWindow* stats_window, const Stats* stats) {
     mvwprintw(stats_window->content, PAUSE_STATS_TRIPLE_Y, PAUSE_STATS_TRIPLE_X, "%*s", stats_window->content_w, "");
     mvwprintw(stats_window->content, PAUSE_STATS_TETRIS_Y, PAUSE_STATS_TETRIS_X, "%*s", stats_window->content_w, "");
     
-    mvwprintw(stats_window->content, PAUSE_STATS_SINGLE_Y, PAUSE_STATS_SINGLE_X, "single: %lu", stats->num_single);
-    mvwprintw(stats_window->content, PAUSE_STATS_DOUBLE_Y, PAUSE_STATS_DOUBLE_X, "double: %lu", stats->num_double);
-    mvwprintw(stats_window->content, PAUSE_STATS_TRIPLE_Y, PAUSE_STATS_TRIPLE_X, "triple: %lu", stats->num_triple);
-    mvwprintw(stats_window->content, PAUSE_STATS_TETRIS_Y, PAUSE_STATS_TETRIS_X, "tetris: %lu", stats->num_tetris);
+    mvwprintw(stats_window->content, PAUSE_STATS_SINGLE_Y, PAUSE_STATS_SINGLE_X, "single: %u", stats->num_single);
+    mvwprintw(stats_window->content, PAUSE_STATS_DOUBLE_Y, PAUSE_STATS_DOUBLE_X, "double: %u", stats->num_double);
+    mvwprintw(stats_window->content, PAUSE_STATS_TRIPLE_Y, PAUSE_STATS_TRIPLE_X, "triple: %u", stats->num_triple);
+    mvwprintw(stats_window->content, PAUSE_STATS_TETRIS_Y, PAUSE_STATS_TETRIS_X, "tetris: %u", stats->num_tetris);
 }
 
 void draw_debug_variables(GameWindow* debug_window, const GameState* game_state, const Stats* stats) {
@@ -486,7 +486,7 @@ void draw_debug_variables(GameWindow* debug_window, const GameState* game_state,
         "lock_delay_timer: %u\n"
         "move_reset_count: %u\n"
         "gravity_value: %f\n"
-        "last_action_points: %lu\n"
+        "last_action_points: %u\n"
         "frame_count: %lu\n",
         game_state->curr_piece.y,
         game_state->curr_piece.x,
