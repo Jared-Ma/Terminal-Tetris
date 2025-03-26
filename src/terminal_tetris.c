@@ -28,8 +28,9 @@ const uint32_t TARGET_FRAME_TIME_NS = 1e9 / TARGET_FPS;
 
 enum InputState {
     PLAYING,
+    MAIN_MENU,
     PAUSED,
-    GAME_OVER,
+    GAME_OVER
 };
 
 typedef enum InputState InputState;
@@ -145,13 +146,14 @@ static void sleep_ns(uint64_t nanoseconds) {
     }
 }
 
-static void reset_game(GameState* game_state, Stats* stats, VFX* vfx_list[NUM_VFX]) {
+static void restart_game(GameState* game_state, Stats* stats, VFX* vfx_list[NUM_VFX], uint8_t start_level) {
     game_state_reset(game_state);
     stats_reset(stats);
     for (size_t i = 0; i < NUM_VFX; ++i) {
         vfx_list[i]->clear_vfx(vfx_list[i]);
         vfx_disable(vfx_list[i]);
     }
+    game_state_start(game_state, start_level);
 }
 
 static void run_tetris(
@@ -160,9 +162,10 @@ static void run_tetris(
     GameWindow* next_window,
     GameWindow* stats_window,
     GameWindow* controls_window,
-    GameWindow* debug_window,
+    GameWindow* main_menu_window,
     GameWindow* pause_window,
-    GameWindow* game_over_window
+    GameWindow* game_over_window,
+    GameWindow* debug_window
 ) {
     GameState* game_state = game_state_init();
     Stats* stats = stats_init();
@@ -260,7 +263,12 @@ static void run_tetris(
     };
 
     srand(time(0));
-    game_state_start(game_state);
+
+    uint8_t start_level = 1;
+    InputState input_state = MAIN_MENU;
+    struct timespec start_time, end_time;
+    uint32_t frame_time_ns;
+    bool running = true;
 
     // render windows
     draw_board_window(board_window);
@@ -268,14 +276,8 @@ static void run_tetris(
     draw_next_window(next_window);
     draw_stats_window(stats_window);
     draw_controls_window(controls_window);
+    draw_main_menu_window(main_menu_window, start_level);
     draw_debug_window(debug_window);
-
-    // render initial game state
-    draw_board_state(board_window, game_state);
-    draw_hold_piece(hold_window, game_state);
-    draw_next_piece(next_window, game_state);
-    draw_stats(stats_window, game_state, stats);
-    draw_debug_variables(debug_window, game_state, stats);
 
     // refresh windows
     game_window_refresh(board_window);
@@ -283,12 +285,8 @@ static void run_tetris(
     game_window_refresh(next_window);
     game_window_refresh(stats_window);
     game_window_refresh(controls_window);
+    game_window_refresh(main_menu_window);
     game_window_refresh(debug_window);
-    
-    InputState input_state = PLAYING;
-    struct timespec start_time, end_time;
-    uint32_t frame_time_ns;
-    bool running = true;
 
     while (running) {
         clock_gettime(CLOCK_MONOTONIC, &start_time);
@@ -322,27 +320,43 @@ static void run_tetris(
                 input_state = PAUSED;
                 break;
             }
+        } else if (input_state == MAIN_MENU) {
+            switch (input) {
+            case INPUT_MOVE_LEFT:
+                start_level = (start_level > 1) ? start_level - 1 : MAX_GRAVITY_LEVEL;
+                break;
+            case INPUT_MOVE_RIGHT:
+                start_level = start_level % MAX_GRAVITY_LEVEL + 1;
+                break;
+            case INPUT_HARD_DROP:
+                restart_game(game_state, stats, vfx_list, start_level);
+                input_state = PLAYING;
+                break;
+            case INPUT_PAUSE: 
+                running = false;
+                break;
+            }
         } else if (input_state == PAUSED) {
             switch (input) {
             case INPUT_HARD_DROP:
                 input_state = PLAYING;
                 break;
             case INPUT_RESTART:
-                reset_game(game_state, stats, vfx_list);
+                restart_game(game_state, stats, vfx_list, start_level);
                 input_state = PLAYING;
                 break;
             case INPUT_PAUSE:
-                running = false;
+                input_state = MAIN_MENU;
                 break;
             }
         } else if (input_state == GAME_OVER) {
             switch (input) {
             case INPUT_RESTART:
-                reset_game(game_state, stats, vfx_list);
+                restart_game(game_state, stats, vfx_list, start_level);
                 input_state = PLAYING;
                 break;
             case INPUT_PAUSE:
-                running = false;
+                input_state = MAIN_MENU;
                 break;
             }
         }
@@ -374,6 +388,12 @@ static void run_tetris(
 
         // Render
         if (input_state == PLAYING) {
+            draw_board_window(board_window);
+            draw_hold_window(hold_window);
+            draw_next_window(next_window);
+            draw_stats_window(stats_window);
+            draw_controls_window(controls_window);
+
             draw_board_state(board_window, game_state);
             draw_hold_piece(hold_window, game_state);
             draw_next_piece(next_window, game_state);
@@ -384,27 +404,33 @@ static void run_tetris(
                     vfx_list[i]->enable_vfx(vfx_list[i], game_state);
                 }
             }
-
             for (size_t i = 0; i < NUM_VFX; ++i) {
                 draw_vfx_frame(vfx_list[i]);
+                game_state_reset_vfx_conditions(game_state);
             }
 
-            game_state_reset_vfx_conditions(game_state);
+            game_window_refresh(board_window);
+            game_window_refresh(hold_window);
+            game_window_refresh(next_window);
+            game_window_refresh(stats_window);
+            game_window_refresh(controls_window);
+        } else if (input_state == MAIN_MENU) {
+            draw_main_menu_window(main_menu_window, start_level);
+            game_window_refresh(main_menu_window);
         } else if (input_state == PAUSED) {
             draw_pause_window(pause_window);
             draw_pause_stats(stats_window, stats);
             game_window_refresh(pause_window);
+            game_window_refresh(stats_window);
         } else if (input_state == GAME_OVER) {
             draw_game_over_window(game_over_window);
             draw_pause_stats(stats_window, stats);
             game_window_refresh(game_over_window);
+            game_window_refresh(stats_window);
         }
+
+        draw_debug_window(debug_window);
         draw_debug_variables(debug_window, game_state, stats);
-        
-        game_window_refresh(board_window);
-        game_window_refresh(hold_window);
-        game_window_refresh(next_window);
-        game_window_refresh(stats_window);
         game_window_refresh(debug_window);
 
         clock_gettime(CLOCK_MONOTONIC, &end_time);
@@ -463,6 +489,10 @@ int main(int argc, char* argv[argc+1]) {
         CONTROLS_WINDOW_H, CONTROLS_WINDOW_W, 
         CONTROLS_WINDOW_Y, CONTROLS_WINDOW_X
     );
+    GameWindow* main_menu_window = game_window_init(
+        MAIN_MENU_WINDOW_H, MAIN_MENU_WINDOW_W, 
+        MAIN_MENU_WINDOW_Y, MAIN_MENU_WINDOW_X
+    );
     GameWindow* pause_window = game_window_init(
         PAUSE_WINDOW_H, PAUSE_WINDOW_W, 
         PAUSE_WINDOW_Y, PAUSE_WINDOW_X
@@ -481,10 +511,11 @@ int main(int argc, char* argv[argc+1]) {
         hold_window, 
         next_window, 
         stats_window,
-        controls_window, 
-        debug_window,
+        controls_window,
+        main_menu_window, 
         pause_window,
-        game_over_window
+        game_over_window,
+        debug_window
     );
     
     game_window_destroy(board_window);
@@ -492,6 +523,9 @@ int main(int argc, char* argv[argc+1]) {
     game_window_destroy(next_window);
     game_window_destroy(stats_window);
     game_window_destroy(controls_window);
+    game_window_destroy(main_menu_window);
+    game_window_destroy(pause_window);
+    game_window_destroy(game_over_window);
     game_window_destroy(debug_window);
 
     return EXIT_SUCCESS;

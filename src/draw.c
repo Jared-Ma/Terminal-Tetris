@@ -36,6 +36,11 @@ const int8_t CONTROLS_WINDOW_W = 14;
 const int8_t CONTROLS_WINDOW_Y = 8;
 const int8_t CONTROLS_WINDOW_X = 36;
 
+const int8_t MAIN_MENU_WINDOW_H = 18;
+const int8_t MAIN_MENU_WINDOW_W = 40;
+const int8_t MAIN_MENU_WINDOW_Y = 3;
+const int8_t MAIN_MENU_WINDOW_X = 4;
+
 const int8_t PAUSE_WINDOW_H = 5;
 const int8_t PAUSE_WINDOW_W = 14;
 const int8_t PAUSE_WINDOW_Y = 9;
@@ -76,6 +81,13 @@ const int8_t CONTROLS_HARD_DROP_Y = 9;
 const int8_t CONTROLS_HARD_DROP_X = 0;
 const int8_t CONTROLS_PAUSE_Y     = 11;
 const int8_t CONTROLS_PAUSE_X     = 0;
+
+const int8_t MAIN_MENU_LEVEL_Y = 10;
+const int8_t MAIN_MENU_LEVEL_X = 13;
+const int8_t MAIN_MENU_START_Y = 12;
+const int8_t MAIN_MENU_START_X = 15;
+const int8_t MAIN_MENU_QUIT_Y =  14;
+const int8_t MAIN_MENU_QUIT_X =  15;
 
 const int8_t PAUSE_RESUME_Y  = 0;
 const int8_t PAUSE_RESUME_X  = 1;
@@ -274,19 +286,89 @@ void draw_controls_window(GameWindow* controls_window) {
     );
 }
 
+void draw_main_menu_window(GameWindow* main_menu_window, uint8_t start_level) {
+    draw_window_border(main_menu_window, COLOR_PAIR_DEFAULT);
+    
+    mvwprintw(
+        main_menu_window->content, 
+        0, 
+        0,
+        "   _____              _           _ \n"
+        "  |_   _|__ _ _ _ __ (_)_ _  __ _| |\n"
+        "    | |/ -_) '_| '  \\| | ' \\/ _` | |\n"
+        "    |_|\\___|_| |_|_|_|_|_||_\\__,_|_|\n"
+    );
+
+    int8_t start_y = 4;
+    int8_t start_x = 0;
+    int8_t padding_x = 7;
+
+    uint8_t num_lines = 4;
+    uint8_t num_colors = 6;
+
+    char tetris_title[4][32] = {
+        " _____    _       _    \n",
+        "|_   _|__| |_ _ _(_)___\n",
+        "  | |/ -_)  _| '_| (_-<\n",
+        "  |_|\\___|\\__|_| |_/__/\n",
+    };
+
+    int16_t title_colors[6] = {
+        COLOR_PAIR_RED,
+        COLOR_PAIR_ORANGE,
+        COLOR_PAIR_YELLOW,
+        COLOR_PAIR_GREEN,
+        COLOR_PAIR_CYAN,
+        COLOR_PAIR_MAGENTA
+    };
+
+    int8_t color_bounds[4][6][2] = {
+        {{1, 5}, {-1, -1}, {10, 10}, {-1, -1}, {18, 18}, {-1, -1}},
+        {{0, 6},   {7, 8},  {9, 12}, {14, 16}, {17, 19}, {20, 22}},
+        {{2, 4},   {5, 9}, {10, 13}, {14, 16}, {17, 18}, {19, 22}},
+        {{2, 4},   {5, 9}, {10, 12}, {13, 16}, {17, 18}, {19, 22}}
+    };
+
+    for (size_t i = 0; i < num_lines; ++i) {
+        for (size_t j = 0; j < strlen(tetris_title[i]); ++j) {
+
+            size_t color_index = 0;
+            for (size_t k = 0; k < num_colors; ++k) {
+                if (j >= color_bounds[i][k][0] && j <= color_bounds[i][k][1]) {
+                    color_index = k;
+                    break;
+                }
+            }
+
+            wattron(main_menu_window->content, COLOR_PAIR(title_colors[color_index]));
+            mvwaddch(
+                main_menu_window->content,
+                start_y + i,
+                start_x + padding_x + j,
+                tetris_title[i][j]
+            );
+            wattroff(main_menu_window->content, COLOR_PAIR(title_colors[color_index]));
+        }
+    }
+
+    mvwprintw(main_menu_window->content, MAIN_MENU_LEVEL_Y, MAIN_MENU_LEVEL_X, "< level%*u >", 3, start_level);
+    mvwprintw(main_menu_window->content, MAIN_MENU_START_Y, MAIN_MENU_START_X, "start: _");
+    mvwprintw(main_menu_window->content, MAIN_MENU_QUIT_Y, MAIN_MENU_QUIT_X, "quit: esc");
+}
+
 void draw_pause_window(GameWindow* pause_window) {
     draw_window_border(pause_window, COLOR_PAIR_CYAN);
     draw_window_title(pause_window, PAUSE_TITLE, COLOR_PAIR_CYAN);
     mvwprintw(pause_window->content, PAUSE_RESUME_Y, PAUSE_RESUME_X, "resume:  _");
     mvwprintw(pause_window->content, PAUSE_RESTART_Y, PAUSE_RESTART_X, "restart: r");
-    mvwprintw(pause_window->content, PAUSE_QUIT_Y, PAUSE_QUIT_X, "quit:  esc");
+    mvwprintw(pause_window->content, PAUSE_QUIT_Y, PAUSE_QUIT_X, "back:  esc");
 }
 
 void draw_game_over_window(GameWindow* game_over_window) {
     draw_window_border(game_over_window, COLOR_PAIR_RED);
     draw_window_title(game_over_window, GAME_OVER_TITLE, COLOR_PAIR_RED);
     mvwprintw(game_over_window->content, GAME_OVER_RESTART_Y, GAME_OVER_RESTART_X, "restart: r");
-    mvwprintw(game_over_window->content, GAME_OVER_QUIT_Y, GAME_OVER_QUIT_X, "quit:  esc");
+    mvwprintw(game_over_window->content, GAME_OVER_QUIT_Y, GAME_OVER_QUIT_X, "back:  esc");
 }
 
 void draw_debug_window(GameWindow* debug_window) {
@@ -395,9 +477,9 @@ void draw_hold_piece(GameWindow* hold_window, const GameState* game_state) {
     werase(hold_window->content);
     
     if (game_state->holding_piece) {
-        int8_t horizontal_padding = 2*(game_state->hold_piece.n - game_state->hold_piece.l);
+        int8_t padding_x = 2*(game_state->hold_piece.n - game_state->hold_piece.l);
         int8_t start_y = hold_window->content_h / 2 - game_state->hold_piece.n / 2;
-        int8_t start_x = hold_window->content_w / 2 - game_state->hold_piece.l - horizontal_padding;
+        int8_t start_x = hold_window->content_w / 2 - game_state->hold_piece.l - padding_x;
         
         wattron(hold_window->content, COLOR_PAIR(game_state->hold_piece.shape));
         if (game_state->hold_blocked) {
@@ -426,9 +508,9 @@ void draw_hold_piece(GameWindow* hold_window, const GameState* game_state) {
 void draw_next_piece(GameWindow* next_window, const GameState* game_state) {
     werase(next_window->content);
 
-    int8_t horizontal_padding = 2*(game_state->next_piece.n - game_state->next_piece.l);
+    int8_t padding_x = 2*(game_state->next_piece.n - game_state->next_piece.l);
     int8_t start_y = next_window->content_h / 2 - game_state->next_piece.n / 2;
-    int8_t start_x = next_window->content_w / 2 - game_state->next_piece.l - horizontal_padding;
+    int8_t start_x = next_window->content_w / 2 - game_state->next_piece.l - padding_x;
     wattron(next_window->content, COLOR_PAIR(game_state->next_piece.shape));
 
     for (size_t i = 0; i < game_state->next_piece.n; ++i) {

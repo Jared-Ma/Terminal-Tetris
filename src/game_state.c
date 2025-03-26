@@ -146,11 +146,11 @@ void game_state_destroy(GameState* game_state) {
     free(game_state);
 }
 
-void game_state_start(GameState* game_state) {
+void game_state_start(GameState* game_state, uint8_t start_level) {
     if (!game_state) {
         return;
     }
-    game_state->level = 1;
+    game_state->level = start_level;
     game_state->combo = -1;
     game_state->difficult_clear_combo = -1;
     game_state->tetris_all_clear_combo = -1;
@@ -164,7 +164,6 @@ void game_state_reset(GameState* game_state) {
         return;
     }
     *game_state = game_state_get();
-    game_state_start(game_state);
 }
 
 void game_state_reset_vfx_conditions(GameState* game_state) {

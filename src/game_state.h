@@ -98,7 +98,7 @@ GameState* game_state_init(void);
 
 void game_state_destroy(GameState* game_state);
 
-void game_state_start(GameState* game_state);
+void game_state_start(GameState* game_state, uint8_t start_level);
 
 void game_state_reset(GameState* game_state);
 
