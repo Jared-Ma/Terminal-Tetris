@@ -904,7 +904,7 @@ bool test_vfx_enable_points(void) {
     game_state.last_action_num_lines = 1;
     game_state.last_action_points = 100;
     char points_text[VFX_TEXT_MAX];
-    sprintf(points_text, "%*lu", vfx_points.game_window->content_w, game_state.last_action_points); 
+    sprintf(points_text, "%*u", vfx_points.game_window->content_w, game_state.last_action_points); 
     if (vfx_check_points(&vfx_points, &game_state)) vfx_enable_points(&vfx_points, &game_state);
     ASSERT(strcmp(vfx_points.text, points_text) == 0);
     ASSERT(vfx_points.y == vfx_points.game_window->content_h - 1);
@@ -961,7 +961,7 @@ bool test_vfx_enable_level_up(void) {
     game_state.level_up_event_flag = 1;
     game_state.level = 2;
     char level_text[VFX_TEXT_MAX];
-    sprintf(level_text, "LEVEL%*lu", (int)(LEVEL_UP_VFX_W - strlen("LEVEL")), game_state.level);
+    sprintf(level_text, "LEVEL%*u", (int)(LEVEL_UP_VFX_W - strlen("LEVEL")), game_state.level);
     if (vfx_check_level_up(&vfx_level_up, &game_state)) vfx_enable_level_up(&vfx_level_up, &game_state);
     ASSERT(strcmp(vfx_level_up.text, level_text) == 0);
     ASSERT(vfx_level_up.y == LEVEL_UP_VFX_Y);
@@ -971,7 +971,7 @@ bool test_vfx_enable_level_up(void) {
     ASSERT(vfx_level_up.enabled == true);
 
     game_state.level = 10;
-    sprintf(level_text, "LEVEL%*lu", (int)(LEVEL_UP_VFX_W - strlen("LEVEL")), game_state.level);
+    sprintf(level_text, "LEVEL%*u", (int)(LEVEL_UP_VFX_W - strlen("LEVEL")), game_state.level);
     if (vfx_check_level_up(&vfx_level_up, &game_state)) vfx_enable_level_up(&vfx_level_up, &game_state);
     ASSERT(strcmp(vfx_level_up.text, level_text) == 0);
     ASSERT(vfx_level_up.y == LEVEL_UP_VFX_Y);
@@ -1030,7 +1030,7 @@ bool test_vfx_enable_stats_lines(void) {
     game_state.last_action_num_lines = 1;
     game_state.lines = 1;
     char lines_text[VFX_TEXT_MAX];
-    sprintf(lines_text, "lines: %lu", game_state.lines);
+    sprintf(lines_text, "lines: %u", game_state.lines);
     if (vfx_check_stats_lines(&vfx_stats_lines, &game_state)) vfx_enable_stats_lines(&vfx_stats_lines, &game_state);
     ASSERT(strcmp(vfx_stats_lines.text, lines_text) == 0);
     ASSERT(vfx_stats_lines.y == STATS_LINES_Y);
@@ -1089,7 +1089,7 @@ bool test_vfx_enable_stats_level(void) {
     game_state.level_up_event_flag = 1;
     game_state.level = 2;
     char level_text[VFX_TEXT_MAX];
-    sprintf(level_text, "level: %lu", game_state.level);
+    sprintf(level_text, "level: %u", game_state.level);
     if (vfx_check_stats_level(&vfx_stats_level, &game_state)) vfx_enable_stats_level(&vfx_stats_level, &game_state);
     ASSERT(strcmp(vfx_stats_level.text, level_text) == 0);
     ASSERT(vfx_stats_level.y == STATS_LEVEL_Y);

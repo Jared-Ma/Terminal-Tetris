@@ -106,10 +106,11 @@ bool test_game_state_init(void) {
 
 bool test_game_state_start(void) {
     GameState game_state = game_state_get();
-    game_state_start(&game_state);
+    uint8_t start_level = 1;
+    game_state_start(&game_state, start_level);
 
     Shape next_shape = game_state.next_queue[game_state.next_index-1];
-    ASSERT(game_state.level == 1);
+    ASSERT(game_state.level == start_level);
     ASSERT(game_state.combo == -1);
     ASSERT(game_state.difficult_clear_combo == -1);
     ASSERT(game_state.tetris_all_clear_combo == -1);
@@ -120,23 +121,50 @@ bool test_game_state_start(void) {
 
 bool test_game_state_reset(void) {
     GameState game_state = game_state_get();
-    game_state_start(&game_state);
+    game_state_start(&game_state, 1);
     piece_move(&game_state.curr_piece, 5, 10);
 
     game_state_reset(&game_state);
-    Shape next_shape = game_state.next_queue[game_state.next_index-1];
-    ASSERT(game_state.level == 1);
-    ASSERT(game_state.combo == -1);
-    ASSERT(game_state.difficult_clear_combo == -1);
-    ASSERT(game_state.tetris_all_clear_combo == -1);
-    ASSERT(game_state.next_piece.shape = next_shape);
+    ASSERT(check_piece_equals_zero(game_state.curr_piece));
+    ASSERT(check_piece_equals_zero(game_state.hold_piece));
+    ASSERT(check_piece_equals_zero(game_state.next_piece));
+    ASSERT(check_piece_equals_zero(game_state.ghost_piece));
+    for (size_t i = 0; i < BOARD_H; ++i) {
+        for (size_t j = 0; j < BOARD_W; ++j) {
+            ASSERT(game_state.board[i][j] == 0);
+        }
+    }
+    ASSERT(game_state.holding_piece == false);
+    ASSERT(game_state.hold_blocked == false);
+    ASSERT(game_state.next_index == 0);
+    for (size_t i = 0; i < NUM_SHAPES; ++i) {
+        ASSERT(game_state.next_queue[i] == 0);
+    }
+    ASSERT(game_state.soft_drop == false);
+    ASSERT(game_state.gravity_value == 0.0);
+    ASSERT(game_state.lock_delay_timer == 0);
+    ASSERT(game_state.move_reset_count == 0);
+    ASSERT(game_state.level == 0);
+    ASSERT(game_state.lines == 0);
+    ASSERT(game_state.score == 0);
+    ASSERT(game_state.combo == 0);
+    ASSERT(game_state.difficult_clear_combo == 0);
+    ASSERT(game_state.tetris_all_clear_combo == 0);
+    ASSERT(game_state.t_rotation_test_num == 0);
+    ASSERT(game_state.last_action_points == 0);
+    ASSERT(game_state.last_action_num_lines == 0);
+    ASSERT(game_state.last_action_t_spin == false);
+    ASSERT(game_state.last_action_t_spin_mini == false);
+    ASSERT(game_state.hold_piece_event_flag == false);
+    ASSERT(game_state.next_piece_event_flag == false);
+    ASSERT(game_state.last_locked_piece_shape == 0);
 
     return true;
 }
 
 bool test_game_state_reset_vfx_vars(void) {
     GameState game_state = game_state_get();
-    game_state_start(&game_state);
+    game_state_start(&game_state, 1);
     
     game_state.last_action_points = 1;
     game_state.last_action_num_lines = 1;
@@ -165,6 +193,7 @@ bool test_game_state_reset_vfx_vars(void) {
 
 bool test_game_state_generate_next_queue(void) {
     GameState game_state = game_state_get();
+    game_state_start(&game_state, 1);
     game_state_generate_next_queue(&game_state);
 
     // test that next_queue has 1 of each shape
@@ -198,7 +227,7 @@ bool test_game_state_generate_next_queue(void) {
 
 bool test_game_state_load_next_piece(void) {
     GameState game_state = game_state_get();
-    game_state_start(&game_state);
+    game_state_start(&game_state, 1);
     
     // check that the next shape is equal to curr_piece.shape after loading the next piece 
     // and check that the function handles the case correctly when running out of next shapes
@@ -214,7 +243,7 @@ bool test_game_state_load_next_piece(void) {
 
 bool test_game_state_spawn_curr_piece(void) {
     GameState game_state = game_state_get();
-    game_state_start(&game_state);
+    game_state_start(&game_state, 1);
     game_state_spawn_curr_piece(&game_state);
     ASSERT(game_state.curr_piece.y = SPAWN_Y);
     ASSERT(game_state.curr_piece.x = SPAWN_X);
@@ -228,7 +257,7 @@ bool test_game_state_spawn_curr_piece(void) {
 
 bool test_game_state_hold_piece(void) {
     GameState game_state = game_state_get();
-    game_state_start(&game_state);
+    game_state_start(&game_state, 1);
 
     // check initial hold
     Shape curr_shape = game_state.curr_piece.shape;
@@ -262,7 +291,7 @@ bool test_game_state_hold_piece(void) {
 
 bool test_game_state_check_collision(void) {
     GameState game_state = game_state_get();
-    game_state_start(&game_state);
+    game_state_start(&game_state, 1);
 
     ASSERT(!game_state_check_collision(&game_state, game_state.curr_piece));
     piece_move(&game_state.curr_piece, -1, 5);
@@ -282,7 +311,7 @@ bool test_game_state_check_collision(void) {
 
 bool test_game_state_check_curr_piece_grounded(void) {
     GameState game_state = game_state_get();
-    game_state_start(&game_state);
+    game_state_start(&game_state, 1);
 
     game_state.curr_piece = piece_get(T, BOARD_H - 1, 5);
     ASSERT(game_state_check_curr_piece_grounded(&game_state));
@@ -299,7 +328,7 @@ bool test_game_state_check_curr_piece_grounded(void) {
 
 bool test_game_state_move_curr_piece(void) {
     GameState game_state = game_state_get();
-    game_state_start(&game_state);
+    game_state_start(&game_state, 1);
 
     // check that t_rotation_test_num resets when T pieces make a valid move
     game_state.curr_piece = piece_get(T, SPAWN_Y, SPAWN_X);
@@ -345,7 +374,7 @@ bool test_game_state_move_curr_piece(void) {
 
 bool test_game_state_rotate_curr_piece(void) {
     GameState game_state = game_state_get();
-    game_state_start(&game_state);
+    game_state_start(&game_state, 1);
 
     game_state_rotate_curr_piece(&game_state, RIGHT);
     ASSERT(game_state.curr_piece.r == 1);
@@ -365,7 +394,7 @@ bool test_game_state_rotate_curr_piece(void) {
 
 bool test_game_state_rotate_curr_piece_srs_i_piece(void) {
     GameState game_state = game_state_get();
-    game_state_start(&game_state);
+    game_state_start(&game_state, 1);
     Piece test_spawn_piece = piece_get(I, (BOARD_H-1)/2, (BOARD_W-1)/2);
     
     // iterate through each possible RIGHT and LEFT rotation and SRS test
@@ -456,7 +485,7 @@ bool test_game_state_rotate_curr_piece_srs_i_piece(void) {
 
 bool test_game_state_rotate_curr_piece_srs_j_piece(void) {
     GameState game_state = game_state_get();
-    game_state_start(&game_state);
+    game_state_start(&game_state, 1);
     Piece test_spawn_piece = piece_get(J, (BOARD_H-1)/2, (BOARD_W-1)/2);
     
     // iterate through each possible RIGHT and LEFT rotation and SRS test
@@ -547,7 +576,7 @@ bool test_game_state_rotate_curr_piece_srs_j_piece(void) {
 
 bool test_game_state_rotate_curr_piece_srs_l_piece(void) {
     GameState game_state = game_state_get();
-    game_state_start(&game_state);
+    game_state_start(&game_state, 1);
     Piece test_spawn_piece = piece_get(L, (BOARD_H-1)/2, (BOARD_W-1)/2);
     
     // iterate through each possible RIGHT and LEFT rotation and SRS test
@@ -638,7 +667,7 @@ bool test_game_state_rotate_curr_piece_srs_l_piece(void) {
 
 bool test_game_state_rotate_curr_piece_srs_o_piece(void) {
     GameState game_state = game_state_get();
-    game_state_start(&game_state);
+    game_state_start(&game_state, 1);
     game_state.curr_piece = piece_get(O, (BOARD_H-1)/2, (BOARD_W-1)/2);
     
     // check that the relative coordinates of O piece minos don't change after each rotation
@@ -691,7 +720,7 @@ bool test_game_state_rotate_curr_piece_srs_o_piece(void) {
 
 bool test_game_state_rotate_curr_piece_srs_s_piece(void) {
     GameState game_state = game_state_get();
-    game_state_start(&game_state);
+    game_state_start(&game_state, 1);
     Piece test_spawn_piece = piece_get(S, (BOARD_H-1)/2, (BOARD_W-1)/2);
     
     // iterate through each possible RIGHT and LEFT rotation and SRS test
@@ -782,7 +811,7 @@ bool test_game_state_rotate_curr_piece_srs_s_piece(void) {
 
 bool test_game_state_rotate_curr_piece_srs_t_piece(void) {
     GameState game_state = game_state_get();
-    game_state_start(&game_state);
+    game_state_start(&game_state, 1);
     Piece test_spawn_piece = piece_get(T, (BOARD_H-1)/2, (BOARD_W-1)/2);
     
     // iterate through each possible RIGHT and LEFT rotation and SRS test
@@ -884,7 +913,7 @@ bool test_game_state_rotate_curr_piece_srs_t_piece(void) {
 
 bool test_game_state_rotate_curr_piece_srs_z_piece(void) {
     GameState game_state = game_state_get();
-    game_state_start(&game_state);
+    game_state_start(&game_state, 1);
     Piece test_spawn_piece = piece_get(Z, (BOARD_H-1)/2, (BOARD_W-1)/2);
     
     // iterate through each possible RIGHT and LEFT rotation and SRS test
@@ -975,7 +1004,7 @@ bool test_game_state_rotate_curr_piece_srs_z_piece(void) {
 
 bool test_game_state_hard_drop_curr_piece(void) {
     GameState game_state = game_state_get();
-    game_state_start(&game_state);
+    game_state_start(&game_state, 1);
     
     game_state.board[(BOARD_H-1)/2][(BOARD_W-1)/2] = 1;
     game_state_hard_drop_curr_piece(&game_state);
@@ -996,7 +1025,7 @@ bool test_game_state_hard_drop_curr_piece(void) {
 
 bool test_game_state_lock_curr_piece(void) {
     GameState game_state = game_state_get();
-    game_state_start(&game_state);
+    game_state_start(&game_state, 1);
     game_state_move_curr_piece(&game_state, (BOARD_H-1)/2, (BOARD_W-1)/2);
     game_state_lock_curr_piece(&game_state);
 
@@ -1025,7 +1054,7 @@ bool test_game_state_lock_curr_piece(void) {
 
 bool test_game_state_apply_stack_gravity(void) {
     GameState game_state = game_state_get();
-    game_state_start(&game_state);
+    game_state_start(&game_state, 1);
 
     for (size_t i = 0; i < BOARD_H/2; ++i) {
         for (size_t j = 0; j < BOARD_W; ++j) {
@@ -1056,7 +1085,7 @@ bool test_game_state_apply_stack_gravity(void) {
 
 bool test_game_state_clear_line(void) {
     GameState game_state = game_state_get();
-    game_state_start(&game_state);
+    game_state_start(&game_state, 1);
 
     size_t row = BOARD_H/2;
     for (size_t j = 0; j < BOARD_W; ++j) {
@@ -1074,7 +1103,7 @@ bool test_game_state_clear_line(void) {
 
 bool test_game_state_clear_lines(void) {
     GameState game_state = game_state_get();
-    game_state_start(&game_state);
+    game_state_start(&game_state, 1);
 
     for (size_t num_lines = 0; num_lines <= 4; ++num_lines) {
         for (size_t i = 0; i < BOARD_H - num_lines; ++i) {
@@ -1153,7 +1182,7 @@ bool test_game_state_clear_lines(void) {
 
 bool test_game_state_apply_gravity(void) {
     GameState game_state = game_state_get();
-    game_state_start(&game_state);
+    game_state_start(&game_state, 1);
 
     for (size_t level = 1; level <= MAX_GRAVITY_LEVEL; ++level) {
         game_state.level = level;
@@ -1171,7 +1200,7 @@ bool test_game_state_apply_gravity(void) {
 
 bool test_game_state_apply_soft_drop_gravity(void) {
     GameState game_state = game_state_get();
-    game_state_start(&game_state);
+    game_state_start(&game_state, 1);
 
     for (size_t level = 1; level <= MAX_GRAVITY_LEVEL; ++level) {
         game_state.level = level;
@@ -1194,7 +1223,7 @@ bool test_game_state_apply_soft_drop_gravity(void) {
 
 bool test_game_state_soft_drop_curr_piece(void) {
     GameState game_state = game_state_get();
-    game_state_start(&game_state);
+    game_state_start(&game_state, 1);
     game_state.soft_drop = false;
     int prev_y = game_state.curr_piece.y;
     game_state_soft_drop_curr_piece(&game_state);
@@ -1206,7 +1235,7 @@ bool test_game_state_soft_drop_curr_piece(void) {
 
 bool test_game_state_move_ghost_piece(void) {
     GameState game_state = game_state_get();
-    game_state_start(&game_state);
+    game_state_start(&game_state, 1);
 
     int prev_y = game_state.ghost_piece.y;
     int prev_x = game_state.ghost_piece.x;
@@ -1225,7 +1254,7 @@ bool test_game_state_move_ghost_piece(void) {
 
 bool test_game_state_update_ghost_piece(void) {
     GameState game_state = game_state_get();
-    game_state_start(&game_state);
+    game_state_start(&game_state, 1);
     game_state_move_curr_piece(&game_state, 10, 5);
     game_state_update_ghost_piece(&game_state);
     ASSERT(game_state.ghost_piece.shape == game_state.curr_piece.shape);
@@ -1237,7 +1266,7 @@ bool test_game_state_update_ghost_piece(void) {
 
 bool test_game_state_check_t_spin(void) {
     GameState game_state = game_state_get();
-    game_state_start(&game_state);
+    game_state_start(&game_state, 1);
     game_state.curr_piece = piece_get(T, (BOARD_H-1)/2, (BOARD_W-1)/2);
 
     game_state.t_rotation_test_num = 0;
@@ -1349,7 +1378,7 @@ bool test_game_state_check_t_spin(void) {
 
 bool test_game_state_check_t_spin_mini(void) {
     GameState game_state = game_state_get();
-    game_state_start(&game_state);
+    game_state_start(&game_state, 1);
     game_state.curr_piece = piece_get(T, (BOARD_H-1)/2, (BOARD_W-1)/2);
 
     game_state.t_rotation_test_num = 0;
@@ -1446,7 +1475,7 @@ bool test_game_state_check_t_spin_mini(void) {
 
 bool test_game_state_check_empty_board(void) {
     GameState game_state = game_state_get();
-    game_state_start(&game_state);
+    game_state_start(&game_state, 1);
 
     for (size_t i = 0; i < BOARD_H; ++i) {
         for (size_t j = 0; j < BOARD_W; ++j) {
@@ -1464,7 +1493,7 @@ bool test_game_state_check_empty_board(void) {
 
 bool test_game_state_calc_t_spin_points(void) {
     GameState game_state = game_state_get();
-    game_state_start(&game_state);
+    game_state_start(&game_state, 1);
     game_state.curr_piece = piece_get(T, (BOARD_H-1)/2, (BOARD_W-1)/2);
 
     int top_left_y = game_state.curr_piece.y - game_state.curr_piece.n / 2; 
@@ -1478,7 +1507,6 @@ bool test_game_state_calc_t_spin_points(void) {
     game_state.board[top_left_y + 2][top_left_x] = 1;
     game_state.board[top_left_y + 2][top_left_x + 2] = 0;
 
-    game_state.level = 1;
     uint64_t num_lines = 0;
     game_state.last_action_t_spin = false;
     uint64_t points = game_state_calc_t_spin_points(&game_state, num_lines);
@@ -1566,9 +1594,8 @@ bool test_game_state_calc_t_spin_points(void) {
 
 bool test_game_state_calc_line_clear_points(void) {
     GameState game_state = game_state_get();
-    game_state_start(&game_state);
+    game_state_start(&game_state, 1);
 
-    game_state.level = 1;
     uint64_t num_lines = 0;
     uint64_t points = game_state_calc_line_clear_points(&game_state, num_lines);
     ASSERT(points == 0);
@@ -1630,7 +1657,7 @@ bool test_game_state_calc_line_clear_points(void) {
 
 bool test_game_state_calc_all_clear_points(void) {
     GameState game_state = game_state_get();
-    game_state_start(&game_state);
+    game_state_start(&game_state, 1);
 
     for (size_t i = 0; i < BOARD_H; ++i) {
         for (size_t j = 0; j < BOARD_W; ++j) {
@@ -1638,7 +1665,6 @@ bool test_game_state_calc_all_clear_points(void) {
         }
     }
     
-    game_state.level = 1;
     uint64_t num_lines = 0;
     game_state.last_action_all_clear = false;
     uint64_t points = game_state_calc_all_clear_points(&game_state, num_lines);
@@ -1690,9 +1716,8 @@ bool test_game_state_calc_all_clear_points(void) {
 
 bool test_game_state_calc_combo_points(void) {
     GameState game_state = game_state_get();
-    game_state_start(&game_state);
+    game_state_start(&game_state, 1);
 
-    game_state.level = 1;
     uint64_t num_lines = 1;
     uint64_t points = game_state_calc_combo_points(&game_state, num_lines);
     ASSERT(points == COMBO_POINTS * game_state.combo * game_state.level);
@@ -1727,7 +1752,7 @@ bool test_game_state_calc_combo_points(void) {
 
 bool test_game_state_calc_difficult_clear_mult(void) {
     GameState game_state = game_state_get();
-    game_state_start(&game_state);
+    game_state_start(&game_state, 1);
 
     uint64_t num_lines = 0;
     float mult = game_state_calc_difficult_clear_mult(&game_state, num_lines);
