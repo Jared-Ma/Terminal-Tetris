@@ -49,6 +49,15 @@ void test_draw_controls_window(int8_t y_offset, int8_t x_offset) {
     game_window_refresh(&controls_window);
 }
 
+void test_draw_main_menu_window(int8_t y_offset, int8_t x_offset) {
+    GameWindow main_menu_window = game_window_get(
+        MAIN_MENU_WINDOW_H, MAIN_MENU_WINDOW_W, 
+        MAIN_MENU_WINDOW_Y + y_offset, MAIN_MENU_WINDOW_X + x_offset
+    );
+    draw_main_menu_window(&main_menu_window, 1);
+    game_window_refresh(&main_menu_window);
+}
+
 void test_draw_pause_window(int8_t y_offset, int8_t x_offset) {
     GameWindow pause_window = game_window_get(
         PAUSE_WINDOW_H, PAUSE_WINDOW_W, 
@@ -107,7 +116,7 @@ void test_draw_curr_piece_i_piece(int8_t y_offset, int8_t x_offset) {
     draw_board_window(&board_window);
 
     GameState game_state = game_state_get();
-    game_state_start(&game_state);
+    game_state_start(&game_state, 1);
     game_state.curr_piece = piece_get(I, SPAWN_Y, SPAWN_X);
     draw_curr_piece(&board_window, &game_state);
 
@@ -122,7 +131,7 @@ void test_draw_curr_piece_j_piece(int8_t y_offset, int8_t x_offset) {
     draw_board_window(&board_window);
 
     GameState game_state = game_state_get();
-    game_state_start(&game_state);
+    game_state_start(&game_state, 1);
     game_state.curr_piece = piece_get(J, SPAWN_Y, SPAWN_X);
     draw_curr_piece(&board_window, &game_state);
 
@@ -137,7 +146,7 @@ void test_draw_curr_piece_l_piece(int8_t y_offset, int8_t x_offset) {
     draw_board_window(&board_window);
 
     GameState game_state = game_state_get();
-    game_state_start(&game_state);
+    game_state_start(&game_state, 1);
     game_state.curr_piece = piece_get(L, SPAWN_Y, SPAWN_X);
     draw_curr_piece(&board_window, &game_state);
 
@@ -152,7 +161,7 @@ void test_draw_curr_piece_o_piece(int8_t y_offset, int8_t x_offset) {
     draw_board_window(&board_window);
 
     GameState game_state = game_state_get();
-    game_state_start(&game_state);
+    game_state_start(&game_state, 1);
     game_state.curr_piece = piece_get(O, SPAWN_Y, SPAWN_X);
     draw_curr_piece(&board_window, &game_state);
 
@@ -167,7 +176,7 @@ void test_draw_curr_piece_s_piece(int8_t y_offset, int8_t x_offset) {
     draw_board_window(&board_window);
 
     GameState game_state = game_state_get();
-    game_state_start(&game_state);
+    game_state_start(&game_state, 1);
     game_state.curr_piece = piece_get(S, SPAWN_Y, SPAWN_X);
     draw_curr_piece(&board_window, &game_state);
 
@@ -182,7 +191,7 @@ void test_draw_curr_piece_t_piece(int8_t y_offset, int8_t x_offset) {
     draw_board_window(&board_window);
 
     GameState game_state = game_state_get();
-    game_state_start(&game_state);
+    game_state_start(&game_state, 1);
     game_state.curr_piece = piece_get(T, SPAWN_Y, SPAWN_X);
     draw_curr_piece(&board_window, &game_state);
 
@@ -197,7 +206,7 @@ void test_draw_curr_piece_z_piece(int8_t y_offset, int8_t x_offset) {
     draw_board_window(&board_window);
 
     GameState game_state = game_state_get();
-    game_state_start(&game_state);
+    game_state_start(&game_state, 1);
     game_state.curr_piece = piece_get(Z, SPAWN_Y, SPAWN_X);
     draw_curr_piece(&board_window, &game_state);
 
@@ -212,7 +221,7 @@ void test_draw_curr_piece_lock_delay_dim(int8_t y_offset, int8_t x_offset) {
     draw_board_window(&board_window);
 
     GameState game_state = game_state_get();
-    game_state_start(&game_state);
+    game_state_start(&game_state, 1);
     game_state.curr_piece = piece_get(I, SPAWN_Y, SPAWN_X);
     game_state.lock_delay_timer = 20;
     draw_curr_piece(&board_window, &game_state);
@@ -228,7 +237,7 @@ void test_draw_curr_piece_lock_delay_standout(int8_t y_offset, int8_t x_offset) 
     draw_board_window(&board_window);
 
     GameState game_state = game_state_get();
-    game_state_start(&game_state);
+    game_state_start(&game_state, 1);
     game_state.curr_piece = piece_get(I, SPAWN_Y, SPAWN_X);
     game_state.lock_delay_timer = LOCK_DELAY_STANDOUT_MAX;
     draw_curr_piece(&board_window, &game_state);
@@ -244,7 +253,7 @@ void test_draw_ghost_piece_i_piece(int8_t y_offset, int8_t x_offset) {
     draw_board_window(&board_window);
 
     GameState game_state = game_state_get();
-    game_state_start(&game_state);
+    game_state_start(&game_state, 1);
     game_state.curr_piece = piece_get(I, SPAWN_Y, SPAWN_X);
     game_state_update_ghost_piece(&game_state);
     draw_ghost_piece(&board_window, &game_state);
@@ -260,7 +269,7 @@ void test_draw_ghost_piece_j_piece(int8_t y_offset, int8_t x_offset) {
     draw_board_window(&board_window);
 
     GameState game_state = game_state_get();
-    game_state_start(&game_state);
+    game_state_start(&game_state, 1);
     game_state.curr_piece = piece_get(J, SPAWN_Y, SPAWN_X);
     game_state_update_ghost_piece(&game_state);
     draw_ghost_piece(&board_window, &game_state);
@@ -276,7 +285,7 @@ void test_draw_ghost_piece_l_piece(int8_t y_offset, int8_t x_offset) {
     draw_board_window(&board_window);
 
     GameState game_state = game_state_get();
-    game_state_start(&game_state);
+    game_state_start(&game_state, 1);
     game_state.curr_piece = piece_get(L, SPAWN_Y, SPAWN_X);
     game_state_update_ghost_piece(&game_state);
     draw_ghost_piece(&board_window, &game_state);
@@ -292,7 +301,7 @@ void test_draw_ghost_piece_o_piece(int8_t y_offset, int8_t x_offset) {
     draw_board_window(&board_window);
 
     GameState game_state = game_state_get();
-    game_state_start(&game_state);
+    game_state_start(&game_state, 1);
     game_state.curr_piece = piece_get(O, SPAWN_Y, SPAWN_X);
     game_state_update_ghost_piece(&game_state);
     draw_ghost_piece(&board_window, &game_state);
@@ -308,7 +317,7 @@ void test_draw_ghost_piece_s_piece(int8_t y_offset, int8_t x_offset) {
     draw_board_window(&board_window);
 
     GameState game_state = game_state_get();
-    game_state_start(&game_state);
+    game_state_start(&game_state, 1);
     game_state.curr_piece = piece_get(S, SPAWN_Y, SPAWN_X);
     game_state_update_ghost_piece(&game_state);
     draw_ghost_piece(&board_window, &game_state);
@@ -324,7 +333,7 @@ void test_draw_ghost_piece_t_piece(int8_t y_offset, int8_t x_offset) {
     draw_board_window(&board_window);
 
     GameState game_state = game_state_get();
-    game_state_start(&game_state);
+    game_state_start(&game_state, 1);
     game_state.curr_piece = piece_get(T, SPAWN_Y, SPAWN_X);
     game_state_update_ghost_piece(&game_state);
     draw_ghost_piece(&board_window, &game_state);
@@ -340,7 +349,7 @@ void test_draw_ghost_piece_z_piece(int8_t y_offset, int8_t x_offset) {
     draw_board_window(&board_window);
 
     GameState game_state = game_state_get();
-    game_state_start(&game_state);
+    game_state_start(&game_state, 1);
     game_state.curr_piece = piece_get(Z, SPAWN_Y, SPAWN_X);
     game_state_update_ghost_piece(&game_state);
     draw_ghost_piece(&board_window, &game_state);
@@ -370,7 +379,7 @@ void test_draw_board_state(int8_t y_offset, int8_t x_offset) {
     draw_board_window(&board_window);
 
     GameState game_state = game_state_get();
-    game_state_start(&game_state);
+    game_state_start(&game_state, 1);
     for (size_t i = BOARD_H - NUM_SHAPES; i < BOARD_H; ++i) {
         for (size_t j = 0; j < BOARD_W; ++j) {
             game_state.board[i][j] = (i % NUM_SHAPES) + 1;

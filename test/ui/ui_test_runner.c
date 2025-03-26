@@ -10,7 +10,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define NUM_TESTS 50
+#define NUM_TESTS 51
 
 
 static void setup_curses(void) {
@@ -119,6 +119,7 @@ int main(void) {
         UI_TEST(test_draw_next_window),
         UI_TEST(test_draw_stats_window),
         UI_TEST(test_draw_controls_window),
+        UI_TEST(test_draw_main_menu_window),
         UI_TEST(test_draw_pause_window),
         UI_TEST(test_draw_game_over_window),
         UI_TEST(test_draw_board_stack),
