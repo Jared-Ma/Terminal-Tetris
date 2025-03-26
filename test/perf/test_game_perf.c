@@ -47,13 +47,13 @@ void test_game_state_start_perf(struct timespec* start_time, struct timespec* en
     GameState game_state = game_state_get();
 
     clock_gettime(CLOCK_MONOTONIC, start_time);
-    game_state_start(&game_state);
+    game_state_start(&game_state, 1);
     clock_gettime(CLOCK_MONOTONIC, end_time);
 }
 
 void test_game_state_spawn_curr_piece_perf(struct timespec* start_time, struct timespec* end_time) {
     GameState game_state = game_state_get();
-    game_state_start(&game_state);
+    game_state_start(&game_state, 1);
 
     clock_gettime(CLOCK_MONOTONIC, start_time);
     game_state_spawn_curr_piece(&game_state);
@@ -62,7 +62,7 @@ void test_game_state_spawn_curr_piece_perf(struct timespec* start_time, struct t
 
 void test_game_state_move_curr_piece_perf(struct timespec* start_time, struct timespec* end_time) {
     GameState game_state = game_state_get();
-    game_state_start(&game_state);
+    game_state_start(&game_state, 1);
 
     clock_gettime(CLOCK_MONOTONIC, start_time);
     game_state_move_curr_piece(&game_state, (BOARD_H-1)/2, (BOARD_W-1)/2);
@@ -71,7 +71,7 @@ void test_game_state_move_curr_piece_perf(struct timespec* start_time, struct ti
 
 void test_game_state_rotate_curr_piece_srs(struct timespec* start_time, struct timespec* end_time) {
     GameState game_state = game_state_get();
-    game_state_start(&game_state);
+    game_state_start(&game_state, 1);
 
     game_state.curr_piece = piece_get(I, (BOARD_H-1)/2, (BOARD_W-1)/2);
 
