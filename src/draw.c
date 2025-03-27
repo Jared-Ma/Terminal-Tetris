@@ -82,6 +82,13 @@ const int8_t CONTROLS_HARD_DROP_X = 0;
 const int8_t CONTROLS_PAUSE_Y     = 11;
 const int8_t CONTROLS_PAUSE_X     = 0;
 
+const int8_t MAIN_MENU_TITLE_H          = 4;
+const int8_t MAIN_MENU_TITLE_TERMINAL_Y = 0;
+const int8_t MAIN_MENU_TITLE_TERMINAL_X = 2;
+const int8_t MAIN_MENU_TITLE_TETRIS_Y   = 4;
+const int8_t MAIN_MENU_TITLE_TETRIS_X   = 7;
+
+const int8_t MAIN_MENU_LEVEL_W = 8;
 const int8_t MAIN_MENU_LEVEL_Y = 10;
 const int8_t MAIN_MENU_LEVEL_X = 13;
 const int8_t MAIN_MENU_START_Y = 12;
@@ -116,6 +123,19 @@ const char GHOST_LEFT       = '[';
 const char GHOST_RIGHT      = ']';
 const char BOARD_SPACE      = ' ';
 const char BUFFER_ZONE_LINE = '_';
+
+const char* MAIN_MENU_TITLE_TERMINAL[4] = {
+    " _____              _           _ \n",
+    "|_   _|__ _ _ _ __ (_)_ _  __ _| |\n",
+    "  | |/ -_) '_| '  \\| | ' \\/ _` | |\n",
+    "  |_|\\___|_| |_|_|_|_|_||_\\__,_|_|\n"
+};
+const char* MAIN_MENU_TITLE_TETRIS[4] = {
+    " _____    _       _    \n",
+    "|_   _|__| |_ _ _(_)___\n",
+    "  | |/ -_)  _| '_| (_-<\n",
+    "  |_|\\___|\\__|_| |_/__/\n"
+};
 
 const char* HOLD_TITLE      = "HOLD";
 const char* NEXT_TITLE      = "NEXT";
@@ -289,30 +309,17 @@ void draw_controls_window(GameWindow* controls_window) {
 void draw_main_menu_window(GameWindow* main_menu_window, uint8_t start_level) {
     draw_window_border(main_menu_window, COLOR_PAIR_DEFAULT);
     
-    mvwprintw(
-        main_menu_window->content, 
-        0, 
-        0,
-        "   _____              _           _ \n"
-        "  |_   _|__ _ _ _ __ (_)_ _  __ _| |\n"
-        "    | |/ -_) '_| '  \\| | ' \\/ _` | |\n"
-        "    |_|\\___|_| |_|_|_|_|_||_\\__,_|_|\n"
-    );
+    for (size_t i = 0; i < MAIN_MENU_TITLE_H; ++i) {
+        mvwprintw(
+            main_menu_window->content, 
+            MAIN_MENU_TITLE_TERMINAL_Y + i, 
+            MAIN_MENU_TITLE_TERMINAL_X, 
+            "%s", 
+            MAIN_MENU_TITLE_TERMINAL[i]
+        );
+    }
 
-    int8_t start_y = 4;
-    int8_t start_x = 0;
-    int8_t padding_x = 7;
-
-    uint8_t num_lines = 4;
     uint8_t num_colors = 6;
-
-    char tetris_title[4][32] = {
-        " _____    _       _    \n",
-        "|_   _|__| |_ _ _(_)___\n",
-        "  | |/ -_)  _| '_| (_-<\n",
-        "  |_|\\___|\\__|_| |_/__/\n",
-    };
-
     int16_t title_colors[6] = {
         COLOR_PAIR_RED,
         COLOR_PAIR_ORANGE,
@@ -321,7 +328,6 @@ void draw_main_menu_window(GameWindow* main_menu_window, uint8_t start_level) {
         COLOR_PAIR_CYAN,
         COLOR_PAIR_MAGENTA
     };
-
     int8_t color_bounds[4][6][2] = {
         {{1, 5}, {-1, -1}, {10, 10}, {-1, -1}, {18, 18}, {-1, -1}},
         {{0, 6},   {7, 8},  {9, 12}, {14, 16}, {17, 19}, {20, 22}},
@@ -329,8 +335,8 @@ void draw_main_menu_window(GameWindow* main_menu_window, uint8_t start_level) {
         {{2, 4},   {5, 9}, {10, 12}, {13, 16}, {17, 18}, {19, 22}}
     };
 
-    for (size_t i = 0; i < num_lines; ++i) {
-        for (size_t j = 0; j < strlen(tetris_title[i]); ++j) {
+    for (size_t i = 0; i < MAIN_MENU_TITLE_H; ++i) {
+        for (size_t j = 0; j < strlen(MAIN_MENU_TITLE_TETRIS[i]); ++j) {
 
             size_t color_index = 0;
             for (size_t k = 0; k < num_colors; ++k) {
@@ -343,15 +349,22 @@ void draw_main_menu_window(GameWindow* main_menu_window, uint8_t start_level) {
             wattron(main_menu_window->content, COLOR_PAIR(title_colors[color_index]));
             mvwaddch(
                 main_menu_window->content,
-                start_y + i,
-                start_x + padding_x + j,
-                tetris_title[i][j]
+                MAIN_MENU_TITLE_TETRIS_Y + i,
+                MAIN_MENU_TITLE_TETRIS_X + j,
+                MAIN_MENU_TITLE_TETRIS[i][j]
             );
             wattroff(main_menu_window->content, COLOR_PAIR(title_colors[color_index]));
         }
     }
 
-    mvwprintw(main_menu_window->content, MAIN_MENU_LEVEL_Y, MAIN_MENU_LEVEL_X, "< level%*u >", 3, start_level);
+    mvwprintw(
+        main_menu_window->content, 
+        MAIN_MENU_LEVEL_Y, 
+        MAIN_MENU_LEVEL_X, 
+        "< level%*u >", 
+        (int)(MAIN_MENU_LEVEL_W - strlen("level")), 
+        start_level
+    );
     mvwprintw(main_menu_window->content, MAIN_MENU_START_Y, MAIN_MENU_START_X, "start: _");
     mvwprintw(main_menu_window->content, MAIN_MENU_QUIT_Y, MAIN_MENU_QUIT_X, "quit: esc");
 }
