@@ -117,13 +117,6 @@ const int8_t GAME_OVER_RESTART_X = 1;
 const int8_t GAME_OVER_QUIT_Y    = 1;
 const int8_t GAME_OVER_QUIT_X    = 1;
 
-const char BLOCK_LEFT       = '[';
-const char BLOCK_RIGHT      = ']';
-const char GHOST_LEFT       = '[';
-const char GHOST_RIGHT      = ']';
-const char BOARD_SPACE      = ' ';
-const char BUFFER_ZONE_LINE = '_';
-
 const char* MAIN_MENU_TITLE_TERMINAL[4] = {
     " _____              _           _ \n",
     "|_   _|__ _ _ _ __ (_)_ _  __ _| |\n",
@@ -144,6 +137,13 @@ const char* CONTROLS_TITLE  = "CONTROLS";
 const char* PAUSE_TITLE     = "PAUSE";
 const char* GAME_OVER_TITLE = "GAME-OVER";
 const char* DEBUG_TITLE     = "DEBUG";
+
+const char BLOCK_LEFT       = '[';
+const char BLOCK_RIGHT      = ']';
+const char GHOST_LEFT       = '[';
+const char GHOST_RIGHT      = ']';
+const char BOARD_SPACE      = ' ';
+const char BUFFER_ZONE_LINE = '_';
 
 const int16_t COLOR_PAIR_DEFAULT = 0;
 const int16_t COLOR_PAIR_CYAN    = I;
