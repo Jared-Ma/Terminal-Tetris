@@ -8,9 +8,10 @@
 
 Stats stats_get(void) {
     Stats stats = {
-        .seconds = 0.0,
-        .score_per_sec = 0.0,
-        .piece_per_sec = 0.0,
+        .game_time_s = 0.0,
+        .real_time_s = 0.0,
+        .score_per_s = 0.0,
+        .piece_per_s = 0.0,
         .num_pieces = 0,
         .num_single = 0,
         .num_double = 0,
@@ -43,7 +44,8 @@ void stats_debug_print(const Stats* stats) {
     fprintf(
         debug_log,
         "%p = {\n"
-        "\tseconds = %f\n"
+        "\tgame_time_s = %f\n"
+        "\treal_time_s = %f\n"
         "\tscore_per_sec = %f\n"
         "\tpiece_per_sec = %f\n"
         "\tnum_pieces = %u\n"
@@ -55,9 +57,10 @@ void stats_debug_print(const Stats* stats) {
         "\tfps = %f\n"
         "}\n",
         stats,
-        stats->seconds,
-        stats->score_per_sec,
-        stats->piece_per_sec,
+        stats->game_time_s,
+        stats->real_time_s,
+        stats->score_per_s,
+        stats->piece_per_s,
         stats->num_pieces,
         stats->num_single,
         stats->num_double,
@@ -84,12 +87,15 @@ void stats_update(Stats* stats, const GameState* game_state) {
         stats->num_pieces++;
     }
 
-    if (stats->seconds > 0) {
-        stats->score_per_sec = game_state->score / stats->seconds;
-        stats->piece_per_sec = stats->num_pieces / stats->seconds;
-        stats->fps = stats->frame_count / stats->seconds;
+    if (stats->game_time_s > 0) {
+        stats->score_per_s = game_state->score / stats->game_time_s;
+        stats->piece_per_s = stats->num_pieces / stats->game_time_s;
     }
-
+    
+    if (stats->real_time_s > 0) {
+        stats->fps = stats->frame_count / stats->real_time_s;
+    }
+    
     if (game_state->last_action_num_lines == 1) {
         stats->num_single++;
     } else if (game_state->last_action_num_lines == 2) {

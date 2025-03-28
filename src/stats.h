@@ -6,9 +6,10 @@
 
 
 struct Stats {
-    float seconds;
-    float score_per_sec;
-    float piece_per_sec;
+    float game_time_s;
+    float real_time_s;
+    float score_per_s;
+    float piece_per_s;
     uint32_t num_pieces;
     uint32_t num_single;
     uint32_t num_double;

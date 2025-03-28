@@ -10,9 +10,10 @@
 
 bool test_stats_get(void) {
     Stats stats = stats_get();
-    ASSERT(stats.seconds == 0.0);
-    ASSERT(stats.score_per_sec == 0.0);
-    ASSERT(stats.piece_per_sec == 0.0);
+    ASSERT(stats.game_time_s == 0.0);
+    ASSERT(stats.real_time_s == 0.0);
+    ASSERT(stats.score_per_s == 0.0);
+    ASSERT(stats.piece_per_s == 0.0);
     ASSERT(stats.num_pieces == 0);
     ASSERT(stats.num_single == 0);
     ASSERT(stats.num_double == 0);
@@ -25,9 +26,10 @@ bool test_stats_get(void) {
 
 bool test_stats_init(void) {
     Stats* stats = stats_init();
-    ASSERT(stats->seconds == 0.0);
-    ASSERT(stats->score_per_sec == 0.0);
-    ASSERT(stats->piece_per_sec == 0.0);
+    ASSERT(stats->game_time_s == 0.0);
+    ASSERT(stats->real_time_s == 0.0);
+    ASSERT(stats->score_per_s == 0.0);
+    ASSERT(stats->piece_per_s == 0.0);
     ASSERT(stats->num_pieces == 0);
     ASSERT(stats->num_single == 0);
     ASSERT(stats->num_double == 0);
@@ -41,9 +43,10 @@ bool test_stats_init(void) {
 
 bool test_stats_reset(void) {
     Stats stats = stats_get();
-    stats.seconds = 1.0;
-    stats.score_per_sec = 2.0;
-    stats.piece_per_sec = 3.0;
+    stats.game_time_s = 1.0;
+    stats.real_time_s = 1.0;
+    stats.score_per_s = 2.0;
+    stats.piece_per_s = 3.0;
     stats.num_pieces = 4;
     stats.num_single = 5;
     stats.num_double = 6;
@@ -52,9 +55,10 @@ bool test_stats_reset(void) {
     stats.frame_count = 9;
     stats.fps = 10.0;
     stats_reset(&stats);
-    ASSERT(stats.seconds == 0.0);
-    ASSERT(stats.score_per_sec == 0.0);
-    ASSERT(stats.piece_per_sec == 0.0);
+    ASSERT(stats.game_time_s == 0.0);
+    ASSERT(stats.real_time_s == 0.0);
+    ASSERT(stats.score_per_s == 0.0);
+    ASSERT(stats.piece_per_s == 0.0);
     ASSERT(stats.num_pieces == 0);
     ASSERT(stats.num_single == 0);
     ASSERT(stats.num_double == 0);
@@ -69,7 +73,8 @@ bool test_stats_update(void) {
     Stats stats = stats_get();
     GameState game_state = game_state_get();
 
-    stats.seconds = 2;
+    stats.game_time_s = 2.0;
+    stats.real_time_s = 2.0;
     game_state.score = 100;
     stats.num_pieces = 6;
     stats.frame_count = 60;
@@ -78,8 +83,8 @@ bool test_stats_update(void) {
 
     stats_update(&stats, &game_state);
 
-    ASSERT(stats.score_per_sec == 50.0);
-    ASSERT(stats.piece_per_sec == 3.5);
+    ASSERT(stats.score_per_s == 50.0);
+    ASSERT(stats.piece_per_s == 3.5);
     ASSERT(stats.fps == 30.0);
     ASSERT(stats.num_pieces == 7);
     ASSERT(stats.num_single == 1);

@@ -720,9 +720,9 @@ void test_draw_stats(int8_t y_offset, int8_t x_offset) {
     game_state.level = 1234;
 
     Stats stats = stats_get();
-    stats.seconds = 754;
-    stats.score_per_sec = 1.2345;
-    stats.piece_per_sec = 6.7890;
+    stats.game_time_s = 754;
+    stats.score_per_s = 1.2345;
+    stats.piece_per_s = 6.7890;
 
     draw_stats(&stats_window, &game_state, &stats);
 
