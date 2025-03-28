@@ -329,6 +329,7 @@ char shape_to_char(Shape shape) {
             return 'T';
         case Z:
             return 'Z';
+        default:
+            return 0;
     }
-    return 0;
 }
