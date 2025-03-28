@@ -6,6 +6,7 @@
 
 const char* DEBUG_LOG_FILEPATH =  "./logs/debug.txt";
 
+bool debug_mode = false;
 FILE* debug_log = NULL;
 
 bool debug_log_open(const char* filepath) {

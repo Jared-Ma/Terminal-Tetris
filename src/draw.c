@@ -52,7 +52,7 @@ const int8_t GAME_OVER_WINDOW_Y = 9;
 const int8_t GAME_OVER_WINDOW_X = 18;
 
 const int8_t DEBUG_WINDOW_H = 24;
-const int8_t DEBUG_WINDOW_W = 36;
+const int8_t DEBUG_WINDOW_W = 42;
 const int8_t DEBUG_WINDOW_Y = 0;
 const int8_t DEBUG_WINDOW_X = 50;
 
@@ -540,24 +540,24 @@ void draw_next_piece(GameWindow* next_window, const GameState* game_state) {
 void draw_stats(GameWindow* stats_window, const GameState* game_state, const Stats* stats) {
     werase(stats_window->content);
 
-    uint8_t h = stats->seconds / 3600;
-    uint8_t m = (stats->seconds - 3600*h) / 60;
-    uint8_t s = stats->seconds - 3600*h - 60*m;
+    uint8_t h = stats->game_time_s / 3600;
+    uint8_t m = (stats->game_time_s - 3600*h) / 60;
+    uint8_t s = stats->game_time_s - 3600*h - 60*m;
 
     mvwprintw(stats_window->content, STATS_TIME_Y, STATS_TIME_X, "time: %02u:%02u", m, s);
     mvwprintw(stats_window->content, STATS_LINES_Y, STATS_LINES_X, "lines: %u", game_state->lines);
     mvwprintw(stats_window->content, STATS_LEVEL_Y, STATS_LEVEL_X, "level: %u", game_state->level);
 
-    if (stats->score_per_sec > 0 && stats->score_per_sec < 1) {
-        mvwprintw(stats_window->content, STATS_SPS_Y, STATS_SPS_X, "sps: %#.4g\n", stats->score_per_sec);
+    if (stats->score_per_s > 0 && stats->score_per_s < 1) {
+        mvwprintw(stats_window->content, STATS_SPS_Y, STATS_SPS_X, "sps: %#.4g\n", stats->score_per_s);
     } else {
-        mvwprintw(stats_window->content, STATS_SPS_Y, STATS_SPS_X, "sps: %#.5g\n", stats->score_per_sec);
+        mvwprintw(stats_window->content, STATS_SPS_Y, STATS_SPS_X, "sps: %#.5g\n", stats->score_per_s);
     }
 
-    if (stats->piece_per_sec > 0 && stats->piece_per_sec < 1) {
-        mvwprintw(stats_window->content, STATS_PPS_Y, STATS_PPS_X, "pps: %#.4g\n", stats->piece_per_sec);
+    if (stats->piece_per_s > 0 && stats->piece_per_s < 1) {
+        mvwprintw(stats_window->content, STATS_PPS_Y, STATS_PPS_X, "pps: %#.4g\n", stats->piece_per_s);
     } else {
-        mvwprintw(stats_window->content, STATS_PPS_Y, STATS_PPS_X, "pps: %#.5g\n", stats->piece_per_sec);
+        mvwprintw(stats_window->content, STATS_PPS_Y, STATS_PPS_X, "pps: %#.5g\n", stats->piece_per_s);
     }
 }
 
@@ -577,18 +577,64 @@ void draw_debug_variables(GameWindow* debug_window, const GameState* game_state,
     werase(debug_window->content);
     mvwprintw(
         debug_window->content, 0, 0,
-        "y, x: %i, %i\n"
+        "curr_piece: (y=%i, x=%i, r=%i, shape=%c)\n"
+        "hold_piece: (y=%i, x=%i, r=%i, shape=%c)\n"
+        "next_piece: (y=%i, x=%i, r=%i, shape=%c)\n"
+        "ghost_piece: (y=%i, x=%i, r=%i, shape=%c)\n"
+        "holding_piece: %s\n"
+        "hold_blocked: %s\n"
+        "next_index: %u\n"
+        "next_queue: [%c, %c, %c, %c, %c, %c, %c]\n"
+        "gravity_value: %f\n"
         "lock_delay_timer: %u\n"
         "move_reset_count: %u\n"
-        "gravity_value: %f\n"
-        "last_action_points: %u\n"
-        "frame_count: %lu\n",
+        "combo: %i\n"
+        "difficult_clear_combo: %i\n"
+        "tetris_all_clear_combo: %i\n"
+        "t_rotation_test_num: %i\n"
+        "\n"
+        "game_time_s: %f\n"
+        "real_time_s: %f\n"
+        "num_pieces: %u\n"
+        "frame_count: %lu\n"
+        "fps: %f\n",
         game_state->curr_piece.y,
         game_state->curr_piece.x,
+        game_state->curr_piece.r,
+        shape_to_char(game_state->curr_piece.shape),
+        game_state->hold_piece.y,
+        game_state->hold_piece.x,
+        game_state->hold_piece.r,
+        (game_state->holding_piece) ? shape_to_char(game_state->hold_piece.shape) : ' ',
+        game_state->next_piece.y,
+        game_state->next_piece.x,
+        game_state->next_piece.r,
+        shape_to_char(game_state->next_piece.shape),
+        game_state->ghost_piece.y,
+        game_state->ghost_piece.x,
+        game_state->ghost_piece.r,
+        shape_to_char(game_state->ghost_piece.shape),
+        (game_state->holding_piece) ? "true" : "false",
+        (game_state->hold_blocked) ? "true" : "false",
+        game_state->next_index,
+        shape_to_char(game_state->next_queue[0]),
+        shape_to_char(game_state->next_queue[1]),
+        shape_to_char(game_state->next_queue[2]),
+        shape_to_char(game_state->next_queue[3]),
+        shape_to_char(game_state->next_queue[4]),
+        shape_to_char(game_state->next_queue[5]),
+        shape_to_char(game_state->next_queue[6]),
+        game_state->gravity_value,
         game_state->lock_delay_timer,
         game_state->move_reset_count,
-        game_state->gravity_value,
-        game_state->last_action_points,
-        stats->frame_count
+        game_state->combo,
+        game_state->difficult_clear_combo,
+        game_state->tetris_all_clear_combo,
+        game_state->t_rotation_test_num,
+        stats->game_time_s,
+        stats->real_time_s,
+        stats->num_pieces,
+        stats->frame_count,
+        stats->fps
     );
 }

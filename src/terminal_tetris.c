@@ -5,6 +5,8 @@
 #include "stats.h"
 #include "vfx.h"
 
+#include <ctype.h>
+#include <getopt.h>
 #include <ncurses.h>
 #include <stdbool.h>
 #include <stdint.h>
@@ -131,6 +133,10 @@ static void cleanup(void) {
             fprintf(stderr, "During cleanup, failed to close debug log file.\n");
         }
     }
+}
+
+static double diff_timespec_s(struct timespec start_time, struct timespec end_time) {
+    return (end_time.tv_sec - start_time.tv_sec) + (end_time.tv_nsec - start_time.tv_nsec) / 1e9;
 }
 
 static void sleep_ns(uint64_t nanoseconds) {
@@ -277,7 +283,7 @@ static void run_tetris(
     draw_stats_window(stats_window);
     draw_controls_window(controls_window);
     draw_main_menu_window(main_menu_window, start_level);
-    draw_debug_window(debug_window);
+    if (debug_mode) draw_debug_window(debug_window);
 
     // refresh windows
     game_window_refresh(board_window);
@@ -286,7 +292,7 @@ static void run_tetris(
     game_window_refresh(stats_window);
     game_window_refresh(controls_window);
     game_window_refresh(main_menu_window);
-    game_window_refresh(debug_window);
+    if (debug_mode) game_window_refresh(debug_window);
 
     while (running) {
         clock_gettime(CLOCK_MONOTONIC, &start_time);
@@ -429,21 +435,24 @@ static void run_tetris(
             game_window_refresh(stats_window);
         }
 
-        draw_debug_window(debug_window);
-        draw_debug_variables(debug_window, game_state, stats);
-        game_window_refresh(debug_window);
+        if (debug_mode) {
+            draw_debug_variables(debug_window, game_state, stats);
+            game_window_refresh(debug_window);
+        }
 
         clock_gettime(CLOCK_MONOTONIC, &end_time);
-        frame_time_ns = (end_time.tv_sec - start_time.tv_sec) * 1e9 + (end_time.tv_nsec - start_time.tv_nsec);
+        frame_time_ns = diff_timespec_s(start_time, end_time);
         if (frame_time_ns < TARGET_FRAME_TIME_NS) {
             sleep_ns(TARGET_FRAME_TIME_NS - frame_time_ns);
         }
 
         if (input_state == PLAYING) {
             clock_gettime(CLOCK_MONOTONIC, &end_time);
-            stats->seconds += (end_time.tv_sec - start_time.tv_sec) + (end_time.tv_nsec - start_time.tv_nsec) / 1e9;
+            stats->game_time_s += diff_timespec_s(start_time, end_time);
         }
-        
+
+        clock_gettime(CLOCK_MONOTONIC, &end_time);
+        stats->real_time_s += diff_timespec_s(start_time, end_time);
         stats->frame_count++;
     }
 
@@ -455,6 +464,24 @@ static void run_tetris(
 }
 
 int main(int argc, char* argv[argc+1]) {
+    int option;
+    while ((option = getopt(argc, argv, "d")) != -1) {
+        switch (option) {
+        case 'd':
+            debug_mode = true;
+            break;
+        case '?':
+            if (isprint(optopt)) {
+                fprintf(stderr, "Unknown option '-%c' provided.\n", optopt);
+            } else {
+                fprintf(stderr, "Unknown option character provided.\n");
+            }
+            return EXIT_FAILURE;
+        default:
+            return EXIT_FAILURE;
+        }
+    }
+
     // register cleanup function on exit
     if (atexit(cleanup) != 0) {
         fprintf(stderr, "Failed to register cleanup function.\n");
@@ -462,9 +489,11 @@ int main(int argc, char* argv[argc+1]) {
     }
 
     // open debug log file
-    if (!debug_log_open(DEBUG_LOG_FILEPATH)) {
-        fprintf(stderr, "Failed to open debug log file.\n");
-        return EXIT_FAILURE;
+    if (debug_mode) {
+        if (!debug_log_open(DEBUG_LOG_FILEPATH)) {
+            fprintf(stderr, "Failed to open debug log file.\n");
+            return EXIT_FAILURE;
+        }
     }
 
     setup_curses();

@@ -6,6 +6,7 @@
 
 extern const char* DEBUG_LOG_FILEPATH;
 
+extern bool debug_mode;
 extern FILE* debug_log;
 
 bool debug_log_open(const char* filepath);
