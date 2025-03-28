@@ -1,6 +1,7 @@
 #include "vfx_test.h"
 #include "vfx.h"
 #include "draw.h"
+#include "helper.h"
 
 #include <stdint.h>
 #include <time.h>
@@ -8,19 +9,6 @@
 
 const uint16_t TARGET_FPS = 60;
 const uint32_t TARGET_FRAME_TIME_NS = 1e9 / TARGET_FPS;
-
-static void sleep_ns(uint64_t nanoseconds) {
-    struct timespec duration, remainder;
-    duration.tv_sec = 0;
-    duration.tv_nsec = nanoseconds;
-    while (duration.tv_nsec >= 1e9) {
-        duration.tv_nsec -= 1e9;
-        duration.tv_sec++;
-    }
-    while (clock_nanosleep(CLOCK_MONOTONIC, 0, &duration, &remainder) == -1) {
-        duration = remainder;
-    }
-}
 
 void run_vfx_test(VFXTest vfx_test, int8_t y_offset, int8_t x_offset) {
     VFX vfx;
@@ -41,7 +29,7 @@ void run_vfx_test(VFXTest vfx_test, int8_t y_offset, int8_t x_offset) {
         refresh();
 
         clock_gettime(CLOCK_MONOTONIC, &end_time);
-        frame_time_ns = (end_time.tv_sec - start_time.tv_sec) * 1e9 + (end_time.tv_nsec - start_time.tv_nsec);
+        frame_time_ns = diff_timespec_ns(start_time, end_time);
         if (frame_time_ns < TARGET_FRAME_TIME_NS) {
             sleep_ns(TARGET_FRAME_TIME_NS - frame_time_ns);
         }

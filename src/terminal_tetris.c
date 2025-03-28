@@ -1,5 +1,6 @@
 #include "draw.h"
 #include "game_state.h"
+#include "helper.h"
 #include "logger.h"
 #include "piece.h"
 #include "stats.h"
@@ -132,23 +133,6 @@ static void cleanup(void) {
         if (fclose(debug_log) == EOF) {
             fprintf(stderr, "During cleanup, failed to close debug log file.\n");
         }
-    }
-}
-
-static double diff_timespec_s(struct timespec start_time, struct timespec end_time) {
-    return (end_time.tv_sec - start_time.tv_sec) + (end_time.tv_nsec - start_time.tv_nsec) / 1e9;
-}
-
-static void sleep_ns(uint64_t nanoseconds) {
-    struct timespec duration, remainder;
-    duration.tv_sec = 0;
-    duration.tv_nsec = nanoseconds;
-    while (duration.tv_nsec >= 1e9) {
-        duration.tv_nsec -= 1e9;
-        duration.tv_sec++;
-    }
-    while (clock_nanosleep(CLOCK_MONOTONIC, 0, &duration, &remainder) == -1) {
-        duration = remainder;
     }
 }
 
@@ -441,7 +425,7 @@ static void run_tetris(
         }
 
         clock_gettime(CLOCK_MONOTONIC, &end_time);
-        frame_time_ns = diff_timespec_s(start_time, end_time);
+        frame_time_ns = diff_timespec_ns(start_time, end_time);
         if (frame_time_ns < TARGET_FRAME_TIME_NS) {
             sleep_ns(TARGET_FRAME_TIME_NS - frame_time_ns);
         }

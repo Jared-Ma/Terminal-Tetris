@@ -13,7 +13,7 @@ INCLUDE_TEST_UTIL = -I $(TEST_UTILS_DIR)
 
 EXE      = terminal_tetris
 MAIN_SRC = $(addprefix $(SRC_DIR), terminal_tetris.c)
-SRC      = $(addprefix $(SRC_DIR), game_state.c draw.c vfx.c piece.c stats.c logger.c)
+SRC      = $(addprefix $(SRC_DIR), draw.c game_state.c helper.c logger.c piece.c stats.c vfx.c)
 MAIN_OBJ = $(addprefix $(OBJ_DIR), $(addsuffix .o, $(notdir $(basename $(MAIN_SRC)))))
 OBJ      = $(addprefix $(OBJ_DIR), $(addsuffix .o, $(notdir $(basename $(SRC)))))
 
