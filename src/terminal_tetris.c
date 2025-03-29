@@ -451,8 +451,6 @@ int main(int argc, char* argv[argc + 1]) {
         stats,
         vfx_list
     );
-
-    // end curses -> if setup fails
     
     game_window_destroy(board_window);
     game_window_destroy(hold_window);
