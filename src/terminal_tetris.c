@@ -38,104 +38,6 @@ enum InputState {
 
 typedef enum InputState InputState;
 
-static void setup_curses(void) {
-    // initialize curses screen
-    if (initscr() == NULL) {
-        fprintf(stderr, "During curses setup, initscr() failed to initialize curses screen.\n");
-        exit(EXIT_FAILURE);
-    }
-
-    // disable input echoing to screen
-    if (noecho() == ERR) {
-        fprintf(stderr, "During curses setup, noecho() failed to disable input echoing.\n");
-        exit(EXIT_FAILURE);
-    }
-    
-    // hide cursor
-    if (curs_set(0) == ERR) {
-        fprintf(stderr, "During curses setup, curs_set(0) failed to set cursor to invisible mode.\n");
-        exit(EXIT_FAILURE);
-    }
-    
-    // disable delay after reading escape key
-    if (set_escdelay(0) == ERR) {
-        fprintf(stderr, "During curses setup, set_escdelay(0) failed to disable escape key delay.\n");
-        exit(EXIT_FAILURE);
-    }
-    
-    // enable arrow key input
-    if (keypad(stdscr, true) == ERR) {
-        fprintf(stderr, "During curses setup, keypad(stdscr, true) failed to enable keypad.\n");
-        exit(EXIT_FAILURE);
-    }
-    
-    // enable non-blocking getch()
-    if (nodelay(stdscr, true) == ERR) {
-        fprintf(stderr, "During curses setup, nodelay(stdscr, true) failed to enable non-blocking getch().\n");
-        exit(EXIT_FAILURE);
-    }
-
-    // initial refresh of stdscr
-    if (refresh() == ERR) {
-        fprintf(stderr, "During curses setup, initial refresh() failed.\n");
-        exit(EXIT_FAILURE);
-    } 
-
-    // check if terminal supports colors
-    if (!has_colors()) {
-        fprintf(stderr, "During curses setup, has_colors() return false, continuing without color.\n");
-        return;
-    }
-
-    // initialize default colors
-    if (use_default_colors() == ERR) {
-        fprintf(stderr, "During curses setup, use_default_colors() not supported, continuing without color.\n");
-        return;
-    }
-
-    // initialize curses colors 
-    if (start_color() == ERR) {
-        fprintf(stderr, "During curses setup, start_color() failed to initialize colors, continuing without color.\n");
-        return;
-    }
-
-    // initialize non-default orange color
-    short COLOR_ORANGE = 8;
-    init_color(COLOR_ORANGE, 900, 600, 0);
-
-    // initialize color pairs of tetronimos
-    init_pair(I, COLOR_CYAN,    -1);
-    init_pair(J, COLOR_BLUE,    -1);
-    init_pair(L, COLOR_ORANGE,  -1);
-    init_pair(O, COLOR_YELLOW,  -1);
-    init_pair(S, COLOR_GREEN,   -1);
-    init_pair(T, COLOR_MAGENTA, -1);
-    init_pair(Z, COLOR_RED,     -1);
-}
-
-static void cleanup(void) {
-    // show cursor
-    if (stdscr != NULL) {
-        if (curs_set(2) == ERR) {
-            fprintf(stderr, "During cleanup, curs_set(2) failed to set cursor to visible mode.\n");
-        }
-    }
-
-    // exit curses
-    if (stdscr != NULL) {
-        if (endwin() == ERR) {
-            fprintf(stderr, "During cleanup, endwin() failed to restore normal terminal mode.\n");
-        }
-    }
-
-    // close debug log file
-    if (debug_log != NULL) {
-        if (fclose(debug_log) == EOF) {
-            fprintf(stderr, "During cleanup, failed to close debug log file.\n");
-        }
-    }
-}
-
 static void restart_game(GameState* game_state, Stats* stats, VFX* vfx_list[NUM_VFX], uint8_t start_level) {
     game_state_reset(game_state);
     stats_reset(stats);
@@ -155,112 +57,19 @@ static void run_tetris(
     GameWindow* main_menu_window,
     GameWindow* pause_window,
     GameWindow* game_over_window,
-    GameWindow* debug_window
+    GameWindow* debug_window,
+    GameState* game_state,
+    Stats* stats,
+    VFX* vfx_list[NUM_VFX]
 ) {
-    GameState* game_state = game_state_init();
-    Stats* stats = stats_init();
-    
-    VFX* vfx_lock_piece = vfx_init(
-        board_window,
-        clear_vfx_lock_piece,
-        vfx_check_lock_piece,
-        vfx_enable_lock_piece,
-        LOCK_PIECE_VFX_FRAMES
-    );
-    VFX* vfx_line_clear = vfx_init(
-        board_window,
-        clear_vfx_line_clear,
-        vfx_check_line_clear,
-        vfx_enable_line_clear,
-        LINE_CLEAR_VFX_FRAMES
-    );
-    VFX* vfx_hold_piece = vfx_init(
-        hold_window, 
-        clear_vfx_hold_piece, 
-        vfx_check_hold_piece, 
-        vfx_enable_hold_piece, 
-        HOLD_PIECE_VFX_FRAMES
-    );
-    VFX* vfx_next_piece = vfx_init(
-        next_window, 
-        clear_vfx_next_piece, 
-        vfx_check_next_piece, 
-        vfx_enable_next_piece, 
-        NEXT_PIECE_VFX_FRAMES
-    );
-    VFX* vfx_action = vfx_init(
-        stats_window, 
-        clear_vfx_action, 
-        vfx_check_action, 
-        vfx_enable_action, 
-        ACTION_VFX_FRAMES
-    );
-    VFX* vfx_combo = vfx_init(
-        stats_window, 
-        clear_vfx_combo, 
-        vfx_check_combo, 
-        vfx_enable_combo, 
-        COMBO_VFX_FRAMES
-    );
-    VFX* vfx_b2b_combo = vfx_init(
-        stats_window, 
-        clear_vfx_b2b_combo, 
-        vfx_check_b2b_combo, 
-        vfx_enable_b2b_combo, 
-        B2B_COMBO_VFX_FRAMES
-    );
-    VFX* vfx_points = vfx_init(
-        stats_window, 
-        clear_vfx_points, 
-        vfx_check_points, 
-        vfx_enable_points, 
-        POINTS_VFX_FRAMES
-    );
-    VFX* vfx_level_up = vfx_init(
-        board_window, 
-        clear_vfx_level_up, 
-        vfx_check_level_up, 
-        vfx_enable_level_up, 
-        LEVEL_UP_VFX_FRAMES
-    );
-    VFX* vfx_stats_lines = vfx_init(
-        stats_window, 
-        clear_vfx_stats_lines, 
-        vfx_check_stats_lines, 
-        vfx_enable_stats_lines, 
-        STATS_LINES_VFX_FRAMES
-    );
-    VFX* vfx_stats_level = vfx_init(
-        stats_window, 
-        clear_vfx_stats_level, 
-        vfx_check_stats_level, 
-        vfx_enable_stats_level, 
-        STATS_LEVEL_VFX_FRAMES
-    );
-    
-    VFX* vfx_list[NUM_VFX] = { 
-        vfx_lock_piece,
-        vfx_line_clear,
-        vfx_hold_piece,
-        vfx_next_piece,
-        vfx_action,
-        vfx_combo,
-        vfx_b2b_combo,
-        vfx_points,
-        vfx_level_up,
-        vfx_stats_lines,
-        vfx_stats_level
-    };
-
     srand(time(0));
-
     uint8_t start_level = 1;
     InputState input_state = MAIN_MENU;
     struct timespec start_time, end_time;
     uint32_t frame_time_ns;
     bool running = true;
 
-    // render windows
+    // initial render of game windows
     draw_board_window(board_window);
     draw_hold_window(hold_window);
     draw_next_window(next_window);
@@ -268,8 +77,8 @@ static void run_tetris(
     draw_controls_window(controls_window);
     draw_main_menu_window(main_menu_window, start_level);
     if (debug_mode) draw_debug_window(debug_window);
-
-    // refresh windows
+    
+    // initial refresh of game windows
     game_window_refresh(board_window);
     game_window_refresh(hold_window);
     game_window_refresh(next_window);
@@ -439,15 +248,107 @@ static void run_tetris(
         stats->real_time_s += diff_timespec_s(start_time, end_time);
         stats->frame_count++;
     }
+}
 
-    game_state_destroy(game_state);
-    stats_destroy(stats);
-    for (size_t i = 0; i < NUM_VFX; ++i) {
-        vfx_destroy(vfx_list[i]);
+static void setup_curses(void) {
+    // initialize curses screen
+    if (initscr() == NULL) {
+        fprintf(stderr, "During curses setup, initscr() failed to initialize curses screen.\n");
+        exit(EXIT_FAILURE);
+    }
+
+    // disable input echoing to screen
+    if (noecho() == ERR) {
+        fprintf(stderr, "During curses setup, noecho() failed to disable input echoing.\n");
+        exit(EXIT_FAILURE);
+    }
+    
+    // hide cursor
+    if (curs_set(0) == ERR) {
+        fprintf(stderr, "During curses setup, curs_set(0) failed to set cursor to invisible mode.\n");
+        exit(EXIT_FAILURE);
+    }
+    
+    // disable delay after reading escape key
+    if (set_escdelay(0) == ERR) {
+        fprintf(stderr, "During curses setup, set_escdelay(0) failed to disable escape key delay.\n");
+        exit(EXIT_FAILURE);
+    }
+    
+    // enable arrow key input
+    if (keypad(stdscr, true) == ERR) {
+        fprintf(stderr, "During curses setup, keypad(stdscr, true) failed to enable keypad.\n");
+        exit(EXIT_FAILURE);
+    }
+    
+    // enable non-blocking getch()
+    if (nodelay(stdscr, true) == ERR) {
+        fprintf(stderr, "During curses setup, nodelay(stdscr, true) failed to enable non-blocking getch().\n");
+        exit(EXIT_FAILURE);
+    }
+
+    // initial refresh of stdscr
+    if (refresh() == ERR) {
+        fprintf(stderr, "During curses setup, initial refresh() failed.\n");
+        exit(EXIT_FAILURE);
+    } 
+
+    // check if terminal supports colors
+    if (!has_colors()) {
+        fprintf(stderr, "During curses setup, has_colors() return false, continuing without color.\n");
+        return;
+    }
+
+    // initialize default colors
+    if (use_default_colors() == ERR) {
+        fprintf(stderr, "During curses setup, use_default_colors() not supported, continuing without color.\n");
+        return;
+    }
+
+    // initialize curses colors 
+    if (start_color() == ERR) {
+        fprintf(stderr, "During curses setup, start_color() failed to initialize colors, continuing without color.\n");
+        return;
+    }
+
+    // initialize non-default orange color
+    short COLOR_ORANGE = 8;
+    init_color(COLOR_ORANGE, 900, 600, 0);
+
+    // initialize color pairs of tetronimos
+    init_pair(I, COLOR_CYAN,    -1);
+    init_pair(J, COLOR_BLUE,    -1);
+    init_pair(L, COLOR_ORANGE,  -1);
+    init_pair(O, COLOR_YELLOW,  -1);
+    init_pair(S, COLOR_GREEN,   -1);
+    init_pair(T, COLOR_MAGENTA, -1);
+    init_pair(Z, COLOR_RED,     -1);
+}
+
+static void cleanup(void) {
+    // show cursor
+    if (stdscr != NULL) {
+        if (curs_set(2) == ERR) {
+            fprintf(stderr, "During cleanup, curs_set(2) failed to set cursor to visible mode.\n");
+        }
+    }
+
+    // exit curses
+    if (stdscr != NULL) {
+        if (endwin() == ERR) {
+            fprintf(stderr, "During cleanup, endwin() failed to restore normal terminal mode.\n");
+        }
+    }
+
+    // close debug log file
+    if (debug_log != NULL) {
+        if (fclose(debug_log) == EOF) {
+            fprintf(stderr, "During cleanup, failed to close debug log file.\n");
+        }
     }
 }
 
-int main(int argc, char* argv[argc+1]) {
+int main(int argc, char* argv[argc + 1]) {
     int option;
     while ((option = getopt(argc, argv, "d")) != -1) {
         switch (option) {
@@ -518,6 +419,23 @@ int main(int argc, char* argv[argc+1]) {
         DEBUG_WINDOW_H, DEBUG_WINDOW_W, 
         DEBUG_WINDOW_Y, DEBUG_WINDOW_X
     );
+
+    GameState* game_state = game_state_init();
+    Stats* stats = stats_init();
+
+    VFX* vfx_list[NUM_VFX] = { 
+        vfx_init(board_window, clear_vfx_lock_piece,  vfx_check_lock_piece,  vfx_enable_lock_piece,  LOCK_PIECE_VFX_FRAMES),
+        vfx_init(board_window, clear_vfx_line_clear,  vfx_check_line_clear,  vfx_enable_line_clear,  LINE_CLEAR_VFX_FRAMES),
+        vfx_init(hold_window,  clear_vfx_hold_piece,  vfx_check_hold_piece,  vfx_enable_hold_piece,  HOLD_PIECE_VFX_FRAMES),
+        vfx_init(next_window,  clear_vfx_next_piece,  vfx_check_next_piece,  vfx_enable_next_piece,  NEXT_PIECE_VFX_FRAMES),
+        vfx_init(stats_window, clear_vfx_action,      vfx_check_action,      vfx_enable_action,      ACTION_VFX_FRAMES),
+        vfx_init(stats_window, clear_vfx_combo,       vfx_check_combo,       vfx_enable_combo,       COMBO_VFX_FRAMES),
+        vfx_init(stats_window, clear_vfx_b2b_combo,   vfx_check_b2b_combo,   vfx_enable_b2b_combo,   B2B_COMBO_VFX_FRAMES),
+        vfx_init(stats_window, clear_vfx_points,      vfx_check_points,      vfx_enable_points,      POINTS_VFX_FRAMES),
+        vfx_init(board_window, clear_vfx_level_up,    vfx_check_level_up,    vfx_enable_level_up,    LEVEL_UP_VFX_FRAMES),
+        vfx_init(stats_window, clear_vfx_stats_lines, vfx_check_stats_lines, vfx_enable_stats_lines, STATS_LINES_VFX_FRAMES),
+        vfx_init(stats_window, clear_vfx_stats_level, vfx_check_stats_level, vfx_enable_stats_level, STATS_LEVEL_VFX_FRAMES)
+    };
     
     run_tetris(
         board_window, 
@@ -528,8 +446,13 @@ int main(int argc, char* argv[argc+1]) {
         main_menu_window, 
         pause_window,
         game_over_window,
-        debug_window
+        debug_window,
+        game_state,
+        stats,
+        vfx_list
     );
+
+    // end curses -> if setup fails
     
     game_window_destroy(board_window);
     game_window_destroy(hold_window);
@@ -540,6 +463,11 @@ int main(int argc, char* argv[argc+1]) {
     game_window_destroy(pause_window);
     game_window_destroy(game_over_window);
     game_window_destroy(debug_window);
+    game_state_destroy(game_state);
+    stats_destroy(stats);
+    for (size_t i = 0; i < NUM_VFX; ++i) {
+        vfx_destroy(vfx_list[i]);
+    }
 
     return EXIT_SUCCESS;
 }
