@@ -39,7 +39,7 @@ const int8_t CONTROLS_WINDOW_X = 36;
 const int8_t MAIN_MENU_WINDOW_H = 18;
 const int8_t MAIN_MENU_WINDOW_W = 40;
 const int8_t MAIN_MENU_WINDOW_Y = 3;
-const int8_t MAIN_MENU_WINDOW_X = 4;
+const int8_t MAIN_MENU_WINDOW_X = 5;
 
 const int8_t PAUSE_WINDOW_H = 5;
 const int8_t PAUSE_WINDOW_W = 14;
@@ -419,8 +419,8 @@ void draw_board_stack(GameWindow* board_window, const GameState* game_state) {
 }
 
 void draw_curr_piece(GameWindow* board_window, const GameState* game_state) {
-    int8_t start_y = game_state->curr_piece.y - game_state->curr_piece.n/2;
-    int8_t start_x = 2*(game_state->curr_piece.x - game_state->curr_piece.n/2);
+    int8_t y_start = game_state->curr_piece.y - game_state->curr_piece.n/2;
+    int8_t x_start = 2*(game_state->curr_piece.x - game_state->curr_piece.n/2);
 
     wattron(board_window->content, COLOR_PAIR(game_state->curr_piece.shape));
     if (
@@ -438,7 +438,7 @@ void draw_curr_piece(GameWindow* board_window, const GameState* game_state) {
     for (size_t i = 0; i < game_state->curr_piece.n; ++i) {
         for (size_t j = 0; j < game_state->curr_piece.n; ++j) {
             if (game_state->curr_piece.M[game_state->curr_piece.r][i][j] == 1) {
-                mvwprintw(board_window->content, start_y + i, start_x + 2*j, "%c%c", BLOCK_LEFT, BLOCK_RIGHT);
+                mvwprintw(board_window->content, y_start + i, x_start + 2*j, "%c%c", BLOCK_LEFT, BLOCK_RIGHT);
             }
         }
     }
@@ -459,14 +459,14 @@ void draw_curr_piece(GameWindow* board_window, const GameState* game_state) {
 
 void draw_ghost_piece(GameWindow* board_window, const GameState* game_state) {
     if (game_state->ghost_piece.y != game_state->curr_piece.y) {
-        int8_t start_y = game_state->ghost_piece.y - game_state->ghost_piece.n/2;
-        int8_t start_x = 2*(game_state->ghost_piece.x - game_state->ghost_piece.n/2);
+        int8_t y_start = game_state->ghost_piece.y - game_state->ghost_piece.n/2;
+        int8_t x_start = 2*(game_state->ghost_piece.x - game_state->ghost_piece.n/2);
         wattron(board_window->content, COLOR_PAIR(game_state->ghost_piece.shape) | A_DIM);
 
         for (size_t i = 0; i < game_state->ghost_piece.n; ++i) {
             for (size_t j = 0; j < game_state->ghost_piece.n; ++j) {
                 if (game_state->ghost_piece.M[game_state->ghost_piece.r][i][j] == 1) {
-                    mvwprintw(board_window->content, start_y + i, start_x + 2*j, "%c%c", GHOST_LEFT, GHOST_RIGHT);
+                    mvwprintw(board_window->content, y_start + i, x_start + 2*j, "%c%c", GHOST_LEFT, GHOST_RIGHT);
                 }
             }
         }
@@ -490,9 +490,9 @@ void draw_hold_piece(GameWindow* hold_window, const GameState* game_state) {
     werase(hold_window->content);
     
     if (game_state->holding_piece) {
-        int8_t padding_x = 2*(game_state->hold_piece.n - game_state->hold_piece.l);
-        int8_t start_y = hold_window->content_h / 2 - game_state->hold_piece.n / 2;
-        int8_t start_x = hold_window->content_w / 2 - game_state->hold_piece.l - padding_x;
+        int8_t x_padding = 2*(game_state->hold_piece.n - game_state->hold_piece.l);
+        int8_t y_start = hold_window->content_h / 2 - game_state->hold_piece.n / 2;
+        int8_t x_start = hold_window->content_w / 2 - game_state->hold_piece.l - x_padding;
         
         wattron(hold_window->content, COLOR_PAIR(game_state->hold_piece.shape));
         if (game_state->hold_blocked) {
@@ -503,9 +503,9 @@ void draw_hold_piece(GameWindow* hold_window, const GameState* game_state) {
             for (size_t j = 0; j < game_state->hold_piece.n; ++j) {
                 if (game_state->hold_piece.M[0][i][j] == 1) {
                     if (game_state->hold_blocked) {
-                        mvwprintw(hold_window->content, start_y + i, start_x + 2*j, "%c%c", GHOST_LEFT, GHOST_RIGHT);
+                        mvwprintw(hold_window->content, y_start + i, x_start + 2*j, "%c%c", GHOST_LEFT, GHOST_RIGHT);
                     } else {
-                        mvwprintw(hold_window->content, start_y + i, start_x + 2*j, "%c%c", BLOCK_LEFT, BLOCK_RIGHT);
+                        mvwprintw(hold_window->content, y_start + i, x_start + 2*j, "%c%c", BLOCK_LEFT, BLOCK_RIGHT);
                     }
                 }
             }
@@ -521,15 +521,15 @@ void draw_hold_piece(GameWindow* hold_window, const GameState* game_state) {
 void draw_next_piece(GameWindow* next_window, const GameState* game_state) {
     werase(next_window->content);
 
-    int8_t padding_x = 2*(game_state->next_piece.n - game_state->next_piece.l);
-    int8_t start_y = next_window->content_h / 2 - game_state->next_piece.n / 2;
-    int8_t start_x = next_window->content_w / 2 - game_state->next_piece.l - padding_x;
+    int8_t x_padding = 2*(game_state->next_piece.n - game_state->next_piece.l);
+    int8_t y_start = next_window->content_h / 2 - game_state->next_piece.n / 2;
+    int8_t x_start = next_window->content_w / 2 - game_state->next_piece.l - x_padding;
     wattron(next_window->content, COLOR_PAIR(game_state->next_piece.shape));
 
     for (size_t i = 0; i < game_state->next_piece.n; ++i) {
         for (size_t j = 0; j < game_state->next_piece.n; ++j) {
             if (game_state->next_piece.M[0][i][j] == 1) {
-                mvwprintw(next_window->content, start_y + i, start_x + 2*j, "%c%c", BLOCK_LEFT, BLOCK_RIGHT);
+                mvwprintw(next_window->content, y_start + i, x_start + 2*j, "%c%c", BLOCK_LEFT, BLOCK_RIGHT);
             }
         }
     }
