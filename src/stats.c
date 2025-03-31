@@ -92,10 +92,6 @@ void stats_update(Stats* stats, const GameState* game_state) {
         stats->piece_per_s = stats->num_pieces / stats->game_time_s;
     }
     
-    if (stats->real_time_s > 0) {
-        stats->fps = stats->frame_count / stats->real_time_s;
-    }
-    
     if (game_state->last_action_num_lines == 1) {
         stats->num_single++;
     } else if (game_state->last_action_num_lines == 2) {

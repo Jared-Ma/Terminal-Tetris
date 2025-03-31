@@ -247,6 +247,7 @@ static void run_tetris(
         clock_gettime(CLOCK_MONOTONIC, &end_time);
         stats->real_time_s += diff_timespec_s(start_time, end_time);
         stats->frame_count++;
+        stats->fps = stats->frame_count / stats->real_time_s;
     }
 }
 
@@ -254,6 +255,22 @@ static void setup_curses(void) {
     // initialize curses screen
     if (initscr() == NULL) {
         fprintf(stderr, "During curses setup, initscr() failed to initialize curses screen.\n");
+        exit(EXIT_FAILURE);
+    }
+
+    // check if current terminal size is sufficient
+    int h_max = GAME_H;
+    int w_max = GAME_W;
+    if (debug_mode) {
+        w_max += DEBUG_WINDOW_W;
+    }
+
+    if (LINES < h_max || COLS < w_max) {
+        fprintf(    
+            stderr, 
+            "Current terminal window size (h=%i, w=%i) did not meet requirements (h=%i, w=%i).",
+            LINES, COLS, h_max, w_max
+        );
         exit(EXIT_FAILURE);
     }
 
@@ -382,42 +399,66 @@ int main(int argc, char* argv[argc + 1]) {
     }
 
     setup_curses();
+
+    int y_offset = LINES / 2 - GAME_H / 2;
+    int x_offset = COLS / 2 - GAME_W / 2;
+    if (debug_mode) {
+        x_offset -= DEBUG_WINDOW_W / 2;
+    }
     
     GameWindow* board_window = game_window_init(
-        BOARD_WINDOW_H, BOARD_WINDOW_W, 
-        BOARD_WINDOW_Y, BOARD_WINDOW_X
+        BOARD_WINDOW_H, 
+        BOARD_WINDOW_W, 
+        BOARD_WINDOW_Y + y_offset, 
+        BOARD_WINDOW_X + x_offset
     );
     GameWindow* hold_window = game_window_init(
-        HOLD_WINDOW_H, HOLD_WINDOW_W, 
-        HOLD_WINDOW_Y, HOLD_WINDOW_X
+        HOLD_WINDOW_H, 
+        HOLD_WINDOW_W, 
+        HOLD_WINDOW_Y + y_offset, 
+        HOLD_WINDOW_X + x_offset
     );
     GameWindow* next_window = game_window_init(
-        NEXT_WINDOW_H, NEXT_WINDOW_W, 
-        NEXT_WINDOW_Y, NEXT_WINDOW_X
+        NEXT_WINDOW_H, 
+        NEXT_WINDOW_W, 
+        NEXT_WINDOW_Y + y_offset, 
+        NEXT_WINDOW_X + x_offset
     );
     GameWindow* stats_window = game_window_init(
-        STATS_WINDOW_H, STATS_WINDOW_W, 
-        STATS_WINDOW_Y, STATS_WINDOW_X
+        STATS_WINDOW_H, 
+        STATS_WINDOW_W, 
+        STATS_WINDOW_Y + y_offset, 
+        STATS_WINDOW_X + x_offset
     );
     GameWindow* controls_window = game_window_init(
-        CONTROLS_WINDOW_H, CONTROLS_WINDOW_W, 
-        CONTROLS_WINDOW_Y, CONTROLS_WINDOW_X
+        CONTROLS_WINDOW_H, 
+        CONTROLS_WINDOW_W, 
+        CONTROLS_WINDOW_Y + y_offset, 
+        CONTROLS_WINDOW_X + x_offset
     );
     GameWindow* main_menu_window = game_window_init(
-        MAIN_MENU_WINDOW_H, MAIN_MENU_WINDOW_W, 
-        MAIN_MENU_WINDOW_Y, MAIN_MENU_WINDOW_X
+        MAIN_MENU_WINDOW_H, 
+        MAIN_MENU_WINDOW_W, 
+        MAIN_MENU_WINDOW_Y + y_offset, 
+        MAIN_MENU_WINDOW_X + x_offset
     );
     GameWindow* pause_window = game_window_init(
-        PAUSE_WINDOW_H, PAUSE_WINDOW_W, 
-        PAUSE_WINDOW_Y, PAUSE_WINDOW_X
+        PAUSE_WINDOW_H, 
+        PAUSE_WINDOW_W, 
+        PAUSE_WINDOW_Y + y_offset, 
+        PAUSE_WINDOW_X + x_offset
     );
     GameWindow* game_over_window = game_window_init(
-        GAME_OVER_WINDOW_H, GAME_OVER_WINDOW_W, 
-        GAME_OVER_WINDOW_Y, GAME_OVER_WINDOW_X
+        GAME_OVER_WINDOW_H, 
+        GAME_OVER_WINDOW_W, 
+        GAME_OVER_WINDOW_Y + y_offset, 
+        GAME_OVER_WINDOW_X + x_offset
     );
     GameWindow* debug_window = game_window_init(
-        DEBUG_WINDOW_H, DEBUG_WINDOW_W, 
-        DEBUG_WINDOW_Y, DEBUG_WINDOW_X
+        DEBUG_WINDOW_H, 
+        DEBUG_WINDOW_W, 
+        DEBUG_WINDOW_Y + y_offset, 
+        DEBUG_WINDOW_X + x_offset
     );
 
     GameState* game_state = game_state_init();
