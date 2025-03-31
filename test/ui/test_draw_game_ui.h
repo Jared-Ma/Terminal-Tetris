@@ -12,7 +12,7 @@ void test_draw_next_window(int8_t y_offset, int8_t x_offset);
 
 void test_draw_stats_window(int8_t y_offset, int8_t x_offset);
 
-void test_draw_controls_window(int8_t y_offset, int8_t x_offset);
+void test_draw_help_window(int8_t y_offset, int8_t x_offset);
 
 void test_draw_main_menu_window(int8_t y_offset, int8_t x_offset);
 

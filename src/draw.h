@@ -30,10 +30,10 @@ extern const int8_t STATS_WINDOW_W;
 extern const int8_t STATS_WINDOW_Y;
 extern const int8_t STATS_WINDOW_X;
 
-extern const int8_t CONTROLS_WINDOW_H;
-extern const int8_t CONTROLS_WINDOW_W;
-extern const int8_t CONTROLS_WINDOW_Y;
-extern const int8_t CONTROLS_WINDOW_X;
+extern const int8_t HELP_WINDOW_H;
+extern const int8_t HELP_WINDOW_W;
+extern const int8_t HELP_WINDOW_Y;
+extern const int8_t HELP_WINDOW_X;
 
 extern const int8_t MAIN_MENU_WINDOW_H;
 extern const int8_t MAIN_MENU_WINDOW_W;
@@ -112,7 +112,7 @@ void draw_next_window(GameWindow* next_window);
 
 void draw_stats_window(GameWindow* stats_window);
 
-void draw_controls_window(GameWindow* controls_window);
+void draw_help_window(GameWindow* controls_window);
 
 void draw_main_menu_window(GameWindow* main_menu_window, uint8_t start_level);
 

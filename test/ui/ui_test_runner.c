@@ -118,7 +118,7 @@ int main(void) {
         UI_TEST(test_draw_board_window),
         UI_TEST(test_draw_next_window),
         UI_TEST(test_draw_stats_window),
-        UI_TEST(test_draw_controls_window),
+        UI_TEST(test_draw_help_window),
         UI_TEST(test_draw_main_menu_window),
         UI_TEST(test_draw_pause_window),
         UI_TEST(test_draw_game_over_window),

@@ -40,13 +40,13 @@ void test_draw_stats_window(int8_t y_offset, int8_t x_offset) {
     game_window_refresh(&stats_window);
 }
 
-void test_draw_controls_window(int8_t y_offset, int8_t x_offset) {
-    GameWindow controls_window = game_window_get(
-        CONTROLS_WINDOW_H, CONTROLS_WINDOW_W, 
-        CONTROLS_WINDOW_Y + y_offset, CONTROLS_WINDOW_X + x_offset
+void test_draw_help_window(int8_t y_offset, int8_t x_offset) {
+    GameWindow help_window = game_window_get(
+        HELP_WINDOW_H, HELP_WINDOW_W, 
+        HELP_WINDOW_Y + y_offset, HELP_WINDOW_X + x_offset
     );
-    draw_controls_window(&controls_window);
-    game_window_refresh(&controls_window);
+    draw_help_window(&help_window);
+    game_window_refresh(&help_window);
 }
 
 void test_draw_main_menu_window(int8_t y_offset, int8_t x_offset) {

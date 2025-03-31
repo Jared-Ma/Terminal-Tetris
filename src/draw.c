@@ -31,10 +31,10 @@ const int8_t STATS_WINDOW_W = 14;
 const int8_t STATS_WINDOW_Y = 8;
 const int8_t STATS_WINDOW_X = 0;
 
-const int8_t CONTROLS_WINDOW_H = 16;
-const int8_t CONTROLS_WINDOW_W = 14;
-const int8_t CONTROLS_WINDOW_Y = 8;
-const int8_t CONTROLS_WINDOW_X = 36;
+const int8_t HELP_WINDOW_H = 16;
+const int8_t HELP_WINDOW_W = 14;
+const int8_t HELP_WINDOW_Y = 8;
+const int8_t HELP_WINDOW_X = 36;
 
 const int8_t MAIN_MENU_WINDOW_H = 18;
 const int8_t MAIN_MENU_WINDOW_W = 40;
@@ -69,18 +69,18 @@ const int8_t STATS_SPS_X   = 0;
 const int8_t STATS_PPS_Y   = 8;
 const int8_t STATS_PPS_X   = 0;
 
-const int8_t CONTROLS_MOVE_Y      = 1;
-const int8_t CONTROLS_MOVE_X      = 0;
-const int8_t CONTROLS_ROTATE_Y    = 3;
-const int8_t CONTROLS_ROTATE_X    = 0;
-const int8_t CONTROLS_HOLD_Y      = 5;
-const int8_t CONTROLS_HOLD_X      = 0;
-const int8_t CONTROLS_SOFT_DROP_Y = 7;
-const int8_t CONTROLS_SOFT_DROP_X = 0;
-const int8_t CONTROLS_HARD_DROP_Y = 9;
-const int8_t CONTROLS_HARD_DROP_X = 0;
-const int8_t CONTROLS_PAUSE_Y     = 11;
-const int8_t CONTROLS_PAUSE_X     = 0;
+const int8_t HELP_MOVE_Y      = 1;
+const int8_t HELP_MOVE_X      = 0;
+const int8_t HELP_ROTATE_Y    = 3;
+const int8_t HELP_ROTATE_X    = 0;
+const int8_t HELP_HOLD_Y      = 5;
+const int8_t HELP_HOLD_X      = 0;
+const int8_t HELP_SOFT_DROP_Y = 7;
+const int8_t HELP_SOFT_DROP_X = 0;
+const int8_t HELP_HARD_DROP_Y = 9;
+const int8_t HELP_HARD_DROP_X = 0;
+const int8_t HELP_PAUSE_Y     = 11;
+const int8_t HELP_PAUSE_X     = 0;
 
 const int8_t MAIN_MENU_TITLE_H          = 4;
 const int8_t MAIN_MENU_TITLE_TERMINAL_Y = 0;
@@ -133,7 +133,7 @@ const char* MAIN_MENU_TITLE_TETRIS[4] = {
 const char* HOLD_TITLE      = "HOLD";
 const char* NEXT_TITLE      = "NEXT";
 const char* STATS_TITLE     = "STATS";
-const char* CONTROLS_TITLE  = "CONTROLS";
+const char* HELP_TITLE      = "HELP";
 const char* PAUSE_TITLE     = "PAUSE";
 const char* GAME_OVER_TITLE = "GAME-OVER";
 const char* DEBUG_TITLE     = "DEBUG";
@@ -232,9 +232,9 @@ void draw_stats_window(GameWindow* stats_window) {
     mvwprintw(stats_window->content, STATS_LINES_Y, STATS_LINES_X, "lines:");
 }
 
-void draw_controls_window(GameWindow* controls_window) {
-    draw_window_border(controls_window, COLOR_PAIR_DEFAULT);
-    draw_window_title(controls_window, CONTROLS_TITLE, COLOR_PAIR_DEFAULT);
+void draw_help_window(GameWindow* help_window) {
+    draw_window_border(help_window, COLOR_PAIR_DEFAULT);
+    draw_window_title(help_window, HELP_TITLE, COLOR_PAIR_DEFAULT);
 
     char* move_label      = "move: ";
     char* rotate_label    = "rotate: ";
@@ -251,57 +251,57 @@ void draw_controls_window(GameWindow* controls_window) {
     char* pause_key     = "esc";
 
     mvwprintw(
-        controls_window->content, 
-        CONTROLS_MOVE_Y, 
-        CONTROLS_MOVE_X, 
+        help_window->content, 
+        HELP_MOVE_Y, 
+        HELP_MOVE_X, 
         "%s%*s", 
         move_label,
-        (int)(controls_window->content_w - strlen(move_label)), 
+        (int)(help_window->content_w - strlen(move_label)), 
         move_key
     );
     mvwprintw(
-        controls_window->content, 
-        CONTROLS_ROTATE_Y, 
-        CONTROLS_ROTATE_X, 
+        help_window->content, 
+        HELP_ROTATE_Y, 
+        HELP_ROTATE_X, 
         "%s%*s", 
         rotate_label, 
-        (int)(controls_window->content_w - strlen(rotate_label)),  
+        (int)(help_window->content_w - strlen(rotate_label)),  
         rotate_key
     );
     mvwprintw(
-        controls_window->content, 
-        CONTROLS_HOLD_Y, 
-        CONTROLS_HOLD_X, 
+        help_window->content, 
+        HELP_HOLD_Y, 
+        HELP_HOLD_X, 
         "%s%*s", 
         hold_label,
-        (int)(controls_window->content_w - strlen(hold_label)), 
+        (int)(help_window->content_w - strlen(hold_label)), 
         hold_key
     );
     mvwprintw(
-        controls_window->content, 
-        CONTROLS_SOFT_DROP_Y, 
-        CONTROLS_SOFT_DROP_X, 
+        help_window->content, 
+        HELP_SOFT_DROP_Y, 
+        HELP_SOFT_DROP_X, 
         "%s%*s",
         soft_drop_label, 
-        (int)(controls_window->content_w - strlen(soft_drop_label)), 
+        (int)(help_window->content_w - strlen(soft_drop_label)), 
         soft_drop_key
     );
     mvwprintw(
-        controls_window->content, 
-        CONTROLS_HARD_DROP_Y, 
-        CONTROLS_HARD_DROP_X, 
+        help_window->content, 
+        HELP_HARD_DROP_Y, 
+        HELP_HARD_DROP_X, 
         "%s%*s", 
         hard_drop_label, 
-        (int)(controls_window->content_w - strlen(hard_drop_label)), 
+        (int)(help_window->content_w - strlen(hard_drop_label)), 
         hard_drop_key
     );
     mvwprintw(
-        controls_window->content, 
-        CONTROLS_PAUSE_Y, 
-        CONTROLS_PAUSE_X, 
+        help_window->content, 
+        HELP_PAUSE_Y, 
+        HELP_PAUSE_X, 
         "%s%*s", 
         pause_label, 
-        (int)(controls_window->content_w - strlen(pause_label)), 
+        (int)(help_window->content_w - strlen(pause_label)), 
         pause_key
     );
 }

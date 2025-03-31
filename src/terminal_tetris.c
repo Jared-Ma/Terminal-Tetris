@@ -53,7 +53,7 @@ static void run_tetris(
     GameWindow* hold_window,
     GameWindow* next_window,
     GameWindow* stats_window,
-    GameWindow* controls_window,
+    GameWindow* help_window,
     GameWindow* main_menu_window,
     GameWindow* pause_window,
     GameWindow* game_over_window,
@@ -74,7 +74,7 @@ static void run_tetris(
     draw_hold_window(hold_window);
     draw_next_window(next_window);
     draw_stats_window(stats_window);
-    draw_controls_window(controls_window);
+    draw_help_window(help_window);
     draw_main_menu_window(main_menu_window, start_level);
     if (debug_mode) draw_debug_window(debug_window);
     
@@ -83,7 +83,7 @@ static void run_tetris(
     game_window_refresh(hold_window);
     game_window_refresh(next_window);
     game_window_refresh(stats_window);
-    game_window_refresh(controls_window);
+    game_window_refresh(help_window);
     game_window_refresh(main_menu_window);
     if (debug_mode) game_window_refresh(debug_window);
 
@@ -191,7 +191,7 @@ static void run_tetris(
             draw_hold_window(hold_window);
             draw_next_window(next_window);
             draw_stats_window(stats_window);
-            draw_controls_window(controls_window);
+            draw_help_window(help_window);
 
             draw_board_state(board_window, game_state);
             draw_hold_piece(hold_window, game_state);
@@ -212,7 +212,7 @@ static void run_tetris(
             game_window_refresh(hold_window);
             game_window_refresh(next_window);
             game_window_refresh(stats_window);
-            game_window_refresh(controls_window);
+            game_window_refresh(help_window);
         } else if (input_state == MAIN_MENU) {
             draw_main_menu_window(main_menu_window, start_level);
             game_window_refresh(main_menu_window);
@@ -430,11 +430,11 @@ int main(int argc, char* argv[argc + 1]) {
         STATS_WINDOW_Y + y_offset, 
         STATS_WINDOW_X + x_offset
     );
-    GameWindow* controls_window = game_window_init(
-        CONTROLS_WINDOW_H, 
-        CONTROLS_WINDOW_W, 
-        CONTROLS_WINDOW_Y + y_offset, 
-        CONTROLS_WINDOW_X + x_offset
+    GameWindow* help_window = game_window_init(
+        HELP_WINDOW_H, 
+        HELP_WINDOW_W, 
+        HELP_WINDOW_Y + y_offset, 
+        HELP_WINDOW_X + x_offset
     );
     GameWindow* main_menu_window = game_window_init(
         MAIN_MENU_WINDOW_H, 
@@ -483,7 +483,7 @@ int main(int argc, char* argv[argc + 1]) {
         hold_window, 
         next_window, 
         stats_window,
-        controls_window,
+        help_window,
         main_menu_window, 
         pause_window,
         game_over_window,
@@ -497,7 +497,7 @@ int main(int argc, char* argv[argc + 1]) {
     game_window_destroy(hold_window);
     game_window_destroy(next_window);
     game_window_destroy(stats_window);
-    game_window_destroy(controls_window);
+    game_window_destroy(help_window);
     game_window_destroy(main_menu_window);
     game_window_destroy(pause_window);
     game_window_destroy(game_over_window);
