@@ -188,8 +188,8 @@ int main(void) {
     const int8_t game_window_y_offset = TEST_CONTENT_WINDOW_Y + 1;
     const int8_t game_window_x_offset = TEST_CONTENT_WINDOW_X + 1;
 
-    const char* controls_string = "< prev | pass: z | fail: x | end: esc | next >";
-    mvwprintw(test_info_window, TEST_INFO_WINDOW_H - 1, TEST_INFO_WINDOW_W / 2 - strlen(controls_string) / 2, "%s", controls_string);
+    const char* help_string = "< prev | pass: z | fail: x | end: esc | next >";
+    mvwprintw(test_info_window, TEST_INFO_WINDOW_H - 1, TEST_INFO_WINDOW_W / 2 - strlen(help_string) / 2, "%s", help_string);
     wrefresh(test_info_window);
     
     wattron(test_content_window, COLOR_PAIR(COLOR_PAIR_RED));

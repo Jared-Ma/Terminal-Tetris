@@ -112,7 +112,7 @@ void draw_next_window(GameWindow* next_window);
 
 void draw_stats_window(GameWindow* stats_window);
 
-void draw_help_window(GameWindow* controls_window);
+void draw_help_window(GameWindow* help_window);
 
 void draw_main_menu_window(GameWindow* main_menu_window, uint8_t start_level);
 
