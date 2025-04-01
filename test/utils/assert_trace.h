@@ -3,13 +3,17 @@
 #include <stdbool.h>
 #include <stdio.h>
 
+#define MACRO_TO_STRING(X) TO_STRING(X)
+
+#define TO_STRING(X) #X
+
 #define ASSERT(condition)                                  \
     if (!(condition)) {                                    \
         printf(                                            \
-            "%s:%d: %s: Assertion (%s) failed.\n",         \
+            "%s:%s:%s Assertion (%s) failed.\n",           \
             __FILE__,                                      \
-            __LINE__,                                      \
             __func__,                                      \
+            MACRO_TO_STRING(__LINE__),                     \
             #condition                                     \
         );                                                 \
         return false;                                      \
