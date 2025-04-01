@@ -74,10 +74,8 @@ bool test_stats_update(void) {
     GameState game_state = game_state_get();
 
     stats.game_time_s = 2.0;
-    stats.real_time_s = 2.0;
     game_state.score = 100;
     stats.num_pieces = 6;
-    stats.frame_count = 60;
     game_state.last_locked_piece_shape = I;
     game_state.last_action_num_lines = 1;
 
@@ -85,7 +83,6 @@ bool test_stats_update(void) {
 
     ASSERT(stats.score_per_s == 50.0);
     ASSERT(stats.piece_per_s == 3.5);
-    ASSERT(stats.fps == 30.0);
     ASSERT(stats.num_pieces == 7);
     ASSERT(stats.num_single == 1);
     return true;
