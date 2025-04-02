@@ -23,12 +23,9 @@
 
 /**
  ** @brief Trace prints to debug log
- **
- ** This implementation has the particularity of adding a format @c "%.0d" to 
- ** skip the last element of the list, which was artificially added.
  **/
-#define TRACE_PRINT(...)                  \
-TRACE_PRINT_AUX(                          \
+#define TRACE_LOG(...)                    \
+TRACE_LOG_AUX(                            \
     ARGS_HEAD(__VA_ARGS__) "%.0d",        \
     ARGS_TAIL(__VA_ARGS__)                \
 )
@@ -36,7 +33,7 @@ TRACE_PRINT_AUX(                          \
 /**
  ** @brief Allows multiple arguments to be printed in the same trace
  **/
-#define TRACE_PRINT_AUX(F, ...)                    \
+#define TRACE_LOG_AUX(F, ...)                      \
 do {                                               \
     if (debug_mode)                                \
         fprintf(                                   \
