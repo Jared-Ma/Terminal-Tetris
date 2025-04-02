@@ -287,8 +287,8 @@ void piece_move(Piece* piece, int8_t y, int8_t x) {
     if (!piece) {
         return;
     }
-    piece->x = x;
     piece->y = y;
+    piece->x = x;
 }
 
 uint8_t compute_r_index(uint8_t r, Rotation rotation) {
