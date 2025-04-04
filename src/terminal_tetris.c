@@ -38,7 +38,8 @@ enum InputState {
 
 typedef enum InputState InputState;
 
-static void restart_game(GameState* game_state, Stats* stats, VFX* vfx_list[NUM_VFX], uint8_t start_level) {
+static void start_new_game(GameState* game_state, Stats* stats, VFX* vfx_list[NUM_VFX], uint8_t start_level) {
+    TRACE_LOG("Starting new game");
     game_state_reset(game_state);
     stats_reset(stats);
     for (size_t i = 0; i < NUM_VFX; ++i) {
@@ -62,7 +63,13 @@ static void run_tetris(
     Stats* stats,
     VFX* vfx_list[NUM_VFX]
 ) {
-    srand(time(0));
+    TRACE_LOG("Starting tetris");
+
+    uint32_t random_seed = time(0);
+    srand(random_seed);
+
+    TRACE_LOG("Random seed: %u", random_seed);
+
     uint8_t start_level = 1;
     InputState input_state = MAIN_MENU;
     struct timespec start_time, end_time;
@@ -77,6 +84,7 @@ static void run_tetris(
     draw_help_window(help_window);
     draw_main_menu_window(main_menu_window, start_level);
     if (debug_mode) draw_debug_window(debug_window);
+    TRACE_LOG("Rendered initial game windows");
     
     // initial refresh of game windows
     game_window_refresh(board_window);
@@ -86,6 +94,7 @@ static void run_tetris(
     game_window_refresh(help_window);
     game_window_refresh(main_menu_window);
     if (debug_mode) game_window_refresh(debug_window);
+    TRACE_LOG("Refreshed initial game windows");
 
     while (running) {
         clock_gettime(CLOCK_MONOTONIC, &start_time);
@@ -117,45 +126,52 @@ static void run_tetris(
                 break;
             case INPUT_PAUSE:
                 input_state = PAUSED;
+                TRACE_LOG("Paused game");
                 break;
             }
         } else if (input_state == MAIN_MENU) {
             switch (input) {
             case INPUT_MOVE_LEFT:
                 start_level = (start_level > 1) ? start_level - 1 : MAX_GRAVITY_LEVEL;
+                TRACE_LOG("Set start level: %u", start_level);
                 break;
             case INPUT_MOVE_RIGHT:
                 start_level = start_level % MAX_GRAVITY_LEVEL + 1;
+                TRACE_LOG("Set start level: %u", start_level);
                 break;
             case INPUT_HARD_DROP:
-                restart_game(game_state, stats, vfx_list, start_level);
+                start_new_game(game_state, stats, vfx_list, start_level);
                 input_state = PLAYING;
                 break;
             case INPUT_PAUSE: 
                 running = false;
+                TRACE_LOG("Exited game");
                 break;
             }
         } else if (input_state == PAUSED) {
             switch (input) {
             case INPUT_HARD_DROP:
                 input_state = PLAYING;
+                TRACE_LOG("Resumed game");
                 break;
             case INPUT_RESTART:
-                restart_game(game_state, stats, vfx_list, start_level);
+                start_new_game(game_state, stats, vfx_list, start_level);
                 input_state = PLAYING;
                 break;
             case INPUT_PAUSE:
                 input_state = MAIN_MENU;
+                TRACE_LOG("Opened main menu");
                 break;
             }
         } else if (input_state == GAME_OVER) {
             switch (input) {
             case INPUT_RESTART:
-                restart_game(game_state, stats, vfx_list, start_level);
+                start_new_game(game_state, stats, vfx_list, start_level);
                 input_state = PLAYING;
                 break;
             case INPUT_PAUSE:
                 input_state = MAIN_MENU;
+                TRACE_LOG("Opened main menu");
                 break;
             }
         }
@@ -180,6 +196,7 @@ static void run_tetris(
 
             if (game_state_check_collision(game_state, game_state->curr_piece)) {
                 input_state = GAME_OVER;
+                TRACE_LOG("Detected game over");
             }
 
             stats_update(stats, game_state);
@@ -249,6 +266,8 @@ static void run_tetris(
         stats->frame_count++;
         stats->fps = stats->frame_count / stats->real_time_s;
     }
+
+    TRACE_LOG("Finished running tetris");
 }
 
 static void setup_curses(void) {
@@ -340,6 +359,8 @@ static void setup_curses(void) {
     init_pair(S, COLOR_GREEN,   -1);
     init_pair(T, COLOR_MAGENTA, -1);
     init_pair(Z, COLOR_RED,     -1);
+
+    TRACE_LOG("Initialized curses");
 }
 
 static void cleanup(void) {
@@ -356,6 +377,8 @@ static void cleanup(void) {
             fprintf(stderr, "During cleanup, endwin() failed to restore normal terminal mode.\n");
         }
     }
+    
+    TRACE_LOG("Exited curses");
 
     // close debug log file
     if (debug_log != NULL) {
@@ -460,9 +483,13 @@ int main(int argc, char* argv[argc + 1]) {
         DEBUG_WINDOW_Y + y_offset, 
         DEBUG_WINDOW_X + x_offset
     );
+    TRACE_LOG("Initialized game window objects");
 
     GameState* game_state = game_state_init();
+    TRACE_LOG("Initialized game state object");
+    
     Stats* stats = stats_init();
+    TRACE_LOG("Initialized stats object");
 
     VFX* vfx_list[NUM_VFX] = { 
         vfx_init(board_window, clear_vfx_lock_piece,  vfx_check_lock_piece,  vfx_enable_lock_piece,  LOCK_PIECE_VFX_FRAMES),
@@ -477,6 +504,7 @@ int main(int argc, char* argv[argc + 1]) {
         vfx_init(stats_window, clear_vfx_stats_lines, vfx_check_stats_lines, vfx_enable_stats_lines, STATS_LINES_VFX_FRAMES),
         vfx_init(stats_window, clear_vfx_stats_level, vfx_check_stats_level, vfx_enable_stats_level, STATS_LEVEL_VFX_FRAMES)
     };
+    TRACE_LOG("Initialized vfx objects");
     
     run_tetris(
         board_window, 
@@ -502,11 +530,18 @@ int main(int argc, char* argv[argc + 1]) {
     game_window_destroy(pause_window);
     game_window_destroy(game_over_window);
     game_window_destroy(debug_window);
+    TRACE_LOG("Deallocated game window objects");
+
     game_state_destroy(game_state);
+    TRACE_LOG("Deallocated game state object");
+
     stats_destroy(stats);
+    TRACE_LOG("Deallocated stats object");
+
     for (size_t i = 0; i < NUM_VFX; ++i) {
         vfx_destroy(vfx_list[i]);
     }
+    TRACE_LOG("Deallocated vfx objects");
 
     return EXIT_SUCCESS;
 }

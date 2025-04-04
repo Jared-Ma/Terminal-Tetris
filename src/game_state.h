@@ -140,8 +140,6 @@ void game_state_apply_soft_drop_gravity(GameState* game_state);
 
 void game_state_soft_drop_curr_piece(GameState* game_state);
 
-void game_state_move_ghost_piece(GameState* game_state, int8_t y, int8_t x);
-
 void game_state_update_ghost_piece(GameState* game_state);
 
 bool game_state_check_t_spin(const GameState* game_state);

@@ -157,6 +157,7 @@ void game_state_start(GameState* game_state, uint8_t start_level) {
     game_state_generate_next_queue(game_state);
     game_state->next_piece = piece_get(game_state->next_queue[game_state->next_index++], 0, 0);
     game_state_load_next_piece(game_state);
+    TRACE_LOG("Set game state start values: start_level=%u", start_level);
 }
 
 void game_state_reset(GameState* game_state) {
@@ -164,6 +165,7 @@ void game_state_reset(GameState* game_state) {
         return;
     }
     *game_state = game_state_get();
+    TRACE_LOG("Reset game state values");
 }
 
 void game_state_reset_vfx_conditions(GameState* game_state) {
@@ -278,6 +280,17 @@ void game_state_generate_next_queue(GameState* game_state) {
     for (size_t i = 0; i < NUM_SHAPES; ++i) {
         game_state->next_queue[i] = random_shapes[i];
     }
+
+    TRACE_LOG(
+        "Generated next queue: next_queue=[%c, %c, %c, %c, %c, %c, %c]",
+        shape_to_char(game_state->next_queue[0]),
+        shape_to_char(game_state->next_queue[1]),
+        shape_to_char(game_state->next_queue[2]),
+        shape_to_char(game_state->next_queue[3]),
+        shape_to_char(game_state->next_queue[4]),
+        shape_to_char(game_state->next_queue[5]),
+        shape_to_char(game_state->next_queue[6])
+    );
 }
 
 void game_state_load_next_piece(GameState* game_state) {
@@ -293,6 +306,14 @@ void game_state_load_next_piece(GameState* game_state) {
     }
     game_state->next_piece = piece_get(game_state->next_queue[game_state->next_index++], 0, 0);
     game_state->next_piece_event_flag = true;
+
+    TRACE_LOG(
+        "Set next piece: next_piece=(y=%i, x=%i, r=%i, shape=%c)",
+        game_state->next_piece.y,
+        game_state->next_piece.x,
+        game_state->next_piece.r,
+        shape_to_char(game_state->next_piece.shape)
+    );
 }
 
 void game_state_spawn_curr_piece(GameState* game_state) {
@@ -307,6 +328,14 @@ void game_state_spawn_curr_piece(GameState* game_state) {
     game_state->lock_delay_timer = LOCK_DELAY;
     game_state->move_reset_count = 0;
     game_state->t_rotation_test_num = 0;
+
+    TRACE_LOG(
+        "Spawned piece: curr_piece=(y=%i, x=%i, r=%i, shape=%c)",
+        game_state->curr_piece.y,
+        game_state->curr_piece.x,
+        game_state->curr_piece.r,
+        shape_to_char(game_state->curr_piece.shape)
+    );
 }
 
 void game_state_hold_piece(GameState* game_state) {
@@ -329,6 +358,14 @@ void game_state_hold_piece(GameState* game_state) {
         game_state->hold_blocked = true;
         game_state->hold_piece_event_flag = true;
     }
+
+    TRACE_LOG(
+        "Held piece: hold_piece=(y=%i, x=%i, r=%i, shape=%c)",
+        game_state->hold_piece.y,
+        game_state->hold_piece.x,
+        game_state->hold_piece.r,
+        shape_to_char(game_state->hold_piece.shape)
+    );
 }
 
 bool game_state_check_collision(const GameState* game_state, Piece piece) {
@@ -386,10 +423,20 @@ void game_state_move_curr_piece(GameState* game_state, int8_t y, int8_t x) {
     test_piece.x = x;
     if (!game_state_check_collision(game_state, test_piece)) {
         piece_move(&game_state->curr_piece, y, x);
+
+        TRACE_LOG(
+            "Moved piece: curr_piece=(y=%i, x=%i, r=%i, shape=%c)",
+            game_state->curr_piece.y,
+            game_state->curr_piece.x,
+            game_state->curr_piece.r,
+            shape_to_char(game_state->curr_piece.shape)
+        );
+
         game_state_update_ghost_piece(game_state);
         if (game_state->lock_delay_timer < LOCK_DELAY && game_state->move_reset_count < MAX_MOVE_RESET) {
             game_state->lock_delay_timer = LOCK_DELAY;
             game_state->move_reset_count++;
+            TRACE_LOG("Reset lock delay: move_reset_count=%u", game_state->move_reset_count);
         }
         if (game_state->curr_piece.shape == T) {
             game_state->t_rotation_test_num = 0;
@@ -444,10 +491,22 @@ void game_state_rotate_curr_piece_srs(GameState* game_state, Rotation rotation) 
         }
         game_state_rotate_curr_piece(game_state, rotation);
         if (game_state->curr_piece.r != curr_piece_copy.r) {
+
+            TRACE_LOG("Passed SRS test %lu", i + 1);
+
+            TRACE_LOG(
+                "Rotated piece curr_piece=(y=%i, x=%i, r=%i, shape=%c)",
+                game_state->curr_piece.y,
+                game_state->curr_piece.x,
+                game_state->curr_piece.r,
+                shape_to_char(game_state->curr_piece.shape)
+            );
+
             game_state_update_ghost_piece(game_state);
             if (game_state->lock_delay_timer < LOCK_DELAY && game_state->move_reset_count < MAX_MOVE_RESET) {
                 game_state->lock_delay_timer = LOCK_DELAY;
                 game_state->move_reset_count++;
+                TRACE_LOG("Reset lock delay: move_reset_count=%u", game_state->move_reset_count);
             }
             if (game_state->curr_piece.shape == T) {
                 game_state->t_rotation_test_num = i + 1;
@@ -464,15 +523,28 @@ void game_state_hard_drop_curr_piece(GameState* game_state) {
     }
 
     int8_t prev_y = game_state->curr_piece.y;
-    for (size_t y = game_state->curr_piece.y + 1; y < BOARD_H; ++y) {
-        Piece prev_piece = game_state->curr_piece;
-        game_state_move_curr_piece(game_state, y, game_state->curr_piece.x);
-        if (game_state->curr_piece.y == prev_piece.y) {
-            break;
-        }
+    Piece test_piece = game_state->curr_piece;
+    while (!game_state_check_collision(game_state, test_piece)) {
+        piece_move(&test_piece, test_piece.y + 1, test_piece.x);
     }
-    game_state->score += HARD_DROP_POINTS * (game_state->curr_piece.y - prev_y);
+    game_state->curr_piece.y = test_piece.y - 1;
     game_state->lock_delay_timer = 0;
+
+    if (game_state->curr_piece.shape == T && game_state->curr_piece.y != prev_y) {
+        game_state->t_rotation_test_num = 0;
+    }
+    
+    TRACE_LOG(
+        "Hard dropped piece: curr_piece=(y=%i, x=%i, r=%i, shape=%c)",
+        game_state->curr_piece.y,
+        game_state->curr_piece.x,
+        game_state->curr_piece.r,
+        shape_to_char(game_state->curr_piece.shape)
+    );
+
+    uint32_t points = HARD_DROP_POINTS * (game_state->curr_piece.y - prev_y);
+    game_state->score += points;
+    TRACE_LOG("Added hard drop points: %u", points);
 }
 
 void game_state_lock_curr_piece(GameState* game_state) {
@@ -491,6 +563,14 @@ void game_state_lock_curr_piece(GameState* game_state) {
     }
     game_state->hold_blocked = false;
     game_state->last_locked_piece_shape = game_state->curr_piece.shape;
+
+    TRACE_LOG(
+        "Locked piece: curr_piece=(y=%i, x=%i, r=%i, shape=%c)",
+        game_state->curr_piece.y,
+        game_state->curr_piece.x,
+        game_state->curr_piece.r,
+        shape_to_char(game_state->curr_piece.shape)
+    );
 }
 
 void game_state_apply_stack_gravity(GameState* game_state, uint8_t row) {
@@ -512,6 +592,7 @@ void game_state_clear_line(GameState* game_state, uint8_t row) {
     for (size_t i = 0; i < BOARD_W; ++i) {
         game_state->board[row][i] = 0;
     }
+    TRACE_LOG("Cleared line: %u", row);
 }
 
 void game_state_clear_lines(GameState* game_state) {
@@ -534,6 +615,7 @@ void game_state_clear_lines(GameState* game_state) {
             rows[num_lines++] = i;
         }
     }
+    TRACE_LOG("Detected %u lines", num_lines);
 
     // calculate amount of points from line clear
     uint32_t points = 0;
@@ -551,6 +633,7 @@ void game_state_clear_lines(GameState* game_state) {
     points *= game_state_calc_difficult_clear_mult(game_state, num_lines);
     game_state->score += points;
     game_state->last_action_points = points;
+    TRACE_LOG("Added total points: %u", points);
     
     // add the number of lines and increment level accordingly
     game_state->lines += num_lines;
@@ -558,6 +641,7 @@ void game_state_clear_lines(GameState* game_state) {
     if (game_state->lines >= game_state->level * LEVEL_LINE_REQ) {
         game_state->level++;
         game_state->level_up_event_flag = true;
+        TRACE_LOG("Leveled up: level=%u", game_state->level);
     }
 }
 
@@ -573,6 +657,15 @@ void game_state_apply_gravity(GameState* game_state) {
     }
     while (game_state->gravity_value >= 1.0) {
         game_state->gravity_value -= 1.0;
+
+        TRACE_LOG(
+            "Applied gravity to piece: curr_piece=(y=%i, x=%i, r=%i, shape=%c)",
+            game_state->curr_piece.y,
+            game_state->curr_piece.x,
+            game_state->curr_piece.r,
+            shape_to_char(game_state->curr_piece.shape)
+        );
+
         game_state_move_curr_piece(game_state, game_state->curr_piece.y + 1, game_state->curr_piece.x);
     }
 }
@@ -589,8 +682,12 @@ void game_state_apply_soft_drop_gravity(GameState* game_state) {
         game_state->gravity_value += SOFT_DROP_GRAVITY_MULT * GRAVITY_TABLE[game_state->level - 1];
     }
     game_state_apply_gravity(game_state);
-    game_state->score += SOFT_DROP_POINTS * (game_state->curr_piece.y - prev_y);
     game_state->soft_drop = false;
+    TRACE_LOG("Toggled soft drop: soft_drop=%s", (game_state->soft_drop) ? "true" : "false");
+    
+    uint32_t points = SOFT_DROP_POINTS * (game_state->curr_piece.y - prev_y);
+    game_state->score += SOFT_DROP_POINTS * (game_state->curr_piece.y - prev_y);
+    TRACE_LOG("Added soft drop points: %u", points);
 }
 
 void game_state_soft_drop_curr_piece(GameState* game_state) {
@@ -600,21 +697,12 @@ void game_state_soft_drop_curr_piece(GameState* game_state) {
     
     int8_t prev_y = game_state->curr_piece.y;
     game_state_move_curr_piece(game_state, game_state->curr_piece.y + 1, game_state->curr_piece.x);
-    game_state->score += SOFT_DROP_POINTS * (game_state->curr_piece.y - prev_y);
     game_state->soft_drop = true;
-}
+    TRACE_LOG("Toggled soft drop: soft_drop=%s", (game_state->soft_drop) ? "true" : "false");
 
-void game_state_move_ghost_piece(GameState* game_state, int8_t y, int8_t x) {
-    if (!game_state) {
-        return;
-    }
-
-    Piece test_piece = game_state->ghost_piece;
-    test_piece.y = y;
-    test_piece.x = x;
-    if (!game_state_check_collision(game_state, test_piece)) {
-        piece_move(&game_state->ghost_piece, y, x);
-    } 
+    uint32_t points = SOFT_DROP_POINTS * (game_state->curr_piece.y - prev_y);
+    game_state->score += points;
+    TRACE_LOG("Added soft drop points: %u", points);
 }
 
 void game_state_update_ghost_piece(GameState* game_state) {
@@ -623,13 +711,18 @@ void game_state_update_ghost_piece(GameState* game_state) {
     }
 
     game_state->ghost_piece = game_state->curr_piece;
-    for (size_t y = game_state->ghost_piece.y + 1; y < BOARD_H; ++y) {
-        Piece prev_piece = game_state->ghost_piece;
-        game_state_move_ghost_piece(game_state, y, game_state->ghost_piece.x);
-        if (game_state->ghost_piece.y == prev_piece.y) {
-            return;
-        }
+    Piece test_piece = game_state->ghost_piece;
+    while (!game_state_check_collision(game_state, test_piece)) {
+        piece_move(&test_piece, test_piece.y + 1, test_piece.x);
     }
+    game_state->ghost_piece.y = test_piece.y - 1;
+    
+    TRACE_LOG("Updated ghost piece: ghost_piece=(y=%i, x=%i, r=%i, shape=%c)",
+        game_state->ghost_piece.y,
+        game_state->ghost_piece.x,
+        game_state->ghost_piece.r,
+        shape_to_char(game_state->ghost_piece.shape)
+    );
 }
 
 bool game_state_check_t_spin(const GameState* game_state) {
@@ -812,6 +905,7 @@ uint32_t game_state_calc_t_spin_points(GameState* game_state, uint8_t num_lines)
             game_state->difficult_clear_combo++;
             game_state->last_action_t_spin = true;
         }
+        TRACE_LOG("Added t-spin points: %u", points);
     } else if (game_state_check_t_spin_mini(game_state)) {
         if (num_lines == 0) {
             points += T_SPIN_MINI_ZERO_POINTS * game_state->level;
@@ -825,6 +919,7 @@ uint32_t game_state_calc_t_spin_points(GameState* game_state, uint8_t num_lines)
             game_state->difficult_clear_combo++;
             game_state->last_action_t_spin_mini = true;
         }
+        TRACE_LOG("Added t-spin mini points: %u", points);
     }
     return points;
 }
@@ -835,7 +930,7 @@ uint32_t game_state_calc_line_clear_points(GameState* game_state, uint8_t num_li
     }
 
     uint32_t points = 0;
-    if (!game_state_check_t_spin(game_state) && !game_state_check_t_spin_mini(game_state)) {
+    if (!game_state_check_t_spin(game_state) && !game_state_check_t_spin_mini(game_state) && num_lines > 0) {
         if (num_lines == 1) {
             points += SINGLE_POINTS * game_state->level;
             game_state->difficult_clear_combo = -1;
@@ -849,6 +944,7 @@ uint32_t game_state_calc_line_clear_points(GameState* game_state, uint8_t num_li
             points += TETRIS_POINTS * game_state->level;
             game_state->difficult_clear_combo++;
         }
+        TRACE_LOG("Added line clear points: %u", points);
     }
     return points;
 }
@@ -878,6 +974,7 @@ uint32_t game_state_calc_all_clear_points(GameState* game_state, uint8_t num_lin
             }
         }
         game_state->last_action_all_clear = true;
+        TRACE_LOG("Added all clear points: %u", points);
     } 
     return points;
 }
@@ -890,7 +987,10 @@ uint32_t game_state_calc_combo_points(GameState* game_state, uint8_t num_lines) 
     uint32_t points = 0;
     if (num_lines > 0) {
         game_state->combo++;
-        points += COMBO_POINTS * game_state->combo * game_state->level;
+        if (game_state->combo > 0) {
+            points += COMBO_POINTS * game_state->combo * game_state->level;
+            TRACE_LOG("Added combo points: %u", points);
+        }
     } else {
         game_state->combo = -1;
     }
@@ -902,6 +1002,7 @@ float game_state_calc_difficult_clear_mult(GameState* game_state, uint8_t num_li
         return 0.0;
     }
     if (num_lines > 0 && game_state->difficult_clear_combo > 0) {
+        TRACE_LOG("Applied b2b combo multiplier: %.1f", B2B_DIFFICULT_CLEAR_MULT);
         return B2B_DIFFICULT_CLEAR_MULT;
     }
     return 1.0;

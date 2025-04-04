@@ -162,6 +162,8 @@ void vfx_enable_lock_piece(VFX* vfx, const GameState* game_state) {
     } else if (game_state->last_locked_piece_shape == Z) {
         vfx_enable(vfx, draw_vfx_lock_z_piece);
     }
+
+    TRACE_LOG("Enabled lock piece VFX");
 }
 
 void clear_vfx_lock_piece(VFX* vfx) {
@@ -245,6 +247,8 @@ void vfx_enable_line_clear(VFX* vfx, const GameState* game_state) {
     } else if (game_state->last_action_num_lines == 4) {
         vfx_enable(vfx, draw_vfx_line_clear_tetris);
     }
+
+    TRACE_LOG("Enabled line clear VFX");
 }
 
 void clear_vfx_line_clear(VFX* vfx) {
@@ -338,6 +342,8 @@ void vfx_enable_hold_piece(VFX* vfx, const GameState* game_state) {
     } else if (game_state->hold_piece.shape == Z) {
         vfx_enable(vfx, draw_vfx_hold_z_piece);
     }
+
+    TRACE_LOG("Enabled hold piece VFX");
 }
 
 void clear_vfx_hold_piece(VFX* vfx) {
@@ -431,6 +437,8 @@ void vfx_enable_next_piece(VFX* vfx, const GameState* game_state) {
     } else if (game_state->next_piece.shape == Z) {
         vfx_enable(vfx, draw_vfx_next_z_piece);
     }
+
+    TRACE_LOG("Enabled next piece VFX");
 }
 
 void clear_vfx_next_piece(VFX* vfx) {
@@ -585,6 +593,8 @@ void vfx_enable_action(VFX* vfx, const GameState* game_state) {
         vfx->y--;
         vfx_enable(vfx, draw_vfx_action_tetris);
     }
+
+    TRACE_LOG("Enabled action VFX");
 }
 
 void clear_vfx_action(VFX* vfx) {
@@ -748,6 +758,8 @@ void vfx_enable_combo(VFX* vfx, const GameState* game_state) {
     vfx->y -= (game_state->difficult_clear_combo > 0) ? 1 : 0;
     vfx->y--;
     vfx_enable(vfx, draw_vfx_combo);
+
+    TRACE_LOG("Enabled combo VFX");
 }
 
 void clear_vfx_combo(VFX* vfx) {
@@ -797,6 +809,8 @@ void vfx_enable_b2b_combo(VFX* vfx, const GameState* game_state) {
     vfx->y -= (game_state->last_action_points > 0) ? 1 : 0;
     vfx->y--;
     vfx_enable(vfx, draw_vfx_b2b_combo);
+ 
+    TRACE_LOG("Enabled b2b combo VFX");
 }
 
 void clear_vfx_b2b_combo(VFX* vfx) {
@@ -845,6 +859,8 @@ void vfx_enable_points(VFX* vfx, const GameState* game_state) {
     vfx->y = vfx->game_window->content_h;
     vfx->y--;
     vfx_enable(vfx, draw_vfx_points);
+
+    TRACE_LOG("Enabled points VFX");
 }
 
 void clear_vfx_points(VFX* vfx) {
@@ -888,6 +904,8 @@ void vfx_enable_level_up(VFX* vfx, const GameState* game_state) {
     vfx->y = LEVEL_UP_VFX_Y;
     vfx->x = vfx->game_window->content_w/2 - strlen(vfx->text)/2;
     vfx_enable(vfx, draw_vfx_level_up);
+
+    TRACE_LOG("Enabled level up VFX");
 }
 
 void clear_vfx_level_up(VFX* vfx) {
@@ -948,6 +966,8 @@ void vfx_enable_stats_lines(VFX* vfx, const GameState* game_state) {
     vfx->y = STATS_LINES_Y;
     vfx->x = STATS_LINES_X;
     vfx_enable(vfx, draw_vfx_stats_lines);
+    
+    TRACE_LOG("Enabled stats lines VFX");
 }
 
 void clear_vfx_stats_lines(VFX* vfx) {
@@ -982,6 +1002,8 @@ void vfx_enable_stats_level(VFX* vfx, const GameState* game_state) {
     vfx->y = STATS_LEVEL_Y;
     vfx->x = STATS_LEVEL_X;
     vfx_enable(vfx, draw_vfx_stats_level);
+
+    TRACE_LOG("Enabled stats level VFX");
 }
 
 void clear_vfx_stats_level(VFX* vfx) {
