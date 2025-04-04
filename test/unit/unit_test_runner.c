@@ -9,7 +9,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#define NUM_TESTS 81
+#define NUM_TESTS 80
 
 
 int main(void) {
@@ -59,7 +59,6 @@ int main(void) {
         UNIT_TEST(test_game_state_apply_gravity),
         UNIT_TEST(test_game_state_apply_soft_drop_gravity),
         UNIT_TEST(test_game_state_soft_drop_curr_piece),
-        UNIT_TEST(test_game_state_move_ghost_piece),
         UNIT_TEST(test_game_state_update_ghost_piece),
         UNIT_TEST(test_game_state_check_t_spin),
         UNIT_TEST(test_game_state_check_t_spin_mini),

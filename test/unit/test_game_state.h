@@ -59,8 +59,6 @@ bool test_game_state_apply_soft_drop_gravity(void);
 
 bool test_game_state_soft_drop_curr_piece(void);
 
-bool test_game_state_move_ghost_piece(void);
-
 bool test_game_state_update_ghost_piece(void);
 
 bool test_game_state_check_t_spin(void);

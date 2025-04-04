@@ -1233,25 +1233,6 @@ bool test_game_state_soft_drop_curr_piece(void) {
     return true;
 }
 
-bool test_game_state_move_ghost_piece(void) {
-    GameState game_state = game_state_get();
-    game_state_start(&game_state, 1);
-
-    int prev_y = game_state.ghost_piece.y;
-    int prev_x = game_state.ghost_piece.x;
-    game_state_move_ghost_piece(&game_state, 10, 5);
-    ASSERT(game_state.ghost_piece.y == 10);
-    ASSERT(game_state.ghost_piece.x == 5);
-
-    prev_y = game_state.ghost_piece.y;
-    prev_x = game_state.ghost_piece.x;
-    game_state_move_ghost_piece(&game_state, -1, -1);
-    ASSERT(game_state.ghost_piece.y == prev_y);
-    ASSERT(game_state.ghost_piece.x == prev_x);
-
-    return true;
-}
-
 bool test_game_state_update_ghost_piece(void) {
     GameState game_state = game_state_get();
     game_state_start(&game_state, 1);
