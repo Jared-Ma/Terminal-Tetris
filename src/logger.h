@@ -2,6 +2,10 @@
 #define LOGGER_H
 #include <stdbool.h>
 #include <stdio.h>
+#include <stdint.h>
+
+#define MAX_LOGS 18
+#define LOG_SIZE 100
 
 /**
  ** @brief Converts a macro to a string
@@ -38,22 +42,34 @@ do {                                               \
     if (debug_mode)                                \
         fprintf(                                   \
             debug_log,                             \
-            "[%s %s] - %s:%s:%s - " F "\n",        \
-            __DATE__,                              \
-            __TIME__,                              \
+            "%s:%s - " F "\n",                     \
             __FILE__,                              \
-            __func__,                              \
             MACRO_TO_STRING(__LINE__),             \
             __VA_ARGS__                            \
         );                                         \
 } while (false)
-
 
 extern const char* DEBUG_LOG_FILEPATH;
 
 extern bool debug_mode;
 extern FILE* debug_log;
 
+struct LogBuffer {
+    fpos_t file_pos;
+    char logs[MAX_LOGS][LOG_SIZE];
+    uint8_t start_index;
+    uint8_t end_index;
+    size_t num_logs;
+};
+
+typedef struct LogBuffer LogBuffer;
+
 bool debug_log_open(const char* filepath);
+
+LogBuffer log_buffer_get(void);
+
+LogBuffer* log_buffer_init(void);
+
+void log_buffer_append(LogBuffer* log_buffer, char* log);
 
 #endif

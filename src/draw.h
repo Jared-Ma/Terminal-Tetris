@@ -1,6 +1,7 @@
 #ifndef DRAW_H
 #define DRAW_H
 #include "game_state.h"
+#include "logger.h"
 #include "stats.h"
 
 #include <ncurses.h>
@@ -54,6 +55,11 @@ extern const int8_t DEBUG_WINDOW_H;
 extern const int8_t DEBUG_WINDOW_W;
 extern const int8_t DEBUG_WINDOW_Y;
 extern const int8_t DEBUG_WINDOW_X;
+
+extern const int8_t LOGS_WINDOW_H;
+extern const int8_t LOGS_WINDOW_W;
+extern const int8_t LOGS_WINDOW_Y;
+extern const int8_t LOGS_WINDOW_X;
 
 extern const int8_t STATS_LINES_Y;
 extern const int8_t STATS_LINES_X;
@@ -122,6 +128,8 @@ void draw_game_over_window(GameWindow* game_over_window);
 
 void draw_debug_window(GameWindow* debug_window);
 
+void draw_logs_window(GameWindow* logs_window);
+
 void draw_board_state(GameWindow* board_window, const GameState* game_state);
 
 void draw_buffer_zone_line(GameWindow* board_window);
@@ -143,5 +151,7 @@ void draw_stats(GameWindow* stats_window, const GameState* game_state, const Sta
 void draw_pause_stats(GameWindow* stats_window, const Stats* stats);
 
 void draw_debug_variables(GameWindow* debug_window, const GameState* game_state, const Stats* stats);
+
+void draw_debug_logs(GameWindow* logs_window, FILE* debug_log, LogBuffer* log_buffer);
 
 #endif

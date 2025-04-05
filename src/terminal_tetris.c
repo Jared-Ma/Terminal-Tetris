@@ -59,9 +59,11 @@ static void run_tetris(
     GameWindow* pause_window,
     GameWindow* game_over_window,
     GameWindow* debug_window,
+    GameWindow* logs_window,
     GameState* game_state,
     Stats* stats,
-    VFX* vfx_list[NUM_VFX]
+    VFX* vfx_list[NUM_VFX],
+    LogBuffer* log_buffer
 ) {
     TRACE_LOG("Starting tetris");
 
@@ -83,7 +85,10 @@ static void run_tetris(
     draw_stats_window(stats_window);
     draw_help_window(help_window);
     draw_main_menu_window(main_menu_window, start_level);
-    if (debug_mode) draw_debug_window(debug_window);
+    if (debug_mode) {
+        draw_debug_window(debug_window);
+        draw_logs_window(logs_window);
+    }
     TRACE_LOG("Rendered initial game windows");
     
     // initial refresh of game windows
@@ -93,7 +98,10 @@ static void run_tetris(
     game_window_refresh(stats_window);
     game_window_refresh(help_window);
     game_window_refresh(main_menu_window);
-    if (debug_mode) game_window_refresh(debug_window);
+    if (debug_mode) {
+        game_window_refresh(debug_window);
+        game_window_refresh(logs_window);
+    }
     TRACE_LOG("Refreshed initial game windows");
 
     while (running) {
@@ -247,7 +255,9 @@ static void run_tetris(
 
         if (debug_mode) {
             draw_debug_variables(debug_window, game_state, stats);
+            draw_debug_logs(logs_window, debug_log, log_buffer);
             game_window_refresh(debug_window);
+            game_window_refresh(logs_window);
         }
 
         clock_gettime(CLOCK_MONOTONIC, &end_time);
@@ -281,6 +291,7 @@ static void setup_curses(void) {
     int h_max = GAME_H;
     int w_max = GAME_W;
     if (debug_mode) {
+        h_max += LOGS_WINDOW_H;
         w_max += DEBUG_WINDOW_W;
     }
 
@@ -426,6 +437,7 @@ int main(int argc, char* argv[argc + 1]) {
     int y_offset = LINES / 2 - GAME_H / 2;
     int x_offset = COLS / 2 - GAME_W / 2;
     if (debug_mode) {
+        y_offset -= LOGS_WINDOW_H / 2;
         x_offset -= DEBUG_WINDOW_W / 2;
     }
     
@@ -483,6 +495,12 @@ int main(int argc, char* argv[argc + 1]) {
         DEBUG_WINDOW_Y + y_offset, 
         DEBUG_WINDOW_X + x_offset
     );
+    GameWindow* logs_window = game_window_init(
+        LOGS_WINDOW_H, 
+        LOGS_WINDOW_W, 
+        LOGS_WINDOW_Y + y_offset, 
+        LOGS_WINDOW_X + x_offset
+    );
     TRACE_LOG("Initialized game window objects");
 
     GameState* game_state = game_state_init();
@@ -505,6 +523,9 @@ int main(int argc, char* argv[argc + 1]) {
         vfx_init(stats_window, clear_vfx_stats_level, vfx_check_stats_level, vfx_enable_stats_level, STATS_LEVEL_VFX_FRAMES)
     };
     TRACE_LOG("Initialized vfx objects");
+
+    LogBuffer* log_buffer = log_buffer_init();
+    TRACE_LOG("Initialized log buffer");
     
     run_tetris(
         board_window, 
@@ -516,9 +537,11 @@ int main(int argc, char* argv[argc + 1]) {
         pause_window,
         game_over_window,
         debug_window,
+        logs_window,
         game_state,
         stats,
-        vfx_list
+        vfx_list,
+        log_buffer
     );
     
     game_window_destroy(board_window);
@@ -530,6 +553,7 @@ int main(int argc, char* argv[argc + 1]) {
     game_window_destroy(pause_window);
     game_window_destroy(game_over_window);
     game_window_destroy(debug_window);
+    game_window_destroy(logs_window);
     TRACE_LOG("Deallocated game window objects");
 
     game_state_destroy(game_state);

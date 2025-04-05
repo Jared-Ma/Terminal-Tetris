@@ -52,9 +52,14 @@ const int8_t GAME_OVER_WINDOW_Y = 9;
 const int8_t GAME_OVER_WINDOW_X = 18;
 
 const int8_t DEBUG_WINDOW_H = 24;
-const int8_t DEBUG_WINDOW_W = 42;
+const int8_t DEBUG_WINDOW_W = 50;
 const int8_t DEBUG_WINDOW_Y = 0;
 const int8_t DEBUG_WINDOW_X = 50;
+
+const int8_t LOGS_WINDOW_H = 20;
+const int8_t LOGS_WINDOW_W = 100;
+const int8_t LOGS_WINDOW_Y = 24;
+const int8_t LOGS_WINDOW_X = 0;
 
 const int8_t BOARD_SCORE_W = 8;
 
@@ -137,6 +142,7 @@ const char* HELP_TITLE      = "HELP";
 const char* PAUSE_TITLE     = "PAUSE";
 const char* GAME_OVER_TITLE = "GAME-OVER";
 const char* DEBUG_TITLE     = "DEBUG";
+const char* LOGS_TITLE      = "LOGS";
 
 const char BLOCK_LEFT       = '[';
 const char BLOCK_RIGHT      = ']';
@@ -389,6 +395,11 @@ void draw_debug_window(GameWindow* debug_window) {
     draw_window_title(debug_window, DEBUG_TITLE, COLOR_PAIR_RED);
 }
 
+void draw_logs_window(GameWindow* logs_window) {
+    draw_window_border(logs_window, COLOR_PAIR_RED);
+    draw_window_title(logs_window, LOGS_TITLE, COLOR_PAIR_RED);
+}
+
 void draw_board_state(GameWindow* board_window, const GameState* game_state) {
     werase(board_window->content);
     draw_buffer_zone_line(board_window);
@@ -637,4 +648,28 @@ void draw_debug_variables(GameWindow* debug_window, const GameState* game_state,
         stats->frame_count,
         stats->fps
     );
+}
+
+void draw_debug_logs(GameWindow* logs_window, FILE* debug_log, LogBuffer* log_buffer) {
+    char line[1024];
+    fflush(debug_log);
+    fsetpos(debug_log, &log_buffer->file_pos);
+
+    while (fgets(line, sizeof(line), debug_log)) {
+        log_buffer_append(log_buffer, line);
+    }
+
+    for (size_t i = 0; i < MAX_LOGS; ++i) {
+        if (log_buffer->logs[(i + log_buffer->start_index) % MAX_LOGS]) {
+            mvwprintw(
+                logs_window->content,
+                i, 0,
+                "%.*s",
+                logs_window->content_w, 
+                log_buffer->logs[(i + log_buffer->start_index) % MAX_LOGS]
+            );
+        }
+    }
+
+    fgetpos(debug_log, &log_buffer->file_pos);
 }
