@@ -86,6 +86,8 @@ const int8_t HELP_HARD_DROP_Y = 9;
 const int8_t HELP_HARD_DROP_X = 0;
 const int8_t HELP_PAUSE_Y     = 11;
 const int8_t HELP_PAUSE_X     = 0;
+const int8_t HELP_SET_DELAY_Y = 13;
+const int8_t HELP_SET_DELAY_X = 0;
 
 const int8_t MAIN_MENU_TITLE_H          = 4;
 const int8_t MAIN_MENU_TITLE_TERMINAL_Y = 0;
@@ -248,6 +250,7 @@ void draw_help_window(GameWindow* help_window) {
     char* soft_drop_label = "soft drop: ";
     char* hard_drop_label = "hard drop: ";
     char* pause_label     = "pause: ";
+    char* set_delay_label = "set delay: ";
 
     char* move_key      = "< >";
     char* rotate_key    = "z x";
@@ -255,6 +258,7 @@ void draw_help_window(GameWindow* help_window) {
     char* soft_drop_key = "v";
     char* hard_drop_key = "_";
     char* pause_key     = "esc";
+    char* set_delay_key = "d";
 
     mvwprintw(
         help_window->content, 
@@ -310,6 +314,17 @@ void draw_help_window(GameWindow* help_window) {
         (int)(help_window->content_w - strlen(pause_label)), 
         pause_key
     );
+    if (debug_mode) {
+        mvwprintw(
+            help_window->content, 
+            HELP_SET_DELAY_Y, 
+            HELP_SET_DELAY_X, 
+            "%s%*s", 
+            set_delay_label, 
+            (int)(help_window->content_w - strlen(set_delay_label)), 
+            set_delay_key
+        );
+    }
 }
 
 void draw_main_menu_window(GameWindow* main_menu_window, uint8_t start_level) {
