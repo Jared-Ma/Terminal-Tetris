@@ -24,6 +24,7 @@
 #define INPUT_HARD_DROP    ' '
 #define INPUT_RESTART      'r'
 #define INPUT_PAUSE        '\e'
+#define INPUT_TOGGLE_DELAY 'd'
 
 
 const uint8_t TARGET_FPS = 60;
@@ -105,10 +106,9 @@ static void run_tetris(
     TRACE_LOG("Refreshed initial game windows");
 
     while (running) {
-        clock_gettime(CLOCK_MONOTONIC, &start_time);
-
         // Input
         int input = getch();
+        clock_gettime(CLOCK_MONOTONIC, &start_time);
         if (input_state == PLAYING) {
             switch (input) {
             case INPUT_ROTATE_LEFT:
@@ -182,6 +182,11 @@ static void run_tetris(
                 TRACE_LOG("Opened main menu");
                 break;
             }
+        }
+
+        if (input == INPUT_TOGGLE_DELAY && debug_mode) {
+            nodelay(stdscr, !is_nodelay(stdscr));
+            TRACE_LOG("Toggle delay mode: nodelay=%s", (is_nodelay(stdscr)) ? "true" : "false");
         }
         
         // Update

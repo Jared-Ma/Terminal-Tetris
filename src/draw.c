@@ -608,7 +608,8 @@ void draw_debug_variables(GameWindow* debug_window, const GameState* game_state,
         "real_time_s: %f\n"
         "num_pieces: %u\n"
         "frame_count: %lu\n"
-        "fps: %f\n",
+        "fps: %f\n"
+        "frame-by-frame: %s\n",
         game_state->curr_piece.y,
         game_state->curr_piece.x,
         game_state->curr_piece.r,
@@ -646,7 +647,8 @@ void draw_debug_variables(GameWindow* debug_window, const GameState* game_state,
         stats->real_time_s,
         stats->num_pieces,
         stats->frame_count,
-        stats->fps
+        stats->fps,
+        (is_nodelay(stdscr)) ? "false" : "true"
     );
 }
 
