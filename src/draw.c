@@ -8,9 +8,11 @@
 #include <string.h>
 
 
+// Total dimensions of the game.
 const int8_t GAME_H = 24;
 const int8_t GAME_W = 50;
 
+// Dimensions and coordinates of each game window.
 const int8_t BOARD_WINDOW_H = 24;
 const int8_t BOARD_WINDOW_W = 22;
 const int8_t BOARD_WINDOW_Y = 0;
@@ -61,8 +63,10 @@ const int8_t LOGS_WINDOW_W = 100;
 const int8_t LOGS_WINDOW_Y = 24;
 const int8_t LOGS_WINDOW_X = 0;
 
+// Width of the score display at the bottom of the board window.
 const int8_t BOARD_SCORE_W = 8;
 
+// Coordinates of each label relative to their corresponding window.
 const int8_t STATS_TIME_Y  = 1;
 const int8_t STATS_TIME_X  = 0;
 const int8_t STATS_LINES_Y = 3;
@@ -124,6 +128,17 @@ const int8_t GAME_OVER_RESTART_X = 1;
 const int8_t GAME_OVER_QUIT_Y    = 1;
 const int8_t GAME_OVER_QUIT_X    = 1;
 
+// Title strings for each window.
+const char* HOLD_TITLE      = "HOLD";
+const char* NEXT_TITLE      = "NEXT";
+const char* STATS_TITLE     = "STATS";
+const char* HELP_TITLE      = "HELP";
+const char* PAUSE_TITLE     = "PAUSE";
+const char* GAME_OVER_TITLE = "GAME-OVER";
+const char* DEBUG_TITLE     = "DEBUG";
+const char* LOGS_TITLE      = "LOGS";
+
+// Title string arrays for main menu ASCII art.
 const char* MAIN_MENU_TITLE_TERMINAL[4] = {
     " _____              _           _ \n",
     "|_   _|__ _ _ _ __ (_)_ _  __ _| |\n",
@@ -137,22 +152,13 @@ const char* MAIN_MENU_TITLE_TETRIS[4] = {
     "  |_|\\___|\\__|_| |_/__/\n"
 };
 
-const char* HOLD_TITLE      = "HOLD";
-const char* NEXT_TITLE      = "NEXT";
-const char* STATS_TITLE     = "STATS";
-const char* HELP_TITLE      = "HELP";
-const char* PAUSE_TITLE     = "PAUSE";
-const char* GAME_OVER_TITLE = "GAME-OVER";
-const char* DEBUG_TITLE     = "DEBUG";
-const char* LOGS_TITLE      = "LOGS";
-
+// Characters used for pieces and board.
 const char BLOCK_LEFT       = '[';
 const char BLOCK_RIGHT      = ']';
-const char GHOST_LEFT       = '[';
-const char GHOST_RIGHT      = ']';
 const char BOARD_SPACE      = ' ';
 const char BUFFER_ZONE_LINE = '_';
 
+// Available colors as color pairs.
 const int16_t COLOR_PAIR_DEFAULT = 0;
 const int16_t COLOR_PAIR_CYAN    = I;
 const int16_t COLOR_PAIR_BLUE    = J;
@@ -162,6 +168,7 @@ const int16_t COLOR_PAIR_GREEN   = S;
 const int16_t COLOR_PAIR_MAGENTA = T;
 const int16_t COLOR_PAIR_RED     = Z;
 
+// Lock delay frame bounds for DIM and STANDOUT window attributes when drawing current piece.  
 const uint16_t LOCK_DELAY_DIM_MAX      = 20;
 const uint16_t LOCK_DELAY_DIM_MIN      = 5;
 const uint16_t LOCK_DELAY_STANDOUT_MAX = 4;
@@ -238,6 +245,8 @@ void draw_stats_window(GameWindow* stats_window) {
     mvwprintw(stats_window->content, STATS_TIME_Y, STATS_TIME_X, "time:");
     mvwprintw(stats_window->content, STATS_LEVEL_Y, STATS_LEVEL_X, "level:");
     mvwprintw(stats_window->content, STATS_LINES_Y, STATS_LINES_X, "lines:");
+    mvwprintw(stats_window->content, STATS_SPS_Y, STATS_SPS_X, "sps:");
+    mvwprintw(stats_window->content, STATS_PPS_Y, STATS_PPS_X, "pps:");
 }
 
 void draw_help_window(GameWindow* help_window) {
@@ -260,6 +269,7 @@ void draw_help_window(GameWindow* help_window) {
     char* pause_key     = "esc";
     char* set_delay_key = "d";
 
+    // Print controls so labels are left-aligned and corresponding keys are right-aligned.
     mvwprintw(
         help_window->content, 
         HELP_MOVE_Y, 
@@ -330,6 +340,7 @@ void draw_help_window(GameWindow* help_window) {
 void draw_main_menu_window(GameWindow* main_menu_window, uint8_t start_level) {
     draw_window_border(main_menu_window, COLOR_PAIR_DEFAULT);
     
+    // Print each line composing the 'TERMINAL' title.
     for (size_t i = 0; i < MAIN_MENU_TITLE_H; ++i) {
         mvwprintw(
             main_menu_window->content, 
@@ -349,6 +360,9 @@ void draw_main_menu_window(GameWindow* main_menu_window, uint8_t start_level) {
         COLOR_PAIR_CYAN,
         COLOR_PAIR_MAGENTA
     };
+
+    // The first and second value of each pair indicate the lower and upper bounds of each of 
+    // the six colors, a column for each color, and a row for each line that composes the title.
     int8_t color_bounds[4][6][2] = {
         {{1, 5}, {-1, -1}, {10, 10}, {-1, -1}, {18, 18}, {-1, -1}},
         {{0, 6},   {7, 8},  {9, 12}, {14, 16}, {17, 19}, {20, 22}},
@@ -356,9 +370,11 @@ void draw_main_menu_window(GameWindow* main_menu_window, uint8_t start_level) {
         {{2, 4},   {5, 9}, {10, 12}, {13, 16}, {17, 18}, {19, 22}}
     };
 
+    // Print each character of each line composing the 'TETRIS'.
     for (size_t i = 0; i < MAIN_MENU_TITLE_H; ++i) {
         for (size_t j = 0; j < strlen(MAIN_MENU_TITLE_TETRIS[i]); ++j) {
 
+            // Check which color the current character should be, by checking which bound it fits within.
             size_t color_index = 0;
             for (size_t k = 0; k < num_colors; ++k) {
                 if (j >= color_bounds[i][k][0] && j <= color_bounds[i][k][1]) {
@@ -445,6 +461,7 @@ void draw_board_stack(GameWindow* board_window, const GameState* game_state) {
 }
 
 void draw_curr_piece(GameWindow* board_window, const GameState* game_state) {
+    // Calculate where to start printing from according to piece shape
     int8_t y_start = game_state->curr_piece.y - game_state->curr_piece.n/2;
     int8_t x_start = 2*(game_state->curr_piece.x - game_state->curr_piece.n/2);
 
@@ -485,6 +502,7 @@ void draw_curr_piece(GameWindow* board_window, const GameState* game_state) {
 
 void draw_ghost_piece(GameWindow* board_window, const GameState* game_state) {
     if (game_state->ghost_piece.y != game_state->curr_piece.y) {
+        // Calculate where to start printing from according to piece shape
         int8_t y_start = game_state->ghost_piece.y - game_state->ghost_piece.n/2;
         int8_t x_start = 2*(game_state->ghost_piece.x - game_state->ghost_piece.n/2);
         wattron(board_window->content, COLOR_PAIR(game_state->ghost_piece.shape) | A_DIM);
@@ -492,7 +510,7 @@ void draw_ghost_piece(GameWindow* board_window, const GameState* game_state) {
         for (size_t i = 0; i < game_state->ghost_piece.n; ++i) {
             for (size_t j = 0; j < game_state->ghost_piece.n; ++j) {
                 if (game_state->ghost_piece.M[game_state->ghost_piece.r][i][j] == 1) {
-                    mvwprintw(board_window->content, y_start + i, x_start + 2*j, "%c%c", GHOST_LEFT, GHOST_RIGHT);
+                    mvwprintw(board_window->content, y_start + i, x_start + 2*j, "%c%c", BLOCK_LEFT, BLOCK_RIGHT);
                 }
             }
         }
@@ -516,6 +534,7 @@ void draw_hold_piece(GameWindow* hold_window, const GameState* game_state) {
     werase(hold_window->content);
     
     if (game_state->holding_piece) {
+        // Calculate where to start printing from according to piece shape
         int8_t x_padding = 2*(game_state->hold_piece.n - game_state->hold_piece.l);
         int8_t y_start = hold_window->content_h / 2 - game_state->hold_piece.n / 2;
         int8_t x_start = hold_window->content_w / 2 - game_state->hold_piece.l - x_padding;
@@ -527,12 +546,8 @@ void draw_hold_piece(GameWindow* hold_window, const GameState* game_state) {
     
         for (size_t i = 0; i < game_state->hold_piece.n; ++i) {
             for (size_t j = 0; j < game_state->hold_piece.n; ++j) {
-                if (game_state->hold_piece.M[0][i][j] == 1) {
-                    if (game_state->hold_blocked) {
-                        mvwprintw(hold_window->content, y_start + i, x_start + 2*j, "%c%c", GHOST_LEFT, GHOST_RIGHT);
-                    } else {
-                        mvwprintw(hold_window->content, y_start + i, x_start + 2*j, "%c%c", BLOCK_LEFT, BLOCK_RIGHT);
-                    }
+                if (game_state->hold_piece.M[0][i][j] == 1) {   
+                    mvwprintw(hold_window->content, y_start + i, x_start + 2*j, "%c%c", BLOCK_LEFT, BLOCK_RIGHT);
                 }
             }
         }
@@ -547,6 +562,7 @@ void draw_hold_piece(GameWindow* hold_window, const GameState* game_state) {
 void draw_next_piece(GameWindow* next_window, const GameState* game_state) {
     werase(next_window->content);
 
+    // Calculate where to start printing from according to piece shape
     int8_t x_padding = 2*(game_state->next_piece.n - game_state->next_piece.l);
     int8_t y_start = next_window->content_h / 2 - game_state->next_piece.n / 2;
     int8_t x_start = next_window->content_w / 2 - game_state->next_piece.l - x_padding;
@@ -574,12 +590,14 @@ void draw_stats(GameWindow* stats_window, const GameState* game_state, const Sta
     mvwprintw(stats_window->content, STATS_LINES_Y, STATS_LINES_X, "lines: %u", game_state->lines);
     mvwprintw(stats_window->content, STATS_LEVEL_Y, STATS_LEVEL_X, "level: %u", game_state->level);
 
+    // Adjust print precision to account for leading 0
     if (stats->score_per_s > 0 && stats->score_per_s < 1) {
         mvwprintw(stats_window->content, STATS_SPS_Y, STATS_SPS_X, "sps: %#.4g\n", stats->score_per_s);
     } else {
         mvwprintw(stats_window->content, STATS_SPS_Y, STATS_SPS_X, "sps: %#.5g\n", stats->score_per_s);
     }
-
+    
+    // Adjust print precision to account for leading 0
     if (stats->piece_per_s > 0 && stats->piece_per_s < 1) {
         mvwprintw(stats_window->content, STATS_PPS_Y, STATS_PPS_X, "pps: %#.4g\n", stats->piece_per_s);
     } else {
@@ -588,6 +606,7 @@ void draw_stats(GameWindow* stats_window, const GameState* game_state, const Sta
 }
 
 void draw_pause_stats(GameWindow* stats_window, const Stats* stats) {
+    // Clear each line of pause stats, since they may overlap with VFX
     mvwprintw(stats_window->content, PAUSE_STATS_SINGLE_Y, PAUSE_STATS_SINGLE_X, "%*s", stats_window->content_w, "");
     mvwprintw(stats_window->content, PAUSE_STATS_DOUBLE_Y, PAUSE_STATS_DOUBLE_X, "%*s", stats_window->content_w, "");
     mvwprintw(stats_window->content, PAUSE_STATS_TRIPLE_Y, PAUSE_STATS_TRIPLE_X, "%*s", stats_window->content_w, "");
@@ -670,12 +689,16 @@ void draw_debug_variables(GameWindow* debug_window, const GameState* game_state,
 void draw_debug_logs(GameWindow* logs_window, FILE* debug_log, LogBuffer* log_buffer) {
     char line[1024];
     fflush(debug_log);
+
+    // Set position of file pointer to the end of last log that has been printed.
     fsetpos(debug_log, &log_buffer->file_pos);
 
+    // Append each new log that has been written.
     while (fgets(line, sizeof(line), debug_log)) {
         log_buffer_append(log_buffer, line);
     }
 
+    // Print each log starting from the start_index of log_buffer.
     for (size_t i = 0; i < MAX_LOGS; ++i) {
         if (log_buffer->logs[(i + log_buffer->start_index) % MAX_LOGS]) {
             mvwprintw(
@@ -688,5 +711,6 @@ void draw_debug_logs(GameWindow* logs_window, FILE* debug_log, LogBuffer* log_bu
         }
     }
 
+    // Store position of file pointer, which is pointing to end of the last log printed (EOF). 
     fgetpos(debug_log, &log_buffer->file_pos);
 }
