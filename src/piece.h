@@ -3,6 +3,11 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+/** @file
+ ** @brief Constants that describe Piece object parameters, and the functions 
+ ** that interface with and modify the Piece object. 
+ **/
+
 // Number of possible tetromino shapes.
 #define NUM_SHAPES 7
 
