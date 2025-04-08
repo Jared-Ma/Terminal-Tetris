@@ -6,6 +6,11 @@
 #include <stdint.h>
 #include <stdlib.h>
 
+/** @file
+ ** @brief Constants that describe the parameters of the game, and the functions 
+ ** that interface with and modify the GameState object. 
+ **/
+
 // Height at which buffer zone is defined
 #define BUFFER_ZONE_H 2
 
@@ -20,11 +25,6 @@
 
 // Max level where gravity caps out. 
 #define MAX_GRAVITY_LEVEL 15
-
-/** @file
- ** @brief Constants that describe the parameters of the game, and the functions 
- ** that interface with and modify the GameState object. 
- **/
 
 
 extern const int8_t SPAWN_Y;
