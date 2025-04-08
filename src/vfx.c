@@ -27,6 +27,7 @@ const uint16_t STATS_LEVEL_VFX_FRAMES = 5;
 const uint16_t LAST_ACTION_VFX_DIM_FRAMES = 30;
 const uint16_t LEVEL_UP_VFX_DIM_FRAMES    = 30;
 
+// Position of level up VFX on board.
 const int8_t LEVEL_UP_VFX_Y = 5;
 const int8_t LEVEL_UP_VFX_W = 8;
 
@@ -130,7 +131,13 @@ void draw_vfx_board_window_border(VFX* vfx, int16_t color_pair) {
     
     // draw bottom side of border without overwriting score
     mvwhline(vfx->game_window->border, vfx->game_window->border_h - 1, 1, ACS_HLINE, vfx->game_window->border_w/2 - 5);
-    mvwhline(vfx->game_window->border, vfx->game_window->border_h - 1, vfx->game_window->border_w/2 + 4, ACS_HLINE, vfx->game_window->border_w/2 - 5);
+    mvwhline(
+        vfx->game_window->border, 
+        vfx->game_window->border_h - 1, 
+        vfx->game_window->border_w/2 + BOARD_SCORE_W/2, 
+        ACS_HLINE, 
+        vfx->game_window->border_w/2 - BOARD_SCORE_W/2 - 1
+    );
     
     wattroff(vfx->game_window->border, COLOR_PAIR(color_pair));
 }
