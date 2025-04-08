@@ -706,7 +706,6 @@ void game_state_apply_gravity(GameState* game_state) {
 
     while (game_state->gravity_value >= 1.0) {
         game_state->gravity_value -= 1.0;
-        game_state_move_curr_piece(game_state, game_state->curr_piece.y + 1, game_state->curr_piece.x);
         
         TRACE_LOG(
             "Applied gravity to piece: curr_piece=(y=%i, x=%i, r=%i, shape=%c)",
@@ -715,6 +714,8 @@ void game_state_apply_gravity(GameState* game_state) {
             game_state->curr_piece.r,
             shape_to_char(game_state->curr_piece.shape)
         );
+
+        game_state_move_curr_piece(game_state, game_state->curr_piece.y + 1, game_state->curr_piece.x);
     }
 }
 
