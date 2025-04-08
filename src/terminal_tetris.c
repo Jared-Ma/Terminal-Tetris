@@ -15,6 +15,11 @@
 #include <stdlib.h>
 #include <time.h>
 
+/** @file
+ ** @brief The main program that initializes and runs the Terminal Tetris game.
+ **/
+
+// Characters corresponding to game inputs.
 #define INPUT_MOVE_LEFT    KEY_LEFT
 #define INPUT_MOVE_RIGHT   KEY_RIGHT
 #define INPUT_ROTATE_LEFT  'z'
@@ -26,10 +31,15 @@
 #define INPUT_PAUSE        '\e'
 #define INPUT_TOGGLE_DELAY 'd'
 
-
+// Target FPS the game will try to run at.
 const uint8_t TARGET_FPS = 60;
+
+// Target frame time in nanoseconds.
 const uint32_t TARGET_FRAME_TIME_NS = 1e9 / TARGET_FPS;
 
+/**
+ ** @brief Named constants indicating which input mode the game is currently on.
+ **/
 enum InputState {
     PLAYING,
     MAIN_MENU,
@@ -79,7 +89,7 @@ static void run_tetris(
     uint32_t frame_time_ns;
     bool running = true;
 
-    // initial render of game windows
+    // Initial render of game windows.
     draw_board_window(board_window);
     draw_hold_window(hold_window);
     draw_next_window(next_window);
@@ -92,7 +102,7 @@ static void run_tetris(
     }
     TRACE_LOG("Rendered initial game windows");
     
-    // initial refresh of game windows
+    // Initial refresh of game windows.
     game_window_refresh(board_window);
     game_window_refresh(hold_window);
     game_window_refresh(next_window);
@@ -106,7 +116,7 @@ static void run_tetris(
     TRACE_LOG("Refreshed initial game windows");
 
     while (running) {
-        // Input
+        // Process user input.
         int input = getch();
         clock_gettime(CLOCK_MONOTONIC, &start_time);
         if (input_state == PLAYING) {
@@ -189,7 +199,7 @@ static void run_tetris(
             TRACE_LOG("Toggle delay mode: nodelay=%s", (is_nodelay(stdscr)) ? "true" : "false");
         }
         
-        // Update
+        // Update the game state accordingly.
         if (input_state == PLAYING) {
             if (game_state_check_curr_piece_grounded(game_state) && game_state->lock_delay_timer > 0) {
                 game_state->lock_delay_timer--;
@@ -215,7 +225,7 @@ static void run_tetris(
             stats_update(stats, game_state);
         }
 
-        // Render
+        // Render the resulting image.
         if (input_state == PLAYING) {
             draw_board_window(board_window);
             draw_hold_window(hold_window);
@@ -223,20 +233,25 @@ static void run_tetris(
             draw_stats_window(stats_window);
             draw_help_window(help_window);
 
+            // Draw overall game state.
             draw_board_state(board_window, game_state);
             draw_hold_piece(hold_window, game_state);
             draw_next_piece(next_window, game_state);
             draw_stats(stats_window, game_state, stats);
 
+            // Check which VFX to enable based on game state conditions.
             for (size_t i = 0; i < NUM_VFX; ++i) {
                 if (vfx_list[i]->check_cond(vfx_list[i], game_state)) {
                     vfx_list[i]->enable_vfx(vfx_list[i], game_state);
                 }
             }
+
+            // Draw all enabled VFX.
             for (size_t i = 0; i < NUM_VFX; ++i) {
                 draw_vfx_frame(vfx_list[i]);
-                game_state_reset_vfx_conditions(game_state);
             }
+
+            game_state_reset_vfx_conditions(game_state);
 
             game_window_refresh(board_window);
             game_window_refresh(hold_window);
@@ -265,18 +280,16 @@ static void run_tetris(
             game_window_refresh(logs_window);
         }
 
+        // Sleep the difference between target and actual frame time.
         clock_gettime(CLOCK_MONOTONIC, &end_time);
         frame_time_ns = diff_timespec_ns(start_time, end_time);
         if (frame_time_ns < TARGET_FRAME_TIME_NS) {
             sleep_ns(TARGET_FRAME_TIME_NS - frame_time_ns);
         }
 
-        if (input_state == PLAYING) {
-            clock_gettime(CLOCK_MONOTONIC, &end_time);
-            stats->game_time_s += diff_timespec_s(start_time, end_time);
-        }
-
+        // Update game time and frame count.
         clock_gettime(CLOCK_MONOTONIC, &end_time);
+        if (input_state == PLAYING) stats->game_time_s += diff_timespec_s(start_time, end_time);
         stats->real_time_s += diff_timespec_s(start_time, end_time);
         stats->frame_count++;
         stats->fps = stats->frame_count / stats->real_time_s;
@@ -286,13 +299,13 @@ static void run_tetris(
 }
 
 static void setup_curses(void) {
-    // initialize curses screen
+    // Initialize curses screen.
     if (initscr() == NULL) {
         fprintf(stderr, "During curses setup, initscr() failed to initialize curses screen.\n");
         exit(EXIT_FAILURE);
     }
 
-    // check if current terminal size is sufficient
+    // Check if current terminal size is sufficient.
     int h_max = GAME_H;
     int w_max = GAME_W;
     if (debug_mode) {
@@ -309,65 +322,65 @@ static void setup_curses(void) {
         exit(EXIT_FAILURE);
     }
 
-    // disable input echoing to screen
+    // Disable input echoing to screen.
     if (noecho() == ERR) {
         fprintf(stderr, "During curses setup, noecho() failed to disable input echoing.\n");
         exit(EXIT_FAILURE);
     }
     
-    // hide cursor
+    // Hide cursor.
     if (curs_set(0) == ERR) {
         fprintf(stderr, "During curses setup, curs_set(0) failed to set cursor to invisible mode.\n");
         exit(EXIT_FAILURE);
     }
     
-    // disable delay after reading escape key
+    // Disable delay after reading escape key.
     if (set_escdelay(0) == ERR) {
         fprintf(stderr, "During curses setup, set_escdelay(0) failed to disable escape key delay.\n");
         exit(EXIT_FAILURE);
     }
     
-    // enable arrow key input
+    // Enable arrow key input.
     if (keypad(stdscr, true) == ERR) {
         fprintf(stderr, "During curses setup, keypad(stdscr, true) failed to enable keypad.\n");
         exit(EXIT_FAILURE);
     }
     
-    // enable non-blocking getch()
+    // Enable non-blocking getch().
     if (nodelay(stdscr, true) == ERR) {
         fprintf(stderr, "During curses setup, nodelay(stdscr, true) failed to enable non-blocking getch().\n");
         exit(EXIT_FAILURE);
     }
 
-    // initial refresh of stdscr
+    // Initial refresh of stdscr.
     if (refresh() == ERR) {
         fprintf(stderr, "During curses setup, initial refresh() failed.\n");
         exit(EXIT_FAILURE);
     } 
 
-    // check if terminal supports colors
+    // Check if terminal supports colors.
     if (!has_colors()) {
         fprintf(stderr, "During curses setup, has_colors() return false, continuing without color.\n");
         return;
     }
 
-    // initialize default colors
+    // Initialize default colors.
     if (use_default_colors() == ERR) {
         fprintf(stderr, "During curses setup, use_default_colors() not supported, continuing without color.\n");
         return;
     }
 
-    // initialize curses colors 
+    // Initialize curses colors. 
     if (start_color() == ERR) {
         fprintf(stderr, "During curses setup, start_color() failed to initialize colors, continuing without color.\n");
         return;
     }
 
-    // initialize non-default orange color
+    // Initialize non-default orange color.
     short COLOR_ORANGE = 8;
     init_color(COLOR_ORANGE, 900, 600, 0);
 
-    // initialize color pairs of tetronimos
+    // Initialize color pairs of tetronimos.
     init_pair(I, COLOR_CYAN,    -1);
     init_pair(J, COLOR_BLUE,    -1);
     init_pair(L, COLOR_ORANGE,  -1);
@@ -380,14 +393,14 @@ static void setup_curses(void) {
 }
 
 static void cleanup(void) {
-    // show cursor
+    // Show cursor.
     if (stdscr != NULL) {
         if (curs_set(2) == ERR) {
             fprintf(stderr, "During cleanup, curs_set(2) failed to set cursor to visible mode.\n");
         }
     }
 
-    // exit curses
+    // Exit curses.
     if (stdscr != NULL) {
         if (endwin() == ERR) {
             fprintf(stderr, "During cleanup, endwin() failed to restore normal terminal mode.\n");
@@ -396,7 +409,7 @@ static void cleanup(void) {
     
     TRACE_LOG("Exited curses");
 
-    // close debug log file
+    // Close debug log file.
     if (debug_log != NULL) {
         if (fclose(debug_log) == EOF) {
             fprintf(stderr, "During cleanup, failed to close debug log file.\n");
@@ -423,13 +436,13 @@ int main(int argc, char* argv[argc + 1]) {
         }
     }
 
-    // register cleanup function on exit
+    // Register cleanup function on exit.
     if (atexit(cleanup) != 0) {
         fprintf(stderr, "Failed to register cleanup function.\n");
         return EXIT_FAILURE;
     }
 
-    // open debug log file
+    // Open debug log file.
     if (debug_mode) {
         if (!debug_log_open(DEBUG_LOG_FILEPATH)) {
             fprintf(stderr, "Failed to open debug log file.\n");
@@ -439,6 +452,7 @@ int main(int argc, char* argv[argc + 1]) {
 
     setup_curses();
 
+    // Calculate offset of game windows so game is centered in terminal.
     int y_offset = LINES / 2 - GAME_H / 2;
     int x_offset = COLS / 2 - GAME_W / 2;
     if (debug_mode) {
