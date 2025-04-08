@@ -118,6 +118,8 @@ typedef struct GameWindow GameWindow;
  ** @param width The width of the GameWindow including its borders.
  ** @param y The y-coordinate of the GameWindow.
  ** @param x The x-coordinate of the GameWindow.
+ ** 
+ ** @return The initialized GameWindow object.
  **/
 GameWindow game_window_get(int height, int width, int y, int x);
 
@@ -128,6 +130,8 @@ GameWindow game_window_get(int height, int width, int y, int x);
  ** @param width The width of the GameWindow including its borders.
  ** @param y The y-coordinate of the GameWindow.
  ** @param x The x-coordinate of the GameWindow.
+ **
+ ** @return A pointer to the allocated GameWindow object.
  **/
 GameWindow* game_window_init(int height, int width, int y, int x);
 
