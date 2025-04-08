@@ -8,8 +8,8 @@
 #include <stdint.h>
 
 /** @file
- ** @brief Constants that describe game window parameters 
- ** and the functions to interface with and draw to them.
+ ** @brief Constants that describe GameWindow parameters and the functions to 
+ ** interface with and draw to GameWindow objects.
  **/
 
 
@@ -88,6 +88,12 @@ extern const uint16_t LOCK_DELAY_DIM_MIN;
 extern const uint16_t LOCK_DELAY_STANDOUT_MAX;
 extern const uint16_t LOCK_DELAY_STANDOUT_MIN;
 
+/**
+ ** GameWindow consists of two windows one for the border of the window, and the
+ ** other for the content of the window, it being the subwindow of the border.
+ ** The dimensions and coordinates of each of these windows are described by the 
+ ** subsequent members.
+ **/
 struct GameWindow {
     WINDOW* border;
     WINDOW* content;
@@ -104,9 +110,9 @@ struct GameWindow {
 typedef struct GameWindow GameWindow;
 
 /**
- ** @brief Initialize a GameWindow object, which consists of two WINDOW* members,
- ** one for the border and one, a subwindow of the border, for the actual content
- ** of the window.
+ ** @brief Initialize a GameWindow object, which consists of two WINDOW* 
+ ** members, one for the border and one, a subwindow of the border, for the 
+ ** actual content of the window.
  ** 
  ** @param height The height of the GameWindow including its borders.
  ** @param width The width of the GameWindow including its borders.
@@ -182,7 +188,8 @@ void draw_next_window(GameWindow* next_window);
 
 /**
  ** @brief Draw the border, title, and labels of @stats_window, which will 
- ** display the current game statistics like, game time, level, number of lines, etc.
+ ** display the current game statistics like, game time, level, number of lines, 
+ ** etc.
  **
  ** @param stats_window The GameWindow object to be drawn to.
  **/
@@ -244,14 +251,16 @@ void draw_logs_window(GameWindow* logs_window);
 void draw_board_state(GameWindow* board_window, const GameState* game_state);
 
 /**
- ** @brief Draw the buffer zone line indicating the height at which pieces will spawn.
+ ** @brief Draw the buffer zone line indicating the height at which pieces will 
+ ** spawn.
  **
  ** @param board_window The GameWindow object to be drawn to. 
  **/
 void draw_buffer_zone_line(GameWindow* board_window);
 
 /**
- ** @brief Draw the board stack, i.e., the left over pieces that have been placed. 
+ ** @brief Draw the board stack, i.e., the left over pieces that have been 
+ ** placed. 
  ** 
  ** @param board_window The GameWindow object to be drawn to. 
  ** @param game_state The GameState object that has the board stack data. 
@@ -300,20 +309,24 @@ void draw_hold_piece(GameWindow* hold_window, const GameState* game_state);
 void draw_next_piece(GameWindow* next_window, const GameState* game_state);
 
 /**
- ** @brief Draw current game time, number of lines, current level, score per second, and pieces placed
- ** per second.
+ ** @brief Draw current game time, number of lines, current level, score per 
+ ** second, and pieces placed per second.
  ** 
  ** @param stats_window The GameWindow object to be drawn to. 
- ** @param game_state The GameState object that has the number of lines and current level.
- ** @param stats The Stats object that has the game time, score per second, and pieces placed per second.
+ ** @param game_state The GameState object that has the number of lines and 
+ ** current level.
+ ** @param stats The Stats object that has the game time, score per second, and 
+ ** pieces placed per second.
  **/
 void draw_stats(GameWindow* stats_window, const GameState* game_state, const Stats* stats);
 
 /**
- ** @brief Draw the number of singles, doubles, triples, and tetrises that have been completed when paused.
+ ** @brief Draw the number of singles, doubles, triples, and tetrises that have 
+ ** been completed when paused.
  ** 
  ** @param stats_window The GameWindow object to be drawn to. 
- ** @param stats The Stats object that has the number of singles, doubles, triples, and tetrises.
+ ** @param stats The Stats object that has the number of singles, doubles, 
+ ** triples, and tetrises.
  **/
 void draw_pause_stats(GameWindow* stats_window, const Stats* stats);
 
@@ -331,7 +344,8 @@ void draw_debug_variables(GameWindow* debug_window, const GameState* game_state,
  ** 
  ** @param logs_window The GameWindow object to be drawn to. 
  ** @param debug_log The file the logs will be read from.
- ** @param log_buffer The LogBuffer object that keeps track of the most recent logs.
+ ** @param log_buffer The LogBuffer object that keeps track of the most recent 
+ ** logs.
  **/
 void draw_debug_logs(GameWindow* logs_window, FILE* debug_log, LogBuffer* log_buffer);
 
