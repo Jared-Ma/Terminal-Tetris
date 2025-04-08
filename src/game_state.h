@@ -131,6 +131,13 @@ GameState* game_state_init(void);
 void game_state_destroy(GameState* game_state);
 
 /** 
+ ** @brief Print values of each member in @game_state.
+ **
+ ** @param game_state The GameState object to be read. 
+ **/
+void game_state_debug_print(const GameState* game_state);
+
+/** 
  ** @brief Set initial game start values of @game_state.
  ** 
  ** @param game_state The GameState object to be modified.
@@ -151,13 +158,6 @@ void game_state_reset(GameState* game_state);
  ** @param game_state The GameState object to be modified.
  **/
 void game_state_reset_vfx_conditions(GameState* game_state);
-
-/** 
- ** @brief Print values of each member in @game_state.
- **
- ** @param game_state The GameState object to be read. 
- **/
-void game_state_debug_print(const GameState* game_state);
 
 /** 
  ** @brief Randomly generate a permutation of the 7 possible piece shapes.

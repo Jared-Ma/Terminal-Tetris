@@ -168,46 +168,6 @@ void game_state_destroy(GameState* game_state) {
     free(game_state);
 }
 
-void game_state_start(GameState* game_state, uint8_t start_level) {
-    if (!game_state) {
-        return;
-    }
-
-    game_state->level = start_level;
-    game_state->combo = -1;
-    game_state->difficult_clear_combo = -1;
-    game_state->tetris_all_clear_combo = -1;
-    game_state_generate_next_queue(game_state);
-    game_state->next_piece = piece_get(game_state->next_queue[game_state->next_index++], 0, 0);
-    game_state_load_next_piece(game_state);
-
-    TRACE_LOG("Set game state start values: start_level=%u", start_level);
-}
-
-void game_state_reset(GameState* game_state) {
-    if (!game_state) {
-        return;
-    }
-    *game_state = game_state_get();
-    TRACE_LOG("Reset game state values");
-}
-
-void game_state_reset_vfx_conditions(GameState* game_state) {
-    if (!game_state) {
-        return;
-    }
-
-    game_state->last_action_points = 0;
-    game_state->last_action_num_lines = 0;
-    game_state->last_action_t_spin = false;
-    game_state->last_action_t_spin_mini = false;
-    game_state->last_action_all_clear = false;
-    game_state->hold_piece_event_flag = false;
-    game_state->next_piece_event_flag = false;
-    game_state->level_up_event_flag = false;
-    game_state->last_locked_piece_shape = 0;
-}
-
 void game_state_debug_print(const GameState* game_state) {
     if (!game_state) {
         return;
@@ -288,6 +248,46 @@ void game_state_debug_print(const GameState* game_state) {
         game_state->last_locked_piece_shape
     );
     fprintf(debug_log, "}\n");
+}
+
+void game_state_start(GameState* game_state, uint8_t start_level) {
+    if (!game_state) {
+        return;
+    }
+
+    game_state->level = start_level;
+    game_state->combo = -1;
+    game_state->difficult_clear_combo = -1;
+    game_state->tetris_all_clear_combo = -1;
+    game_state_generate_next_queue(game_state);
+    game_state->next_piece = piece_get(game_state->next_queue[game_state->next_index++], 0, 0);
+    game_state_load_next_piece(game_state);
+
+    TRACE_LOG("Set game state start values: start_level=%u", start_level);
+}
+
+void game_state_reset(GameState* game_state) {
+    if (!game_state) {
+        return;
+    }
+    *game_state = game_state_get();
+    TRACE_LOG("Reset game state values");
+}
+
+void game_state_reset_vfx_conditions(GameState* game_state) {
+    if (!game_state) {
+        return;
+    }
+
+    game_state->last_action_points = 0;
+    game_state->last_action_num_lines = 0;
+    game_state->last_action_t_spin = false;
+    game_state->last_action_t_spin_mini = false;
+    game_state->last_action_all_clear = false;
+    game_state->hold_piece_event_flag = false;
+    game_state->next_piece_event_flag = false;
+    game_state->level_up_event_flag = false;
+    game_state->last_locked_piece_shape = 0;
 }
 
 void game_state_generate_next_queue(GameState* game_state) {
