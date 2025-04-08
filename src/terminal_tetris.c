@@ -506,13 +506,13 @@ int main(int argc, char* argv[argc + 1]) {
         LOGS_WINDOW_Y + y_offset, 
         LOGS_WINDOW_X + x_offset
     );
-    TRACE_LOG("Initialized game window objects");
+    TRACE_LOG("Initialized GameWindow objects");
 
     GameState* game_state = game_state_init();
-    TRACE_LOG("Initialized game state object");
+    TRACE_LOG("Initialized GameState object");
     
     Stats* stats = stats_init();
-    TRACE_LOG("Initialized stats object");
+    TRACE_LOG("Initialized Stats object");
 
     VFX* vfx_list[NUM_VFX] = { 
         vfx_init(board_window, clear_vfx_lock_piece,  vfx_check_lock_piece,  vfx_enable_lock_piece,  LOCK_PIECE_VFX_FRAMES),
@@ -527,10 +527,10 @@ int main(int argc, char* argv[argc + 1]) {
         vfx_init(stats_window, clear_vfx_stats_lines, vfx_check_stats_lines, vfx_enable_stats_lines, STATS_LINES_VFX_FRAMES),
         vfx_init(stats_window, clear_vfx_stats_level, vfx_check_stats_level, vfx_enable_stats_level, STATS_LEVEL_VFX_FRAMES)
     };
-    TRACE_LOG("Initialized vfx objects");
+    TRACE_LOG("Initialized VFX objects");
 
     LogBuffer* log_buffer = log_buffer_init();
-    TRACE_LOG("Initialized log buffer");
+    TRACE_LOG("Initialized LogBuffer object");
     
     run_tetris(
         board_window, 
