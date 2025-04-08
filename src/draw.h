@@ -66,6 +66,8 @@ extern const int8_t LOGS_WINDOW_W;
 extern const int8_t LOGS_WINDOW_Y;
 extern const int8_t LOGS_WINDOW_X;
 
+extern const int8_t BOARD_SCORE_W;
+
 extern const int8_t STATS_LINES_Y;
 extern const int8_t STATS_LINES_X;
 extern const int8_t STATS_LEVEL_Y;
