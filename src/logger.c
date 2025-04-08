@@ -37,6 +37,14 @@ LogBuffer* log_buffer_init(void) {
     return log_buffer;
 }
 
+void log_buffer_destroy(LogBuffer* log_buffer) {
+    if (!log_buffer) {
+        return;
+    }
+    *log_buffer = (LogBuffer){ 0 };
+    free(log_buffer);
+}
+
 void log_buffer_append(LogBuffer* log_buffer, const char* log) {
     if (!log_buffer || !log) {
         return;

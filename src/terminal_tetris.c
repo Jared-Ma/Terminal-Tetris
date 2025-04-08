@@ -559,18 +559,21 @@ int main(int argc, char* argv[argc + 1]) {
     game_window_destroy(game_over_window);
     game_window_destroy(debug_window);
     game_window_destroy(logs_window);
-    TRACE_LOG("Deallocated game window objects");
+    TRACE_LOG("Deallocated GameWindow objects");
 
     game_state_destroy(game_state);
-    TRACE_LOG("Deallocated game state object");
+    TRACE_LOG("Deallocated GameState object");
 
     stats_destroy(stats);
-    TRACE_LOG("Deallocated stats object");
+    TRACE_LOG("Deallocated Stats object");
 
     for (size_t i = 0; i < NUM_VFX; ++i) {
         vfx_destroy(vfx_list[i]);
     }
-    TRACE_LOG("Deallocated vfx objects");
+    TRACE_LOG("Deallocated VFX objects");
+
+    log_buffer_destroy(log_buffer);
+    TRACE_LOG("Deallocated LogBuffer object");
 
     return EXIT_SUCCESS;
 }

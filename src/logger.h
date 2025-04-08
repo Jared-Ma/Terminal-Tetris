@@ -94,6 +94,13 @@ LogBuffer log_buffer_get(void);
  **/
 LogBuffer* log_buffer_init(void);
 
+/** 
+ ** @brief Deallocate the LogBuffer object @log_buffer.
+ **
+ ** @param log_buffer The LogBuffer object to be deallocated.
+ **/
+void log_buffer_destroy(LogBuffer* log_buffer);
+
 /**
  ** @brief Append the specified log to @log_buffer and keep track of indicies.
  ** 
