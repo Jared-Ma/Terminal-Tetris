@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+// Filepath to debug log to be read and written. 
 const char* DEBUG_LOG_FILEPATH =  "./logs/debug.txt";
 
 bool debug_mode = false;
@@ -36,15 +37,17 @@ LogBuffer* log_buffer_init(void) {
     return log_buffer;
 }
 
-void log_buffer_append(LogBuffer* log_buffer, char* log) {
+void log_buffer_append(LogBuffer* log_buffer, const char* log) {
     if (!log_buffer || !log) {
         return;
     }
 
+    // Update start_index if buffer is full and end_index has reached start_index.
     if (log_buffer->num_logs >= MAX_LOGS && log_buffer->end_index == log_buffer->start_index) {
         log_buffer->start_index = (log_buffer->start_index + 1) % MAX_LOGS;
     } 
 
+    // Prepend log number to log before appending. 
     snprintf(log_buffer->logs[log_buffer->end_index], LOG_SIZE, "%lu - ", ++log_buffer->num_logs);
     strncat(log_buffer->logs[log_buffer->end_index], log, LOG_SIZE - strlen(log_buffer->logs[log_buffer->end_index]));
     log_buffer->end_index = (log_buffer->end_index + 1) % MAX_LOGS;
