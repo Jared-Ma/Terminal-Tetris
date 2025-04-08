@@ -89,10 +89,10 @@ extern const uint16_t LOCK_DELAY_STANDOUT_MAX;
 extern const uint16_t LOCK_DELAY_STANDOUT_MIN;
 
 /**
- ** GameWindow consists of two windows one for the border of the window, and the
- ** other for the content of the window, it being the subwindow of the border.
- ** The dimensions and coordinates of each of these windows are described by the 
- ** subsequent members.
+ ** @brief GameWindow consists of two windows one for the border of the window, 
+ ** and the other for the content of the window, it being the subwindow of the 
+ ** border. The dimensions and coordinates of each of these windows are 
+ ** described by the subsequent members.
  **/
 struct GameWindow {
     WINDOW* border;
