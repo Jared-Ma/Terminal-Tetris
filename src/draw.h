@@ -110,9 +110,7 @@ struct GameWindow {
 typedef struct GameWindow GameWindow;
 
 /**
- ** @brief Initialize a GameWindow object, which consists of two WINDOW* 
- ** members, one for the border and one, a subwindow of the border, for the 
- ** actual content of the window.
+ ** @brief Initialize a GameWindow object.
  ** 
  ** @param height The height of the GameWindow including its borders.
  ** @param width The width of the GameWindow including its borders.
