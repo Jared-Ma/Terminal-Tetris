@@ -4,6 +4,11 @@
 #include <stdio.h>
 #include <stdint.h>
 
+/** @file
+ ** @brief Collection of debug logging functions and the interface to the 
+ ** LogBuffer object.
+ **/
+
 // Max number of logs in stored LogBuffer.
 #define MAX_LOGS 18
 
