@@ -183,9 +183,9 @@ void game_state_debug_print(const GameState* game_state) {
     fprintf(debug_log, "\tghost_piece = ");
     piece_debug_print(&game_state->ghost_piece);
     fprintf(debug_log, "\tboard = \n");
-    for (size_t i = 0; i < BOARD_H; ++i) {
+    for (uint8_t i = 0; i < BOARD_H; ++i) {
         fprintf(debug_log, "\t\t[ ");
-        for (size_t j = 0; j < BOARD_W; ++j) {
+        for (uint8_t j = 0; j < BOARD_W; ++j) {
             fprintf(debug_log, "%i ", game_state->board[i][j]);
         }
         fprintf(debug_log, "]\n");
@@ -200,7 +200,7 @@ void game_state_debug_print(const GameState* game_state) {
         game_state->next_index
     );
     fprintf(debug_log, "\tnext_queue = [ ");
-    for (size_t i = 0; i < NUM_SHAPES; ++i) {
+    for (uint8_t i = 0; i < NUM_SHAPES; ++i) {
         fprintf(debug_log, "%c ", shape_to_char(game_state->next_queue[i]));
     }
     fprintf(debug_log, "]\n");
@@ -298,14 +298,14 @@ void game_state_generate_next_queue(GameState* game_state) {
     Shape random_shapes[NUM_SHAPES] = {I, J, L, O, S, T, Z};
 
     // Perform Fisher-Yates shuffle
-    for (size_t i = NUM_SHAPES-1; i > 0; --i) {
-        size_t j = rand() % (i+1);
+    for (uint8_t i = NUM_SHAPES - 1; i > 0; --i) {
+        int j = rand() % (i+1);
         Shape temp = random_shapes[i];
         random_shapes[i] = random_shapes[j];
         random_shapes[j] = temp;
     }
     
-    for (size_t i = 0; i < NUM_SHAPES; ++i) {
+    for (uint8_t i = 0; i < NUM_SHAPES; ++i) {
         game_state->next_queue[i] = random_shapes[i];
     }
 
@@ -406,8 +406,8 @@ bool game_state_check_collision(const GameState* game_state, Piece piece) {
 
     int8_t top_left_y = piece.y - piece.n / 2; 
     int8_t top_left_x = piece.x - piece.n / 2;
-    for (size_t i = 0; i < piece.n; ++i) {
-        for (size_t j = 0; j < piece.n; ++j) {
+    for (uint8_t i = 0; i < piece.n; ++i) {
+        for (uint8_t j = 0; j < piece.n; ++j) {
             if (piece.M[piece.r][i][j] == 1) {
                 if (
                     top_left_y + i < 0 || top_left_y + i > BOARD_H - 1 || 
@@ -429,8 +429,8 @@ bool game_state_check_curr_piece_grounded(const GameState* game_state) {
 
     int8_t top_left_y = game_state->curr_piece.y - game_state->curr_piece.n / 2; 
     int8_t top_left_x = game_state->curr_piece.x - game_state->curr_piece.n / 2;
-    for (size_t i = 0; i < game_state->curr_piece.n; ++i) {
-        for (size_t j = 0; j < game_state->curr_piece.n; ++j) {
+    for (uint8_t i = 0; i < game_state->curr_piece.n; ++i) {
+        for (uint8_t j = 0; j < game_state->curr_piece.n; ++j) {
             if (game_state->curr_piece.M[game_state->curr_piece.r][i][j] == 1) {
                 if (
                     top_left_y + i + 1 > BOARD_H - 1 ||
@@ -508,7 +508,7 @@ void game_state_rotate_curr_piece_srs(GameState* game_state, Rotation rotation) 
     }
 
     // Iterate through each corresponding SRS test, accepting the first test passed.
-    for (size_t i = 0; i < SRS_NUM_TESTS; ++i) {
+    for (uint8_t i = 0; i < SRS_NUM_TESTS; ++i) {
         if (game_state->curr_piece.shape == I) {
             piece_move(
                 &game_state->curr_piece, 
@@ -531,7 +531,7 @@ void game_state_rotate_curr_piece_srs(GameState* game_state, Rotation rotation) 
         game_state_rotate_curr_piece(game_state, rotation);
         if (game_state->curr_piece.r != curr_piece_copy.r) {
 
-            TRACE_LOG("Passed SRS test %lu", i + 1);
+            TRACE_LOG("Passed SRS test %u", i + 1);
 
             TRACE_LOG(
                 "Rotated piece curr_piece=(y=%i, x=%i, r=%i, shape=%c)",
@@ -598,8 +598,8 @@ void game_state_lock_curr_piece(GameState* game_state) {
 
     int8_t top_left_y = game_state->curr_piece.y - game_state->curr_piece.n / 2; 
     int8_t top_left_x = game_state->curr_piece.x - game_state->curr_piece.n / 2;
-    for (size_t i = 0; i < game_state->curr_piece.n; ++i) {
-        for (size_t j = 0; j < game_state->curr_piece.n; ++j) {
+    for (uint8_t i = 0; i < game_state->curr_piece.n; ++i) {
+        for (uint8_t j = 0; j < game_state->curr_piece.n; ++j) {
             if (game_state->curr_piece.M[game_state->curr_piece.r][i][j] == 1) {
                 game_state->board[top_left_y + i][top_left_x + j] = game_state->curr_piece.shape;
             }
@@ -622,8 +622,8 @@ void game_state_apply_stack_gravity(GameState* game_state, uint8_t row) {
         return;
     }
 
-    for (size_t i = row; i >= 1; --i) {
-        for (size_t j = 0; j < BOARD_W; ++j) {
+    for (uint8_t i = row; i >= 1; --i) {
+        for (uint8_t j = 0; j < BOARD_W; ++j) {
             game_state->board[i][j] = game_state->board[i-1][j];
             game_state->board[i-1][j] = 0;
         }
@@ -635,7 +635,7 @@ void game_state_clear_line(GameState* game_state, uint8_t row) {
         return;
     }
 
-    for (size_t i = 0; i < BOARD_W; ++i) {
+    for (uint8_t i = 0; i < BOARD_W; ++i) {
         game_state->board[row][i] = 0;
     }
 
@@ -650,9 +650,9 @@ void game_state_clear_lines(GameState* game_state) {
     // Find row numbers of lines that are to be cleared.
     uint8_t rows[4];
     uint8_t num_lines = 0;
-    for (size_t i = 0; i < BOARD_H; ++i) {
+    for (uint8_t i = 0; i < BOARD_H; ++i) {
         bool line = true;
-        for (size_t j = 0; j < BOARD_W; ++j) {
+        for (uint8_t j = 0; j < BOARD_W; ++j) {
             if (game_state->board[i][j] == 0) {
                 line = false;
                 break;
@@ -670,7 +670,7 @@ void game_state_clear_lines(GameState* game_state) {
     points += game_state_calc_line_clear_points(game_state, num_lines);
 
     // Clear lines from board and apply stack gravity
-    for (size_t i = 0; i < num_lines; ++i) {
+    for (uint8_t i = 0; i < num_lines; ++i) {
         game_state_clear_line(game_state, rows[i]);
         game_state_apply_stack_gravity(game_state, rows[i]);
     }
@@ -926,8 +926,8 @@ bool game_state_check_empty_board(const GameState* game_state) {
         return false;
     }
 
-    for (size_t i = 0; i < BOARD_H; ++i) {
-        for (size_t j = 0; j < BOARD_W; ++j) {
+    for (uint8_t i = 0; i < BOARD_H; ++i) {
+        for (uint8_t j = 0; j < BOARD_W; ++j) {
             if (game_state->board[i][j] > 0) {
                 return false;
             } 

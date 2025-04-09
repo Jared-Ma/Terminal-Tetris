@@ -13,65 +13,65 @@
  **/
 
 
-extern const int8_t GAME_H;
-extern const int8_t GAME_W;
+extern const uint8_t GAME_H;
+extern const uint8_t GAME_W;
 
-extern const int8_t BOARD_WINDOW_H;
-extern const int8_t BOARD_WINDOW_W;
-extern const int8_t BOARD_WINDOW_Y;
-extern const int8_t BOARD_WINDOW_X;
+extern const uint8_t BOARD_WINDOW_H;
+extern const uint8_t BOARD_WINDOW_W;
+extern const uint8_t BOARD_WINDOW_Y;
+extern const uint8_t BOARD_WINDOW_X;
 
-extern const int8_t HOLD_WINDOW_H;
-extern const int8_t HOLD_WINDOW_W;
-extern const int8_t HOLD_WINDOW_Y;
-extern const int8_t HOLD_WINDOW_X;
+extern const uint8_t HOLD_WINDOW_H;
+extern const uint8_t HOLD_WINDOW_W;
+extern const uint8_t HOLD_WINDOW_Y;
+extern const uint8_t HOLD_WINDOW_X;
 
-extern const int8_t NEXT_WINDOW_H;
-extern const int8_t NEXT_WINDOW_W;
-extern const int8_t NEXT_WINDOW_Y;
-extern const int8_t NEXT_WINDOW_X;
+extern const uint8_t NEXT_WINDOW_H;
+extern const uint8_t NEXT_WINDOW_W;
+extern const uint8_t NEXT_WINDOW_Y;
+extern const uint8_t NEXT_WINDOW_X;
 
-extern const int8_t STATS_WINDOW_H;
-extern const int8_t STATS_WINDOW_W;
-extern const int8_t STATS_WINDOW_Y;
-extern const int8_t STATS_WINDOW_X;
+extern const uint8_t STATS_WINDOW_H;
+extern const uint8_t STATS_WINDOW_W;
+extern const uint8_t STATS_WINDOW_Y;
+extern const uint8_t STATS_WINDOW_X;
 
-extern const int8_t HELP_WINDOW_H;
-extern const int8_t HELP_WINDOW_W;
-extern const int8_t HELP_WINDOW_Y;
-extern const int8_t HELP_WINDOW_X;
+extern const uint8_t HELP_WINDOW_H;
+extern const uint8_t HELP_WINDOW_W;
+extern const uint8_t HELP_WINDOW_Y;
+extern const uint8_t HELP_WINDOW_X;
 
-extern const int8_t MAIN_MENU_WINDOW_H;
-extern const int8_t MAIN_MENU_WINDOW_W;
-extern const int8_t MAIN_MENU_WINDOW_Y;
-extern const int8_t MAIN_MENU_WINDOW_X;
+extern const uint8_t MAIN_MENU_WINDOW_H;
+extern const uint8_t MAIN_MENU_WINDOW_W;
+extern const uint8_t MAIN_MENU_WINDOW_Y;
+extern const uint8_t MAIN_MENU_WINDOW_X;
 
-extern const int8_t PAUSE_WINDOW_H;
-extern const int8_t PAUSE_WINDOW_W;
-extern const int8_t PAUSE_WINDOW_Y;
-extern const int8_t PAUSE_WINDOW_X;
+extern const uint8_t PAUSE_WINDOW_H;
+extern const uint8_t PAUSE_WINDOW_W;
+extern const uint8_t PAUSE_WINDOW_Y;
+extern const uint8_t PAUSE_WINDOW_X;
 
-extern const int8_t GAME_OVER_WINDOW_H;
-extern const int8_t GAME_OVER_WINDOW_W;
-extern const int8_t GAME_OVER_WINDOW_Y;
-extern const int8_t GAME_OVER_WINDOW_X;
+extern const uint8_t GAME_OVER_WINDOW_H;
+extern const uint8_t GAME_OVER_WINDOW_W;
+extern const uint8_t GAME_OVER_WINDOW_Y;
+extern const uint8_t GAME_OVER_WINDOW_X;
 
-extern const int8_t DEBUG_WINDOW_H;
-extern const int8_t DEBUG_WINDOW_W;
-extern const int8_t DEBUG_WINDOW_Y;
-extern const int8_t DEBUG_WINDOW_X;
+extern const uint8_t DEBUG_WINDOW_H;
+extern const uint8_t DEBUG_WINDOW_W;
+extern const uint8_t DEBUG_WINDOW_Y;
+extern const uint8_t DEBUG_WINDOW_X;
 
-extern const int8_t LOGS_WINDOW_H;
-extern const int8_t LOGS_WINDOW_W;
-extern const int8_t LOGS_WINDOW_Y;
-extern const int8_t LOGS_WINDOW_X;
+extern const uint8_t LOGS_WINDOW_H;
+extern const uint8_t LOGS_WINDOW_W;
+extern const uint8_t LOGS_WINDOW_Y;
+extern const uint8_t LOGS_WINDOW_X;
 
-extern const int8_t BOARD_SCORE_W;
+extern const uint8_t BOARD_SCORE_W;
 
-extern const int8_t STATS_LINES_Y;
-extern const int8_t STATS_LINES_X;
-extern const int8_t STATS_LEVEL_Y;
-extern const int8_t STATS_LEVEL_X;
+extern const uint8_t STATS_LINES_Y;
+extern const uint8_t STATS_LINES_X;
+extern const uint8_t STATS_LEVEL_Y;
+extern const uint8_t STATS_LEVEL_X;
 
 extern const char* HOLD_TITLE;
 extern const char* NEXT_TITLE;
@@ -99,14 +99,14 @@ extern const uint16_t LOCK_DELAY_STANDOUT_MIN;
 struct GameWindow {
     WINDOW* border;
     WINDOW* content;
-    int8_t border_h;
-    int8_t border_w;
-    int8_t border_y;
-    int8_t border_x;
-    int8_t content_h;
-    int8_t content_w;
-    int8_t content_y;
-    int8_t content_x;
+    uint8_t border_h;
+    uint8_t border_w;
+    uint8_t border_y;
+    uint8_t border_x;
+    uint8_t content_h;
+    uint8_t content_w;
+    uint8_t content_y;
+    uint8_t content_x;
 };
 
 typedef struct GameWindow GameWindow;
@@ -121,7 +121,7 @@ typedef struct GameWindow GameWindow;
  ** 
  ** @return The initialized GameWindow object.
  **/
-GameWindow game_window_get(int height, int width, int y, int x);
+GameWindow game_window_get(uint8_t height, uint8_t width, uint8_t y, uint8_t x);
 
 /**
  ** @brief Allocate memory and initialize a GameWindow object.
@@ -133,7 +133,7 @@ GameWindow game_window_get(int height, int width, int y, int x);
  **
  ** @return A pointer to the allocated GameWindow object.
  **/
-GameWindow* game_window_init(int height, int width, int y, int x);
+GameWindow* game_window_init(uint8_t height, uint8_t width, uint8_t y, uint8_t x);
 
 /**
  ** @brief Deallocate the GameWindow object @game_window.

@@ -30,8 +30,8 @@ extern const uint16_t LEVEL_UP_VFX_FRAMES;
 extern const uint16_t STATS_LINES_VFX_FRAMES;
 extern const uint16_t STATS_LEVEL_VFX_FRAMES;
 
-extern const int8_t LEVEL_UP_VFX_Y;
-extern const int8_t LEVEL_UP_VFX_W;
+extern const uint8_t LEVEL_UP_VFX_Y;
+extern const uint8_t LEVEL_UP_VFX_W;
 
 // Forward declaration of VFX.
 struct VFX;

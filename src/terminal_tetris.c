@@ -53,7 +53,7 @@ static void start_new_game(GameState* game_state, Stats* stats, VFX* vfx_list[NU
     TRACE_LOG("Starting new game");
     game_state_reset(game_state);
     stats_reset(stats);
-    for (size_t i = 0; i < NUM_VFX; ++i) {
+    for (uint8_t i = 0; i < NUM_VFX; ++i) {
         vfx_list[i]->clear_vfx(vfx_list[i]);
         vfx_disable(vfx_list[i]);
     }
@@ -240,14 +240,14 @@ static void run_tetris(
             draw_stats(stats_window, game_state, stats);
 
             // Check which VFX to enable based on game state conditions.
-            for (size_t i = 0; i < NUM_VFX; ++i) {
+            for (uint8_t i = 0; i < NUM_VFX; ++i) {
                 if (vfx_list[i]->check_cond(vfx_list[i], game_state)) {
                     vfx_list[i]->enable_vfx(vfx_list[i], game_state);
                 }
             }
 
             // Draw all enabled VFX.
-            for (size_t i = 0; i < NUM_VFX; ++i) {
+            for (uint8_t i = 0; i < NUM_VFX; ++i) {
                 draw_vfx_frame(vfx_list[i]);
             }
 
@@ -581,7 +581,7 @@ int main(int argc, char* argv[argc + 1]) {
     stats_destroy(stats);
     TRACE_LOG("Deallocated Stats object");
 
-    for (size_t i = 0; i < NUM_VFX; ++i) {
+    for (uint8_t i = 0; i < NUM_VFX; ++i) {
         vfx_destroy(vfx_list[i]);
     }
     TRACE_LOG("Deallocated VFX objects");

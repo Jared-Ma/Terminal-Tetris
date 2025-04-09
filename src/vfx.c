@@ -28,8 +28,8 @@ const uint16_t LAST_ACTION_VFX_DIM_FRAMES = 30;
 const uint16_t LEVEL_UP_VFX_DIM_FRAMES    = 30;
 
 // Position of level up VFX on board.
-const int8_t LEVEL_UP_VFX_Y = 5;
-const int8_t LEVEL_UP_VFX_W = 8;
+const uint8_t LEVEL_UP_VFX_Y = 5;
+const uint8_t LEVEL_UP_VFX_W = 8;
 
 VFX vfx_get(
     GameWindow* game_window, 

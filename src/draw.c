@@ -9,124 +9,124 @@
 
 
 // Total dimensions of the game.
-const int8_t GAME_H = 24;
-const int8_t GAME_W = 50;
+const uint8_t GAME_H = 24;
+const uint8_t GAME_W = 50;
 
 // Dimensions and coordinates of each game window.
-const int8_t BOARD_WINDOW_H = 24;
-const int8_t BOARD_WINDOW_W = 22;
-const int8_t BOARD_WINDOW_Y = 0;
-const int8_t BOARD_WINDOW_X = 14;
+const uint8_t BOARD_WINDOW_H = 24;
+const uint8_t BOARD_WINDOW_W = 22;
+const uint8_t BOARD_WINDOW_Y = 0;
+const uint8_t BOARD_WINDOW_X = 14;
 
-const int8_t HOLD_WINDOW_H = 6;
-const int8_t HOLD_WINDOW_W = 14;
-const int8_t HOLD_WINDOW_Y = 2;
-const int8_t HOLD_WINDOW_X = 0;
+const uint8_t HOLD_WINDOW_H = 6;
+const uint8_t HOLD_WINDOW_W = 14;
+const uint8_t HOLD_WINDOW_Y = 2;
+const uint8_t HOLD_WINDOW_X = 0;
 
-const int8_t NEXT_WINDOW_H = 6;
-const int8_t NEXT_WINDOW_W = 14;
-const int8_t NEXT_WINDOW_Y = 2;
-const int8_t NEXT_WINDOW_X = 36;
+const uint8_t NEXT_WINDOW_H = 6;
+const uint8_t NEXT_WINDOW_W = 14;
+const uint8_t NEXT_WINDOW_Y = 2;
+const uint8_t NEXT_WINDOW_X = 36;
 
-const int8_t STATS_WINDOW_H = 16;
-const int8_t STATS_WINDOW_W = 14;
-const int8_t STATS_WINDOW_Y = 8;
-const int8_t STATS_WINDOW_X = 0;
+const uint8_t STATS_WINDOW_H = 16;
+const uint8_t STATS_WINDOW_W = 14;
+const uint8_t STATS_WINDOW_Y = 8;
+const uint8_t STATS_WINDOW_X = 0;
 
-const int8_t HELP_WINDOW_H = 16;
-const int8_t HELP_WINDOW_W = 14;
-const int8_t HELP_WINDOW_Y = 8;
-const int8_t HELP_WINDOW_X = 36;
+const uint8_t HELP_WINDOW_H = 16;
+const uint8_t HELP_WINDOW_W = 14;
+const uint8_t HELP_WINDOW_Y = 8;
+const uint8_t HELP_WINDOW_X = 36;
 
-const int8_t MAIN_MENU_WINDOW_H = 18;
-const int8_t MAIN_MENU_WINDOW_W = 40;
-const int8_t MAIN_MENU_WINDOW_Y = 3;
-const int8_t MAIN_MENU_WINDOW_X = 5;
+const uint8_t MAIN_MENU_WINDOW_H = 18;
+const uint8_t MAIN_MENU_WINDOW_W = 40;
+const uint8_t MAIN_MENU_WINDOW_Y = 3;
+const uint8_t MAIN_MENU_WINDOW_X = 5;
 
-const int8_t PAUSE_WINDOW_H = 5;
-const int8_t PAUSE_WINDOW_W = 14;
-const int8_t PAUSE_WINDOW_Y = 9;
-const int8_t PAUSE_WINDOW_X = 18;
+const uint8_t PAUSE_WINDOW_H = 5;
+const uint8_t PAUSE_WINDOW_W = 14;
+const uint8_t PAUSE_WINDOW_Y = 9;
+const uint8_t PAUSE_WINDOW_X = 18;
 
-const int8_t GAME_OVER_WINDOW_H = 4;
-const int8_t GAME_OVER_WINDOW_W = 14;
-const int8_t GAME_OVER_WINDOW_Y = 9;
-const int8_t GAME_OVER_WINDOW_X = 18;
+const uint8_t GAME_OVER_WINDOW_H = 4;
+const uint8_t GAME_OVER_WINDOW_W = 14;
+const uint8_t GAME_OVER_WINDOW_Y = 9;
+const uint8_t GAME_OVER_WINDOW_X = 18;
 
-const int8_t DEBUG_WINDOW_H = 24;
-const int8_t DEBUG_WINDOW_W = 50;
-const int8_t DEBUG_WINDOW_Y = 0;
-const int8_t DEBUG_WINDOW_X = 50;
+const uint8_t DEBUG_WINDOW_H = 24;
+const uint8_t DEBUG_WINDOW_W = 50;
+const uint8_t DEBUG_WINDOW_Y = 0;
+const uint8_t DEBUG_WINDOW_X = 50;
 
-const int8_t LOGS_WINDOW_H = 20;
-const int8_t LOGS_WINDOW_W = 100;
-const int8_t LOGS_WINDOW_Y = 24;
-const int8_t LOGS_WINDOW_X = 0;
+const uint8_t LOGS_WINDOW_H = 20;
+const uint8_t LOGS_WINDOW_W = 100;
+const uint8_t LOGS_WINDOW_Y = 24;
+const uint8_t LOGS_WINDOW_X = 0;
 
 // Width of the score display at the bottom of the board window.
-const int8_t BOARD_SCORE_W = 8;
+const uint8_t BOARD_SCORE_W = 8;
 
 // Coordinates of each label relative to their corresponding window.
-const int8_t STATS_TIME_Y  = 1;
-const int8_t STATS_TIME_X  = 0;
-const int8_t STATS_LINES_Y = 3;
-const int8_t STATS_LINES_X = 0;
-const int8_t STATS_LEVEL_Y = 5;
-const int8_t STATS_LEVEL_X = 0;
-const int8_t STATS_SPS_Y   = 7;
-const int8_t STATS_SPS_X   = 0;
-const int8_t STATS_PPS_Y   = 8;
-const int8_t STATS_PPS_X   = 0;
+const uint8_t STATS_TIME_Y  = 1;
+const uint8_t STATS_TIME_X  = 0;
+const uint8_t STATS_LINES_Y = 3;
+const uint8_t STATS_LINES_X = 0;
+const uint8_t STATS_LEVEL_Y = 5;
+const uint8_t STATS_LEVEL_X = 0;
+const uint8_t STATS_SPS_Y   = 7;
+const uint8_t STATS_SPS_X   = 0;
+const uint8_t STATS_PPS_Y   = 8;
+const uint8_t STATS_PPS_X   = 0;
 
-const int8_t HELP_MOVE_Y      = 1;
-const int8_t HELP_MOVE_X      = 0;
-const int8_t HELP_ROTATE_Y    = 3;
-const int8_t HELP_ROTATE_X    = 0;
-const int8_t HELP_HOLD_Y      = 5;
-const int8_t HELP_HOLD_X      = 0;
-const int8_t HELP_SOFT_DROP_Y = 7;
-const int8_t HELP_SOFT_DROP_X = 0;
-const int8_t HELP_HARD_DROP_Y = 9;
-const int8_t HELP_HARD_DROP_X = 0;
-const int8_t HELP_PAUSE_Y     = 11;
-const int8_t HELP_PAUSE_X     = 0;
-const int8_t HELP_SET_DELAY_Y = 13;
-const int8_t HELP_SET_DELAY_X = 0;
+const uint8_t HELP_MOVE_Y      = 1;
+const uint8_t HELP_MOVE_X      = 0;
+const uint8_t HELP_ROTATE_Y    = 3;
+const uint8_t HELP_ROTATE_X    = 0;
+const uint8_t HELP_HOLD_Y      = 5;
+const uint8_t HELP_HOLD_X      = 0;
+const uint8_t HELP_SOFT_DROP_Y = 7;
+const uint8_t HELP_SOFT_DROP_X = 0;
+const uint8_t HELP_HARD_DROP_Y = 9;
+const uint8_t HELP_HARD_DROP_X = 0;
+const uint8_t HELP_PAUSE_Y     = 11;
+const uint8_t HELP_PAUSE_X     = 0;
+const uint8_t HELP_SET_DELAY_Y = 13;
+const uint8_t HELP_SET_DELAY_X = 0;
 
-const int8_t MAIN_MENU_TITLE_H          = 4;
-const int8_t MAIN_MENU_TITLE_TERMINAL_Y = 0;
-const int8_t MAIN_MENU_TITLE_TERMINAL_X = 2;
-const int8_t MAIN_MENU_TITLE_TETRIS_Y   = 4;
-const int8_t MAIN_MENU_TITLE_TETRIS_X   = 7;
+const uint8_t MAIN_MENU_TITLE_H         = 4;
+const uint8_t MAIN_MENU_TITLE_TERMINAL_Y = 0;
+const uint8_t MAIN_MENU_TITLE_TERMINAL_X = 2;
+const uint8_t MAIN_MENU_TITLE_TETRIS_Y   = 4;
+const uint8_t MAIN_MENU_TITLE_TETRIS_X   = 7;
 
-const int8_t MAIN_MENU_LEVEL_W = 8;
-const int8_t MAIN_MENU_LEVEL_Y = 10;
-const int8_t MAIN_MENU_LEVEL_X = 13;
-const int8_t MAIN_MENU_START_Y = 12;
-const int8_t MAIN_MENU_START_X = 15;
-const int8_t MAIN_MENU_QUIT_Y =  14;
-const int8_t MAIN_MENU_QUIT_X =  15;
+const uint8_t MAIN_MENU_LEVEL_W = 8;
+const uint8_t MAIN_MENU_LEVEL_Y = 10;
+const uint8_t MAIN_MENU_LEVEL_X = 13;
+const uint8_t MAIN_MENU_START_Y = 12;
+const uint8_t MAIN_MENU_START_X = 15;
+const uint8_t MAIN_MENU_QUIT_Y =  14;
+const uint8_t MAIN_MENU_QUIT_X =  15;
 
-const int8_t PAUSE_RESUME_Y  = 0;
-const int8_t PAUSE_RESUME_X  = 1;
-const int8_t PAUSE_RESTART_Y = 1;
-const int8_t PAUSE_RESTART_X = 1;
-const int8_t PAUSE_QUIT_Y    = 2;
-const int8_t PAUSE_QUIT_X    = 1;
+const uint8_t PAUSE_RESUME_Y  = 0;
+const uint8_t PAUSE_RESUME_X  = 1;
+const uint8_t PAUSE_RESTART_Y = 1;
+const uint8_t PAUSE_RESTART_X = 1;
+const uint8_t PAUSE_QUIT_Y    = 2;
+const uint8_t PAUSE_QUIT_X    = 1;
 
-const int8_t PAUSE_STATS_SINGLE_Y = 10;
-const int8_t PAUSE_STATS_SINGLE_X = 0;
-const int8_t PAUSE_STATS_DOUBLE_Y = 11;
-const int8_t PAUSE_STATS_DOUBLE_X = 0;
-const int8_t PAUSE_STATS_TRIPLE_Y = 12;
-const int8_t PAUSE_STATS_TRIPLE_X = 0;
-const int8_t PAUSE_STATS_TETRIS_Y = 13;
-const int8_t PAUSE_STATS_TETRIS_X = 0;
+const uint8_t PAUSE_STATS_SINGLE_Y = 10;
+const uint8_t PAUSE_STATS_SINGLE_X = 0;
+const uint8_t PAUSE_STATS_DOUBLE_Y = 11;
+const uint8_t PAUSE_STATS_DOUBLE_X = 0;
+const uint8_t PAUSE_STATS_TRIPLE_Y = 12;
+const uint8_t PAUSE_STATS_TRIPLE_X = 0;
+const uint8_t PAUSE_STATS_TETRIS_Y = 13;
+const uint8_t PAUSE_STATS_TETRIS_X = 0;
 
-const int8_t GAME_OVER_RESTART_Y = 0;
-const int8_t GAME_OVER_RESTART_X = 1;
-const int8_t GAME_OVER_QUIT_Y    = 1;
-const int8_t GAME_OVER_QUIT_X    = 1;
+const uint8_t GAME_OVER_RESTART_Y = 0;
+const uint8_t GAME_OVER_RESTART_X = 1;
+const uint8_t GAME_OVER_QUIT_Y    = 1;
+const uint8_t GAME_OVER_QUIT_X    = 1;
 
 // Title strings for each window.
 const char* HOLD_TITLE      = "HOLD";
@@ -174,7 +174,7 @@ const uint16_t LOCK_DELAY_DIM_MIN      = 5;
 const uint16_t LOCK_DELAY_STANDOUT_MAX = 4;
 const uint16_t LOCK_DELAY_STANDOUT_MIN = 0;
 
-GameWindow game_window_get(int height, int width, int y, int x) {
+GameWindow game_window_get(uint8_t height, uint8_t width, uint8_t y, uint8_t x) {
     WINDOW* border = newwin(height, width, y, x);
     WINDOW* content = subwin(border, height-2, width-2, y+1, x+1);
     GameWindow game_window = {
@@ -184,15 +184,15 @@ GameWindow game_window_get(int height, int width, int y, int x) {
         .border_w = width,
         .border_y = y,
         .border_x = x,
-        .content_h = height-2,
-        .content_w = width-2,
+        .content_h = (height-2 >= 0) ? height-2 : 0,
+        .content_w = (width-2 >= 0) ? width-2 : 0,
         .content_y = y+1,
         .content_x = x+1
     };
     return game_window;
 }
 
-GameWindow* game_window_init(int height, int width, int y, int x) {
+GameWindow* game_window_init(uint8_t height, uint8_t width, uint8_t y, uint8_t x) {
     GameWindow* game_window = malloc(sizeof(GameWindow));
     *game_window = game_window_get(height, width, y, x);
     return game_window;
@@ -341,7 +341,7 @@ void draw_main_menu_window(GameWindow* main_menu_window, uint8_t start_level) {
     draw_window_border(main_menu_window, COLOR_PAIR_DEFAULT);
     
     // Print each line composing the 'TERMINAL' title.
-    for (size_t i = 0; i < MAIN_MENU_TITLE_H; ++i) {
+    for (uint8_t i = 0; i < MAIN_MENU_TITLE_H; ++i) {
         mvwprintw(
             main_menu_window->content, 
             MAIN_MENU_TITLE_TERMINAL_Y + i, 
@@ -363,20 +363,20 @@ void draw_main_menu_window(GameWindow* main_menu_window, uint8_t start_level) {
 
     // The first and second value of each pair indicate the lower and upper bounds of each of 
     // the six colors, a column for each color, and a row for each line that composes the title.
-    int8_t color_bounds[4][6][2] = {
-        {{1, 5}, {-1, -1}, {10, 10}, {-1, -1}, {18, 18}, {-1, -1}},
-        {{0, 6},   {7, 8},  {9, 12}, {14, 16}, {17, 19}, {20, 22}},
-        {{2, 4},   {5, 9}, {10, 13}, {14, 16}, {17, 18}, {19, 22}},
-        {{2, 4},   {5, 9}, {10, 12}, {13, 16}, {17, 18}, {19, 22}}
+    uint8_t color_bounds[4][6][2] = {
+        {{1, 5}, {0, 0}, {10, 10}, {0, 0}, {18, 18}, {0, 0}},
+        {{0, 6}, {7, 8},  {9, 12}, {14, 16}, {17, 19}, {20, 22}},
+        {{2, 4}, {5, 9}, {10, 13}, {14, 16}, {17, 18}, {19, 22}},
+        {{2, 4}, {5, 9}, {10, 12}, {13, 16}, {17, 18}, {19, 22}}
     };
 
     // Print each character of each line composing the 'TETRIS'.
-    for (size_t i = 0; i < MAIN_MENU_TITLE_H; ++i) {
-        for (size_t j = 0; j < strlen(MAIN_MENU_TITLE_TETRIS[i]); ++j) {
+    for (uint8_t i = 0; i < MAIN_MENU_TITLE_H; ++i) {
+        for (uint8_t j = 0; j < strlen(MAIN_MENU_TITLE_TETRIS[i]); ++j) {
 
             // Check which color the current character should be, by checking which bound it fits within.
-            size_t color_index = 0;
-            for (size_t k = 0; k < num_colors; ++k) {
+            uint8_t color_index = 0;
+            for (uint8_t k = 0; k < num_colors; ++k) {
                 if (j >= color_bounds[i][k][0] && j <= color_bounds[i][k][1]) {
                     color_index = k;
                     break;
@@ -442,15 +442,15 @@ void draw_board_state(GameWindow* board_window, const GameState* game_state) {
 
 void draw_buffer_zone_line(GameWindow* board_window) {
     wattron(board_window->content, COLOR_PAIR(COLOR_PAIR_RED) | A_DIM);
-    for (size_t i = 0; i < board_window->content_w; ++i) {
+    for (uint8_t i = 0; i < board_window->content_w; ++i) {
         mvwprintw(board_window->content, BUFFER_ZONE_H-1, i, "%c", BUFFER_ZONE_LINE);
     }
     wattroff(board_window->content, COLOR_PAIR(COLOR_PAIR_RED) | A_DIM);
 }
 
 void draw_board_stack(GameWindow* board_window, const GameState* game_state) {
-    for (size_t i = 0; i < BOARD_H; ++i) {
-        for (size_t j = 0; j < BOARD_W; ++j) {
+    for (uint8_t i = 0; i < BOARD_H; ++i) {
+        for (uint8_t j = 0; j < BOARD_W; ++j) {
             if (game_state->board[i][j] > 0) {
                 wattron(board_window->content, COLOR_PAIR(game_state->board[i][j]));
                 mvwprintw(board_window->content, i, 2*j, "%c%c", BLOCK_LEFT, BLOCK_RIGHT);
@@ -478,8 +478,8 @@ void draw_curr_piece(GameWindow* board_window, const GameState* game_state) {
         wattron(board_window->content, A_STANDOUT);
     }
 
-    for (size_t i = 0; i < game_state->curr_piece.n; ++i) {
-        for (size_t j = 0; j < game_state->curr_piece.n; ++j) {
+    for (uint8_t i = 0; i < game_state->curr_piece.n; ++i) {
+        for (uint8_t j = 0; j < game_state->curr_piece.n; ++j) {
             if (game_state->curr_piece.M[game_state->curr_piece.r][i][j] == 1) {
                 mvwprintw(board_window->content, y_start + i, x_start + 2*j, "%c%c", BLOCK_LEFT, BLOCK_RIGHT);
             }
@@ -507,8 +507,8 @@ void draw_ghost_piece(GameWindow* board_window, const GameState* game_state) {
         int8_t x_start = 2*(game_state->ghost_piece.x - game_state->ghost_piece.n/2);
         wattron(board_window->content, COLOR_PAIR(game_state->ghost_piece.shape) | A_DIM);
 
-        for (size_t i = 0; i < game_state->ghost_piece.n; ++i) {
-            for (size_t j = 0; j < game_state->ghost_piece.n; ++j) {
+        for (uint8_t i = 0; i < game_state->ghost_piece.n; ++i) {
+            for (uint8_t j = 0; j < game_state->ghost_piece.n; ++j) {
                 if (game_state->ghost_piece.M[game_state->ghost_piece.r][i][j] == 1) {
                     mvwprintw(board_window->content, y_start + i, x_start + 2*j, "%c%c", BLOCK_LEFT, BLOCK_RIGHT);
                 }
@@ -544,8 +544,8 @@ void draw_hold_piece(GameWindow* hold_window, const GameState* game_state) {
             wattron(hold_window->content, A_DIM);
         }
     
-        for (size_t i = 0; i < game_state->hold_piece.n; ++i) {
-            for (size_t j = 0; j < game_state->hold_piece.n; ++j) {
+        for (uint8_t i = 0; i < game_state->hold_piece.n; ++i) {
+            for (uint8_t j = 0; j < game_state->hold_piece.n; ++j) {
                 if (game_state->hold_piece.M[0][i][j] == 1) {   
                     mvwprintw(hold_window->content, y_start + i, x_start + 2*j, "%c%c", BLOCK_LEFT, BLOCK_RIGHT);
                 }
@@ -568,8 +568,8 @@ void draw_next_piece(GameWindow* next_window, const GameState* game_state) {
     int8_t x_start = next_window->content_w / 2 - game_state->next_piece.l - x_padding;
     wattron(next_window->content, COLOR_PAIR(game_state->next_piece.shape));
 
-    for (size_t i = 0; i < game_state->next_piece.n; ++i) {
-        for (size_t j = 0; j < game_state->next_piece.n; ++j) {
+    for (uint8_t i = 0; i < game_state->next_piece.n; ++i) {
+        for (uint8_t j = 0; j < game_state->next_piece.n; ++j) {
             if (game_state->next_piece.M[0][i][j] == 1) {
                 mvwprintw(next_window->content, y_start + i, x_start + 2*j, "%c%c", BLOCK_LEFT, BLOCK_RIGHT);
             }
@@ -699,7 +699,7 @@ void draw_debug_logs(GameWindow* logs_window, FILE* debug_log, LogBuffer* log_bu
     }
 
     // Print each log starting from the start_index of log_buffer.
-    for (size_t i = 0; i < MAX_LOGS; ++i) {
+    for (uint8_t i = 0; i < MAX_LOGS; ++i) {
         if (log_buffer->logs[(i + log_buffer->start_index) % MAX_LOGS]) {
             mvwprintw(
                 logs_window->content,
