@@ -3,10 +3,21 @@
 #include <stdbool.h>
 #include <stdio.h>
 
-#define MACRO_TO_STRING(X) TO_STRING(X)
+/** @file
+ ** @brief Assertion macro test utility.
+ **/
 
+
+/**
+ ** @brief Converts a macro to a string.
+ **/
+#define MACRO_TO_STRING(X) TO_STRING(X)
 #define TO_STRING(X) #X
 
+/**
+ ** @brief Assert a condition, if false, print a failure message and return 
+ ** false. 
+ **/
 #define ASSERT(condition)                                  \
     if (!(condition)) {                                    \
         printf(                                            \
