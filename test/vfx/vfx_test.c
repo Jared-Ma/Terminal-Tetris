@@ -7,7 +7,10 @@
 #include <time.h>
 
 
-const uint16_t TARGET_FPS = 60;
+// Target FPS the VFX will play at.
+const uint8_t TARGET_FPS = 60;
+
+// Target frame time in nanoseconds.
 const uint32_t TARGET_FRAME_TIME_NS = 1e9 / TARGET_FPS;
 
 void run_vfx_test(VFXTest vfx_test, int8_t y_offset, int8_t x_offset) {
@@ -18,6 +21,7 @@ void run_vfx_test(VFXTest vfx_test, int8_t y_offset, int8_t x_offset) {
 
     vfx_test.test_function(&game_window, &vfx, y_offset, x_offset);
 
+    // Play the specified VFX.
     while (vfx.enabled) {
         clock_gettime(CLOCK_MONOTONIC, &start_time);
 

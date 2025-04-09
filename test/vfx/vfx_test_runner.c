@@ -11,6 +11,7 @@
 #include <string.h>
 #include <time.h>
 
+// Number of tests to be run. 
 #define NUM_TESTS 48
 
 
