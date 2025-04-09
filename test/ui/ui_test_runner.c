@@ -184,15 +184,15 @@ int main(void) {
 
     setup_curses();
 
-    const int8_t TEST_INFO_WINDOW_H = GAME_H + 4;
-    const int8_t TEST_INFO_WINDOW_W = GAME_W + 2;
-    const int8_t TEST_INFO_WINDOW_Y = 0;
-    const int8_t TEST_INFO_WINDOW_X = 0;
+    const uint8_t TEST_INFO_WINDOW_H = GAME_H + 4;
+    const uint8_t TEST_INFO_WINDOW_W = GAME_W + 2;
+    const uint8_t TEST_INFO_WINDOW_Y = 0;
+    const uint8_t TEST_INFO_WINDOW_X = 0;
 
-    const int8_t TEST_CONTENT_WINDOW_H = TEST_INFO_WINDOW_H - 2;
-    const int8_t TEST_CONTENT_WINDOW_W = TEST_INFO_WINDOW_W;
-    const int8_t TEST_CONTENT_WINDOW_Y = 1;
-    const int8_t TEST_CONTENT_WINDOW_X = 0;
+    const uint8_t TEST_CONTENT_WINDOW_H = TEST_INFO_WINDOW_H - 2;
+    const uint8_t TEST_CONTENT_WINDOW_W = TEST_INFO_WINDOW_W;
+    const uint8_t TEST_CONTENT_WINDOW_Y = 1;
+    const uint8_t TEST_CONTENT_WINDOW_X = 0;
 
     // Calculate offset of test window so UI is centered in terminal.
     int y_offset = LINES / 2 - TEST_INFO_WINDOW_H / 2;
@@ -211,8 +211,8 @@ int main(void) {
         TEST_CONTENT_WINDOW_X + x_offset
     );
 
-    const int8_t game_window_y_offset = TEST_CONTENT_WINDOW_Y + y_offset + 1;
-    const int8_t game_window_x_offset = TEST_CONTENT_WINDOW_X + x_offset + 1;
+    const uint8_t game_window_y_offset = TEST_CONTENT_WINDOW_Y + y_offset + 1;
+    const uint8_t game_window_x_offset = TEST_CONTENT_WINDOW_X + x_offset + 1;
 
     const char* help_string = "< prev | pass: z | fail: x | end: esc | next >";
     mvwprintw(test_info_window, TEST_INFO_WINDOW_H - 1, TEST_INFO_WINDOW_W / 2 - strlen(help_string) / 2, "%s", help_string);
