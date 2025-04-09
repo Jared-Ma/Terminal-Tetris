@@ -84,6 +84,8 @@ void test_draw_board_stack(int8_t y_offset, int8_t x_offset) {
     draw_board_window(&board_window);
     
     GameState game_state = game_state_get();
+    
+    // Set board to checkerboard pattern.
     for (size_t i = 0; i < BOARD_H; ++i) {
         for (size_t j = 0; j < BOARD_W; ++j) {
             if (i % 2 == 0) {
@@ -223,7 +225,7 @@ void test_draw_curr_piece_lock_delay_dim(int8_t y_offset, int8_t x_offset) {
     GameState game_state = game_state_get();
     game_state_start(&game_state, 1);
     game_state.curr_piece = piece_get(I, SPAWN_Y, SPAWN_X);
-    game_state.lock_delay_timer = 20;
+    game_state.lock_delay_timer = LOCK_DELAY_DIM_MAX;
     draw_curr_piece(&board_window, &game_state);
 
     game_window_refresh(&board_window);
@@ -380,11 +382,14 @@ void test_draw_board_state(int8_t y_offset, int8_t x_offset) {
 
     GameState game_state = game_state_get();
     game_state_start(&game_state, 1);
+
+    // Fill bottom of board with every possible color.
     for (size_t i = BOARD_H - NUM_SHAPES; i < BOARD_H; ++i) {
         for (size_t j = 0; j < BOARD_W; ++j) {
             game_state.board[i][j] = (i % NUM_SHAPES) + 1;
         }
     }
+
     game_state.curr_piece = piece_get(I, SPAWN_Y, SPAWN_X);
     game_state_update_ghost_piece(&game_state);
     game_state.score = 12345678;

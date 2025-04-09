@@ -10,6 +10,11 @@
 #include <stdlib.h>
 #include <string.h>
 
+/** @file
+ ** @brief Runs the specified UI tests.
+ **/
+
+// Number of tests to be run. 
 #define NUM_TESTS 51
 
 
