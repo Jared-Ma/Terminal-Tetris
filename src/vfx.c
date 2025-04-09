@@ -10,20 +10,20 @@
 #include <string.h>
 
 
-const uint16_t HOLD_PIECE_VFX_FRAMES = 10;
-const uint16_t NEXT_PIECE_VFX_FRAMES = 10;
-const uint16_t LOCK_PIECE_VFX_FRAMES = 10;
-const uint16_t LINE_CLEAR_VFX_FRAMES = 30;
-
-const uint16_t ACTION_VFX_FRAMES    = 240;
-const uint16_t COMBO_VFX_FRAMES     = 240;
-const uint16_t B2B_COMBO_VFX_FRAMES = 240;
-const uint16_t POINTS_VFX_FRAMES     = 240;
-
+// The number of frames each VFX should play for.
+const uint16_t HOLD_PIECE_VFX_FRAMES  = 10;
+const uint16_t NEXT_PIECE_VFX_FRAMES  = 10;
+const uint16_t LOCK_PIECE_VFX_FRAMES  = 10;
+const uint16_t LINE_CLEAR_VFX_FRAMES  = 30;
+const uint16_t ACTION_VFX_FRAMES      = 240;
+const uint16_t COMBO_VFX_FRAMES       = 240;
+const uint16_t B2B_COMBO_VFX_FRAMES   = 240;
+const uint16_t POINTS_VFX_FRAMES      = 240;
 const uint16_t LEVEL_UP_VFX_FRAMES    = 120;
 const uint16_t STATS_LINES_VFX_FRAMES = 5;
 const uint16_t STATS_LEVEL_VFX_FRAMES = 5;
 
+// At which frame these VFX should start to dim.
 const uint16_t LAST_ACTION_VFX_DIM_FRAMES = 30;
 const uint16_t LEVEL_UP_VFX_DIM_FRAMES    = 30;
 
@@ -118,18 +118,18 @@ void draw_vfx_board_window_border(VFX* vfx, int16_t color_pair) {
 
     wattron(vfx->game_window->border, COLOR_PAIR(color_pair));
 
-    // draw corners of border
+    // Draw corners of border.
     mvwaddch(vfx->game_window->border, 0, 0, ACS_ULCORNER);
     mvwaddch(vfx->game_window->border, 0, vfx->game_window->border_w - 1, ACS_URCORNER);
     mvwaddch(vfx->game_window->border, vfx->game_window->border_h - 1, 0, ACS_LLCORNER);
     mvwaddch(vfx->game_window->border, vfx->game_window->border_h - 1, vfx->game_window->border_w - 1, ACS_LRCORNER);
     
-    // draw top, left, and right sides of border
+    // Draw top, left, and right sides of border.
     mvwhline(vfx->game_window->border, 0, 1, ACS_HLINE, vfx->game_window->border_w - 2);
     mvwvline(vfx->game_window->border, 1, 0, ACS_VLINE, vfx->game_window->border_h - 2);
     mvwvline(vfx->game_window->border, 1, vfx->game_window->border_w - 1, ACS_VLINE, vfx->game_window->border_h - 2);
     
-    // draw bottom side of border without overwriting score
+    // Draw bottom side of border without overwriting score.
     mvwhline(vfx->game_window->border, vfx->game_window->border_h - 1, 1, ACS_HLINE, vfx->game_window->border_w/2 - 5);
     mvwhline(
         vfx->game_window->border, 
@@ -525,6 +525,8 @@ void vfx_enable_action(VFX* vfx, const GameState* game_state) {
     }
 
     vfx_disable(vfx);
+
+    // Calculate distance from bottom of window to place VFX.
     vfx->y = vfx->game_window->content_h;
     vfx->y -= (game_state->last_action_points > 0) ? 1 : 0;
     vfx->y -= (game_state->difficult_clear_combo > 0) ? 1 : 0;
@@ -608,6 +610,7 @@ void clear_vfx_action(VFX* vfx) {
     if (!vfx) {
         return;
     }
+
     for (size_t i = 0; i < strlen(vfx->text); ++i) {
         if (vfx->text[i] == '\n') {
             mvwprintw(vfx->game_window->content, vfx->y, vfx->x, "%*s", vfx->game_window->content_w, "");
@@ -760,10 +763,13 @@ void vfx_enable_combo(VFX* vfx, const GameState* game_state) {
     }
     
     sprintf(vfx->text, "%i x combo", game_state->combo);
+    
+    // Calculate distance from bottom of window to place VFX.
     vfx->y = vfx->game_window->content_h;
     vfx->y -= (game_state->last_action_points > 0) ? 1 : 0; // use vfx_check_function
     vfx->y -= (game_state->difficult_clear_combo > 0) ? 1 : 0;
     vfx->y--;
+
     vfx_enable(vfx, draw_vfx_combo);
 
     TRACE_LOG("Enabled combo VFX");
@@ -812,9 +818,12 @@ void vfx_enable_b2b_combo(VFX* vfx, const GameState* game_state) {
     }
         
     sprintf(vfx->text, "%i x b2b", game_state->difficult_clear_combo);
+
+    // Calculate distance from bottom of window to place VFX.
     vfx->y = vfx->game_window->content_h;
     vfx->y -= (game_state->last_action_points > 0) ? 1 : 0;
     vfx->y--;
+    
     vfx_enable(vfx, draw_vfx_b2b_combo);
  
     TRACE_LOG("Enabled b2b combo VFX");
