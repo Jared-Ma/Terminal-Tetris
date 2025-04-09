@@ -3,7 +3,11 @@
 
 #include <stdint.h>
 
+/** @file
+ ** @brief Collection of UI test cases.
+ **/
 
+ 
 /**
  ** @brief Test draw function draw_hold_window.
  ** 
