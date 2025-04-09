@@ -4,9 +4,15 @@
 #include <stdlib.h>
 #include <stdint.h>
 
+/** @file
+ ** @brief Runs the specified performance tests.
+ **/
+
+// Number of tests to be run. 
 #define NUM_TESTS 5
 
 
+// Number of times each test is run. 
 const uint8_t NUM_TRIALS = 5;
 
 int main(void) {

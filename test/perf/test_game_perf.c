@@ -6,7 +6,8 @@
 
 void test_game_state_clear_lines_perf(struct timespec* start_time, struct timespec* end_time) {
     GameState game_state = game_state_get();
-    
+
+    // Test worst case scenario for game_state_clear_lines.
     Shape test_board[BOARD_H][BOARD_W] = {
         {1, 1, 1, 1, 1, 1, 1, 1, 1, 0},
         {1, 1, 1, 1, 1, 1, 1, 1, 1, 0},
@@ -75,6 +76,7 @@ void test_game_state_rotate_curr_piece_srs(struct timespec* start_time, struct t
 
     game_state.curr_piece = piece_get(I, (BOARD_H-1)/2, (BOARD_W-1)/2);
 
+    // Force I piece to pass final SRS test.
     Shape test_board[BOARD_H][BOARD_W] = {
         {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
         {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
