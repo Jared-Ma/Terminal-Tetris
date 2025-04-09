@@ -9,6 +9,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+// Number of tests to be run. 
 #define NUM_TESTS 80
 
 
