@@ -38,7 +38,7 @@ typedef struct UITest UITest;
 /**
  ** @brief Run the specified UI test and draw its output.
  ** 
- ** @param ui_test The UITest object containing the test to be run.
+ ** @param ui_test The UITest object containing the test case to be run.
  ** @param y_offset Offset in the y-axis applied to the drawn output.
  ** @param x_offset Offset in the x-axis applied to the drawn output.
  **/
