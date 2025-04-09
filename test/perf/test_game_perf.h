@@ -2,6 +2,10 @@
 #define TEST_GAME_PERF_H
 #include <time.h>
 
+/** @file
+ ** @brief Collection of performance test cases.
+ **/
+
 
 /**
  ** @brief Test game_state_clear_lines performance.
