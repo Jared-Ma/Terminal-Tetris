@@ -21,6 +21,17 @@ double diff_timespec_ns(struct timespec start_time, struct timespec end_time);
 
 /**
  ** @brief Calculate the difference of two different timespec objects in 
+ ** microseconds. 
+ ** 
+ ** @param start_time The start time as a timespec object.
+ ** @param end_time The end time as a timespec object.
+ ** 
+ ** @return The difference in microseconds as a double.
+ **/
+double diff_timespec_us(struct timespec start_time, struct timespec end_time);
+
+/**
+ ** @brief Calculate the difference of two different timespec objects in 
  ** seconds. 
  ** 
  ** @param start_time The start time as a timespec object.

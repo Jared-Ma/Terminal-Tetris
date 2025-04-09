@@ -6,6 +6,10 @@ double diff_timespec_ns(struct timespec start_time, struct timespec end_time) {
     return (end_time.tv_sec - start_time.tv_sec) / 1e9 + (end_time.tv_nsec - start_time.tv_nsec);
 }
 
+double diff_timespec_us(struct timespec start_time, struct timespec end_time) {
+    return (end_time.tv_sec - start_time.tv_sec) * 1e6 + (end_time.tv_nsec - start_time.tv_nsec) / 1e3;
+}
+
 double diff_timespec_s(struct timespec start_time, struct timespec end_time) {
     return (end_time.tv_sec - start_time.tv_sec) + (end_time.tv_nsec - start_time.tv_nsec) / 1e9;
 }

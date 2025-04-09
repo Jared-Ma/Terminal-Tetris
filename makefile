@@ -117,7 +117,7 @@ $(OBJ_DIR)perf_test_runner.o: $(PERF_TEST_DIR)perf_test_runner.c
 	$(CC) $(CFLAGS) $< -o $@ 
 
 $(OBJ_DIR)perf_test.o: $(PERF_TEST_DIR)perf_test.c
-	$(CC) $(CFLAGS) $< -o $@
+	$(CC) $(CFLAGS) $(INCLUDE_SRC) $< -o $@
 
 $(OBJ_DIR)test%.o: $(PERF_TEST_DIR)test%.c
 	$(CC) $(CFLAGS) $(INCLUDE_SRC) $(INCLUDE_TEST_UTIL) $< -o $@

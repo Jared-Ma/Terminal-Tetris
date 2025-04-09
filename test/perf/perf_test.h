@@ -14,8 +14,6 @@ struct PerfTest {
 
 typedef struct PerfTest PerfTest;
 
-double diff_timespec_us(struct timespec start_time, struct timespec end_time);
-
 void run_perf_test(size_t test_num, size_t num_trials, PerfTest perf_test);
 
 #endif

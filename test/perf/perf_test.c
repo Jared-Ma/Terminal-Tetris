@@ -1,13 +1,10 @@
 #include "perf_test.h"
+#include "helper.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 
-
-double diff_timespec_us(struct timespec start_time, struct timespec end_time) {
-    return (end_time.tv_sec - start_time.tv_sec) * 1e6 + (end_time.tv_nsec - start_time.tv_nsec) / 1e3;
-}
 
 void run_perf_test(size_t test_num, size_t num_trials, PerfTest perf_test) {
     printf("Running performance test %lu - %s (num_trials=%lu)\n", test_num, perf_test.test_name, num_trials);    
