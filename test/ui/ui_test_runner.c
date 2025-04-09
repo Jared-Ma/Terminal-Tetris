@@ -14,71 +14,83 @@
 
 
 static void setup_curses(void) {
-    // initialize curses screen
+    // Initialize curses screen.
     if (initscr() == NULL) {
         fprintf(stderr, "During curses setup, initscr() failed to initialize curses screen.\n");
         exit(EXIT_FAILURE);
     }
 
-    // disable input echoing to screen
+    // Check if current terminal size is sufficient.
+    int h_max = GAME_H + 4;
+    int w_max = GAME_W + 2;
+    if (LINES < h_max || COLS < w_max) {
+        fprintf(    
+            stderr, 
+            "Current terminal window size (h=%i, w=%i) did not meet requirements (h=%i, w=%i).",
+            LINES, COLS, h_max, w_max
+        );
+        exit(EXIT_FAILURE);
+    }
+
+    // Disable input echoing to screen.
     if (noecho() == ERR) {
         fprintf(stderr, "During curses setup, noecho() failed to disable input echoing.\n");
         exit(EXIT_FAILURE);
     }
     
-    // hide cursor
+    // Hide cursor.
     if (curs_set(0) == ERR) {
         fprintf(stderr, "During curses setup, curs_set(0) failed to set cursor to invisible mode.\n");
         exit(EXIT_FAILURE);
     }
     
-    // disable delay after reading escape key
+    // Disable delay after reading escape key.
     if (set_escdelay(0) == ERR) {
         fprintf(stderr, "During curses setup, set_escdelay(0) failed to disable escape key delay.\n");
         exit(EXIT_FAILURE);
     }
     
-    // enable arrow key input
+    // Enable arrow key input.
     if (keypad(stdscr, true) == ERR) {
         fprintf(stderr, "During curses setup, keypad(stdscr, true) failed to enable keypad.\n");
         exit(EXIT_FAILURE);
     }
     
-    // disable non-blocking getch()
+    // Disable non-blocking getch().
     if (nodelay(stdscr, false) == ERR) {
-        fprintf(stderr, "During curses setup, nodelay(stdscr, false) failed to disable non-blocking getch().\n");
+        fprintf(stderr, "During curses setup, nodelay(stdscr, true) failed to enable non-blocking getch().\n");
         exit(EXIT_FAILURE);
     }
 
-    // initial refresh of stdscr
+    // Initial refresh of stdscr.
     if (refresh() == ERR) {
         fprintf(stderr, "During curses setup, initial refresh() failed.\n");
         exit(EXIT_FAILURE);
     } 
 
-    // check if terminal supports colors
+    // Check if terminal supports colors.
     if (!has_colors()) {
         fprintf(stderr, "During curses setup, has_colors() return false, continuing without color.\n");
         return;
     }
 
-    // initialize default colors
+    // Initialize default colors.
     if (use_default_colors() == ERR) {
         fprintf(stderr, "During curses setup, use_default_colors() not supported, continuing without color.\n");
         return;
     }
 
-    // initialize curses colors 
+    // Initialize curses colors. 
     if (start_color() == ERR) {
         fprintf(stderr, "During curses setup, start_color() failed to initialize colors, continuing without color.\n");
         return;
     }
 
-    // initialize non-default orange color
+    // Initialize non-default orange color.
     short COLOR_ORANGE = 8;
     init_color(COLOR_ORANGE, 900, 600, 0);
 
-    // initialize color pairs of tetronimos
+    // Initialize color pairs of tetronimos.
     init_pair(I, COLOR_CYAN,    -1);
     init_pair(J, COLOR_BLUE,    -1);
     init_pair(L, COLOR_ORANGE,  -1);
@@ -89,14 +101,14 @@ static void setup_curses(void) {
 }
 
 static void cleanup(void) {
-    // show cursor
+    // Show cursor.
     if (stdscr != NULL) {
         if (curs_set(2) == ERR) {
             fprintf(stderr, "During cleanup, curs_set(2) failed to set cursor to visible mode.\n");
         }
     }
 
-    // exit curses
+    // Exit curses.
     if (stdscr != NULL) {
         if (endwin() == ERR) {
             fprintf(stderr, "During cleanup, endwin() failed to restore normal terminal mode.\n");
@@ -105,14 +117,6 @@ static void cleanup(void) {
 }
 
 int main(void) {
-    // register cleanup function on exit
-    if (atexit(cleanup) != 0) {
-        fprintf(stderr, "Failed to register cleanup function.\n");
-        return EXIT_FAILURE;
-    }
-
-    setup_curses();
-
     UITest ui_tests[NUM_TESTS] = {
         UI_TEST(test_draw_hold_window),
         UI_TEST(test_draw_board_window),
@@ -167,6 +171,14 @@ int main(void) {
         UI_TEST(test_draw_pause_stats),
     };
 
+    // Register cleanup function on exit.
+    if (atexit(cleanup) != 0) {
+        fprintf(stderr, "Failed to register cleanup function.\n");
+        return EXIT_FAILURE;
+    }
+
+    setup_curses();
+
     const int8_t TEST_INFO_WINDOW_H = GAME_H + 4;
     const int8_t TEST_INFO_WINDOW_W = GAME_W + 2;
     const int8_t TEST_INFO_WINDOW_Y = 0;
@@ -177,42 +189,50 @@ int main(void) {
     const int8_t TEST_CONTENT_WINDOW_Y = 1;
     const int8_t TEST_CONTENT_WINDOW_X = 0;
 
+    // Calculate offset of test window so UI is centered in terminal.
+    int y_offset = LINES / 2 - TEST_INFO_WINDOW_H / 2;
+    int x_offset = COLS / 2 - TEST_INFO_WINDOW_W / 2;
+
     WINDOW* test_info_window = newwin(
-        TEST_INFO_WINDOW_H, TEST_INFO_WINDOW_W, 
-        TEST_INFO_WINDOW_Y, TEST_INFO_WINDOW_X
+        TEST_INFO_WINDOW_H, 
+        TEST_INFO_WINDOW_W, 
+        TEST_INFO_WINDOW_Y + y_offset, 
+        TEST_INFO_WINDOW_X + x_offset
     );
-
     WINDOW* test_content_window = newwin(
-        TEST_CONTENT_WINDOW_H, TEST_CONTENT_WINDOW_W, 
-        TEST_CONTENT_WINDOW_Y, TEST_CONTENT_WINDOW_X
+        TEST_CONTENT_WINDOW_H, 
+        TEST_CONTENT_WINDOW_W, 
+        TEST_CONTENT_WINDOW_Y + y_offset, 
+        TEST_CONTENT_WINDOW_X + x_offset
     );
 
-    const int8_t game_window_y_offset = TEST_CONTENT_WINDOW_Y + 1;
-    const int8_t game_window_x_offset = TEST_CONTENT_WINDOW_X + 1;
+    const int8_t game_window_y_offset = TEST_CONTENT_WINDOW_Y + y_offset + 1;
+    const int8_t game_window_x_offset = TEST_CONTENT_WINDOW_X + x_offset + 1;
 
     const char* help_string = "< prev | pass: z | fail: x | end: esc | next >";
     mvwprintw(test_info_window, TEST_INFO_WINDOW_H - 1, TEST_INFO_WINDOW_W / 2 - strlen(help_string) / 2, "%s", help_string);
     wrefresh(test_info_window);
     
-    char title_string[64];
+    char header_string[64];
     size_t test_index = 0;
     bool running = true;
     
     while (running) {
+        // Print test header information. 
         if (ui_tests[test_index].test_result == PENDING) {
-            sprintf(title_string, "%s - PENDING - %lu / %u", ui_tests[test_index].test_name, test_index + 1, NUM_TESTS);
+            sprintf(header_string, "%s - PENDING - %lu / %u", ui_tests[test_index].test_name, test_index + 1, NUM_TESTS);
         } else if (ui_tests[test_index].test_result == PASSED){
-            sprintf(title_string, "%s - PASSED - %lu / %u", ui_tests[test_index].test_name, test_index + 1, NUM_TESTS);
+            sprintf(header_string, "%s - PASSED - %lu / %u", ui_tests[test_index].test_name, test_index + 1, NUM_TESTS);
         } else if (ui_tests[test_index].test_result == FAILED) {
-            sprintf(title_string, "%s - FAILED - %lu / %u", ui_tests[test_index].test_name, test_index + 1, NUM_TESTS);
+            sprintf(header_string, "%s - FAILED - %lu / %u", ui_tests[test_index].test_name, test_index + 1, NUM_TESTS);
         }
-        mvprintw(0, 0, "%*s", (int)sizeof(title_string), "");
+        mvprintw(y_offset, x_offset, "%*s", (int)sizeof(header_string), "");
         if (ui_tests[test_index].test_result == PASSED) {
             attron(COLOR_PAIR(COLOR_PAIR_GREEN));
         } else if (ui_tests[test_index].test_result == FAILED) {
             attron(COLOR_PAIR(COLOR_PAIR_RED));
         }
-        mvprintw(0, 0, "%s", title_string);
+        mvprintw(y_offset, x_offset, "%s", header_string);
         if (ui_tests[test_index].test_result == PASSED) {
             attroff(COLOR_PAIR(COLOR_PAIR_GREEN));
         } else if (ui_tests[test_index].test_result == FAILED) {
@@ -220,6 +240,7 @@ int main(void) {
         }
         refresh();
 
+        // Draw testing window border.
         werase(test_content_window);
         wattron(test_content_window, COLOR_PAIR(COLOR_PAIR_RED));
         box(test_content_window, 0, 0);
