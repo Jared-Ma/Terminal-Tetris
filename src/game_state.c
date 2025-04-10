@@ -736,7 +736,7 @@ void game_state_apply_soft_drop_gravity(GameState* game_state) {
     TRACE_LOG("Toggled soft drop: soft_drop=%s", (game_state->soft_drop) ? "true" : "false");
     
     uint32_t points = SOFT_DROP_POINTS * (game_state->curr_piece.y - prev_y);
-    game_state->score += SOFT_DROP_POINTS * (game_state->curr_piece.y - prev_y);
+    game_state->score += points;
     TRACE_LOG("Added soft drop points: %u", points);
 }
 
