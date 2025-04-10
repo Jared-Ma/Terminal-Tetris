@@ -115,7 +115,7 @@ Instructions to run:
 Every VFX element can be manually reviewed and either passed or failed. Upon exit, the test results 
 are shown.
 
-Commands:
+Instructions to run:
 - Build the test runner executable: `make vfx_test`
 - Run the test runner: `./vfx_test_runner`
 
@@ -128,6 +128,6 @@ Commands:
 Runs tests a specified amount of times, and outputs the runtime of each trial and the overall 
 average runtime of each test.
 
-Commands:
+Instructions to run:
 - Build the test runner executable: `make perf_test`
 - Run the test runner: `./perf_test_runner`
