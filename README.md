@@ -3,9 +3,9 @@
 A small Linux terminal application that plays Tetris, and was implemented according to the [Tetris 
 Guideline](https://tetris.wiki/Tetris_Guideline). 
 
-<center>
+<p align="center">
 <img src="assets/gameplay.webp" alt="gameplay" width="500"/>
-</center>
+</p>
 
 Instructions to run:
 - Build the executable: `make`
@@ -29,7 +29,7 @@ rows dropped per second. These values come from the following formula to determi
 per row, in seconds: $$\text{Time} = (0.8-((\text{Level}-1)\times0.007))^{(\text{Level} - 1)}$$ 
 The time spent per row is then rearranged to get the G values:
 
-<center>
+<p align="center">
 
 | Level | Speed (unit: G) |
 | ----- | --------------- |
@@ -49,7 +49,7 @@ The time spent per row is then rearranged to get the G values:
 | 14    | 1.456960        |
 | 15    | 2.361181        |
 
-</center>
+</p>
 
 - [Soft drop](https://tetris.wiki/Drop#Soft_drop) speed is set to 20 times the current level's fall 
 speed.
@@ -66,9 +66,9 @@ window.
 
 #### Debug Mode
 
-<center>
+<p align="center">
 <img src="assets/debug_mode.webp" alt="debug mode" width="500"/>
-</center>
+</p>
 
 Launching in debug mode will add both a `LOGS` window and a `DEBUG` window. The `DEBUG` window will 
 display the values of several game state variables. The `LOGS` window will display the most recent 
@@ -82,9 +82,9 @@ Instructions to run:
 
 #### Unit Tests
 
-<center>
+<p align="center">
 <img src="assets/unit_tests.png" alt="unit tests" width="500"/>
-</center>
+</p>
 
 The functions of each source file are individually tested, and the test results are output to the 
 terminal.
@@ -95,9 +95,9 @@ Instructions to run:
 
 #### UI Tests
 
-<center>
+<p align="center">
 <img src="assets/ui_tests.webp" alt="ui tests" width="500"/>
-</center>
+</p>
 
 Every UI element can be manually reviewed and either passed or failed. Upon exit, the test results 
 are shown.
@@ -108,9 +108,9 @@ Instructions to run:
 
 #### VFX Tests
 
-<center>
+<p align="center">
 <img src="assets/vfx_tests.webp" alt="vfx tests" width="500"/>
-</center>
+</p>
 
 Every VFX element can be manually reviewed and either passed or failed. Upon exit, the test results 
 are shown.
@@ -121,9 +121,9 @@ Commands:
 
 #### Performance Tests
 
-<center>
+<p align="center">
 <img src="assets/perf_tests.png" alt="performance tests" width="500"/>
-</center>
+</p>
 
 Runs tests a specified amount of times, and outputs the runtime of each trial and the overall 
 average runtime of each test.
