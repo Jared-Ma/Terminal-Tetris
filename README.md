@@ -29,7 +29,7 @@ rows dropped per second. These values come from the following formula to determi
 per row, in seconds: $$\text{Time} = (0.8-((\text{Level}-1)\times0.007))^{(\text{Level} - 1)}$$ 
 The time spent per row is then rearranged to get the G values:
 
-<p align="center">
+<div align="center">
 
 | Level | Speed (unit: G) |
 | ----- | --------------- |
@@ -49,7 +49,7 @@ The time spent per row is then rearranged to get the G values:
 | 14    | 1.456960        |
 | 15    | 2.361181        |
 
-</p>
+</div>
 
 - [Soft drop](https://tetris.wiki/Drop#Soft_drop) speed is set to 20 times the current level's fall 
 speed.
