@@ -77,6 +77,7 @@ game events that have been logged. Additionally, these logs will be saved to a t
 advancing a frame can be done by pressing any key.
 
 Instructions to run:
+- Build the debug executable: `make debug`
 - Add the debug `-d` command line argument: `./terminal_tetris -d`
 
 
