@@ -1,5 +1,5 @@
 CC     = gcc
-CFLAGS = -Wall -Werror -Os -c -std=gnu99
+CFLAGS = -c -std=gnu99 -Wall -Werror -Os
 LIBS   = -lncurses -lm
 
 EXE_DIR  = 
@@ -46,6 +46,11 @@ $(EXE): $(MAIN_OBJ) $(OBJ)
 
 $(OBJ_DIR)%.o: $(SRC_DIR)%.c
 	$(CC) $(CFLAGS) $< -o $@
+
+
+# Target for debug build
+debug: CFLAGS = -c -std=gnu99 -Wall -Werror -Og -DDEBUG_MODE
+debug: $(EXE)
 
 
 # Target for unit test runner

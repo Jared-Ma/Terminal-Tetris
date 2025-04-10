@@ -36,11 +36,11 @@
 /**
  ** @brief Trace prints a formatted string and its arguments to the debug log.
  **/
-#define TRACE_LOG(...)                    \
-TRACE_LOG_AUX(                            \
-    ARGS_HEAD(__VA_ARGS__) "%.0d",        \
-    ARGS_TAIL(__VA_ARGS__)                \
-)
+#if DEBUG_MODE
+# define TRACE_LOG(...) TRACE_LOG_AUX(ARGS_HEAD(__VA_ARGS__) "%.0d", ARGS_TAIL(__VA_ARGS__))
+#else
+# define TRACE_LOG(...) do { } while (false)
+#endif
 
 /**
  ** @brief Allows multiple arguments to be printed in the same trace.

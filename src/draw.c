@@ -259,7 +259,6 @@ void draw_help_window(GameWindow* help_window) {
     char* soft_drop_label = "soft drop: ";
     char* hard_drop_label = "hard drop: ";
     char* pause_label     = "pause: ";
-    char* set_delay_label = "set delay: ";
 
     char* move_key      = "< >";
     char* rotate_key    = "z x";
@@ -267,7 +266,6 @@ void draw_help_window(GameWindow* help_window) {
     char* soft_drop_key = "v";
     char* hard_drop_key = "_";
     char* pause_key     = "esc";
-    char* set_delay_key = "d";
 
     // Print controls so labels are left-aligned and corresponding keys are right-aligned.
     mvwprintw(
@@ -324,6 +322,9 @@ void draw_help_window(GameWindow* help_window) {
         (int)(help_window->content_w - strlen(pause_label)), 
         pause_key
     );
+    #if DEBUG_MODE
+    char* set_delay_label = "set delay: ";
+    char* set_delay_key = "d";
     if (debug_mode) {
         mvwprintw(
             help_window->content, 
@@ -335,6 +336,7 @@ void draw_help_window(GameWindow* help_window) {
             set_delay_key
         );
     }
+    #endif
 }
 
 void draw_main_menu_window(GameWindow* main_menu_window, uint8_t start_level) {

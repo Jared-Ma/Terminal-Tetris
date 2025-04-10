@@ -96,10 +96,12 @@ static void run_tetris(
     draw_stats_window(stats_window);
     draw_help_window(help_window);
     draw_main_menu_window(main_menu_window, start_level);
+    #if DEBUG_MODE
     if (debug_mode) {
         draw_debug_window(debug_window);
         draw_logs_window(logs_window);
     }
+    #endif
     TRACE_LOG("Rendered initial game windows");
     
     // Initial refresh of game windows.
@@ -109,10 +111,12 @@ static void run_tetris(
     game_window_refresh(stats_window);
     game_window_refresh(help_window);
     game_window_refresh(main_menu_window);
+    #if DEBUG_MODE
     if (debug_mode) {
         game_window_refresh(debug_window);
         game_window_refresh(logs_window);
     }
+    #endif
     TRACE_LOG("Refreshed initial game windows");
 
     while (running) {
@@ -194,10 +198,12 @@ static void run_tetris(
             }
         }
 
+        #if DEBUG_MODE
         if (input == INPUT_TOGGLE_DELAY && debug_mode) {
             nodelay(stdscr, !is_nodelay(stdscr));
             TRACE_LOG("Toggle delay mode: nodelay=%s", (is_nodelay(stdscr)) ? "true" : "false");
         }
+        #endif
         
         // Update the game state accordingly.
         if (input_state == PLAYING) {
@@ -273,12 +279,14 @@ static void run_tetris(
             game_window_refresh(stats_window);
         }
 
+        #if DEBUG_MODE
         if (debug_mode) {
             draw_debug_variables(debug_window, game_state, stats);
             draw_debug_logs(logs_window, debug_log, log_buffer);
             game_window_refresh(debug_window);
             game_window_refresh(logs_window);
         }
+        #endif
 
         // Sleep the difference between target and actual frame time.
         clock_gettime(CLOCK_MONOTONIC, &end_time);
@@ -308,10 +316,13 @@ static void setup_curses(void) {
     // Check if current terminal size is sufficient.
     int h_max = GAME_H;
     int w_max = GAME_W;
+
+    #if DEBUG_MODE
     if (debug_mode) {
         h_max += LOGS_WINDOW_H;
         w_max += DEBUG_WINDOW_W;
     }
+    #endif
 
     if (LINES < h_max || COLS < w_max) {
         fprintf(    
@@ -418,6 +429,7 @@ static void cleanup(void) {
 }
 
 int main(int argc, char* argv[argc + 1]) {
+    #if DEBUG_MODE
     int option;
     while ((option = getopt(argc, argv, "d")) != -1) {
         switch (option) {
@@ -425,16 +437,16 @@ int main(int argc, char* argv[argc + 1]) {
             debug_mode = true;
             break;
         case '?':
+        default:
             if (isprint(optopt)) {
                 fprintf(stderr, "Unknown option '-%c' provided.\n", optopt);
             } else {
                 fprintf(stderr, "Unknown option character provided.\n");
             }
             return EXIT_FAILURE;
-        default:
-            return EXIT_FAILURE;
         }
     }
+    #endif
 
     // Register cleanup function on exit.
     if (atexit(cleanup) != 0) {
@@ -442,6 +454,7 @@ int main(int argc, char* argv[argc + 1]) {
         return EXIT_FAILURE;
     }
 
+    #if DEBUG_MODE
     // Open debug log file.
     if (debug_mode) {
         if (!debug_log_open(DEBUG_LOG_FILEPATH)) {
@@ -449,16 +462,20 @@ int main(int argc, char* argv[argc + 1]) {
             return EXIT_FAILURE;
         }
     }
+    #endif
 
     setup_curses();
 
     // Calculate offset of game windows so game is centered in terminal.
     int y_offset = LINES / 2 - GAME_H / 2;
     int x_offset = COLS / 2 - GAME_W / 2;
+
+    #if DEBUG_MODE
     if (debug_mode) {
         y_offset -= LOGS_WINDOW_H / 2;
         x_offset -= DEBUG_WINDOW_W / 2;
     }
+    #endif
     
     GameWindow* board_window = game_window_init(
         BOARD_WINDOW_H, 
