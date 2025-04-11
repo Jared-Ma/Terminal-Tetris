@@ -1,6 +1,6 @@
 ## Terminal Tetris
 
-A small Linux terminal application that plays Tetris, and was implemented according to the [Tetris 
+A Linux terminal application that plays Tetris, and was implemented according to the [Tetris 
 Guideline](https://tetris.wiki/Tetris_Guideline). 
 
 <p align="center">
